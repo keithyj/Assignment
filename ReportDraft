@@ -3,13 +3,21 @@
 ### Introduction
 
 ### Findings (2 pages max)
-
+**** Which variables show a strong relationship with the outcome variable? ◦ Can the relationship be characterized as a linear?
+◦ Does the relationship appear to be homoscedastic?
+◦ Are any transformations, required? If so which ones?
 ### Statistical Methodology
 **** What issues did we identify in the initial EDA? How will these impact on modelling decisions when you come to build your statistical model?
 ******** Missing values
+-- Can you suggest a mechanism for missing data (MCAR/MAR/MNAR)?
+-- What should be done with missing values when you come to build your statistical model?
 ******** Skewness
+-- Which variables, if any, have a highly skewed distribution? What transformations might be applied to reduce skewness and stabilize the spread of the observations? (This might be different to transformations required to make the relationship linear/homoscedastic with the dependent variable)
 ******** Outliers
+-- Do any of the variables have outlying values? How should outliers be treated?
 ******** Univariate
+-- Which variables are highly correlated with each other? Are there variables that represent different
+ways of measuring the same thing?
 ******** Heteroscedacity
 ******** Bivariate
 ******** Heteroscedacity
@@ -20,6 +28,9 @@
 ******** 
 **** Can we exclude any of the variables from the model building process? Why or why not?
 ******** Multicollinearity
+
+-- Given all of the above, what recommendations would you suggest for preparing these data in order
+to fit a linear model?
 ### Authors' Contributions
 
 ### References - Ideally put it in the form which we can make into a bib file immediately: 
