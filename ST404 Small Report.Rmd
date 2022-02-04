@@ -220,5 +220,20 @@ My recommendations for fixing would be apply the above transforms to fix skew, a
 vif(lm(deathRate~binnedInc + medIncome, data = cancer2))
 ```
 
+```{r}
+par(mfrow = c(2,2))
+plot(lm(deathRate~medIncome, data = cancer2))
+```
 
+```{r}
+plot(lm(deathRate~AvgHouseholdSize, data = cancer2), 1)
+```
+```{r}
+vif(lm(deathRate ~ PctEmpPrivCoverage + PctPrivateCoverage, data = cancer2))
+```
+
+```{r}
+plot(lm(deathRate ~ incidenceRate, data = cancer2), 4)
+cancer2[267,]
+```
 
