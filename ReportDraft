@@ -1,0 +1,33 @@
+### Executive Summary (3 bullet points max)
+
+### Introduction
+
+### Findings (2 pages max)
+
+### Statistical Methodology
+**** What issues did we identify in the initial EDA? How will these impact on modelling decisions when you come to build your statistical model?
+******** Missing values
+******** Skewness
+******** Outliers
+******** Univariate
+******** Heteroscedacity
+******** Bivariate
+******** Heteroscedacity
+******** Multivariate
+******** Heteroscedacity
+**** Did we transform any of the variables? Why or why not?
+******** Heteroscedacity
+******** 
+**** Can we exclude any of the variables from the model building process? Why or why not?
+******** Multicollinearity
+### Authors' Contributions
+
+### References - Ideally put it in the form which we can make into a bib file immediately: 
+i.e 
+@AUSTravelBan{AUSTravelBan,
+    author = {Worthington, Brett },
+    title = {Coronavirus pandemic fears prompt Government to activate emergency response and extend travel ban},
+    publisher = {ABC News},
+    url={https://www.abc.net.au/news/2020-02-27/federal-government-coronavirus-pandemic-emergency-plan/12005734},
+    year = {2020},
+  }
