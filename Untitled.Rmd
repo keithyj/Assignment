@@ -1,0 +1,90 @@
+---
+title: "ST404 Ages M&F, BinnedInc and Income"
+author: "James Keith"
+date: "04/02/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Univariate
+First need to figure out how to cope with binnedInc (DEAL WITH THIS AFTER, GET EVERYONES OPINIONS)
+``` {r}
+class(cancer2$binnedInc)
+#Factor
+```
+
+```{r 1}
+par(mfrow = c(2,2))
+hist(cancer2$medIncome)
+hist(cancer2$MedianAgeFemale)
+hist(cancer2$MedianAgeMale)
+
+#medIncome seem to have a right skew, more skew than any others.
+```
+
+```{r 2}
+JamesCancer <- cancer2 %>% select("Geography", "medIncome", "MedianAgeMale", "MedianAgeFemale", "binnedInc", "deathRate")
+summary(JamesCancer)
+count(JamesCancer, medIncome == "")
+count(JamesCancer, MedianAgeMale == "")
+count(JamesCancer, MedianAgeFemale == "")
+count(JamesCancer, binnedInc == "")
+count(JamesCancer, medIncome == "NA")
+count(JamesCancer, MedianAgeMale == "NA")
+count(JamesCancer, MedianAgeFemale == "NA")
+count(JamesCancer, binnedInc == "NA")
+#Doesn't appear to be any missing data or values
+```
+
+```{r 3}
+#comparison of predictors and response
+library(GGally)
+ggpairs(JamesCancer, columns = c("medIncome", "MedianAgeMale", "MedianAgeFemale", "binnedInc", "deathRate"), mapping = aes(alpha = 0.6),
+        upper = list(continuous=wrap("cor", size=2.5, digits=2, stars=FALSE)),
+        lower = list(continuous=wrap("points", size = 0.5)),
+        diag = list(continuous="densityDiag"),
+        progress = FALSE) +
+  theme(text=element_text(size=6))
+
+#medIncome is right skewed, can do a transformation on this
+#MedianAgeFemale and MedianAgeMale are heavily positively correlated
+#No clue what is happening with the binned income 😂 might be worth doing this plot without binned income and doing that as a seperate thing to then do the correlaiton as it is hard to see the intervals
+#Death rate and median age has almost no correlation.
+#Variance inflation factors to look at binnedincome and median income - if high, multicollinearity exists and we can argue to get rid of it.
+```
+
+``` {r 4}
+#Look at residuals vs fitted to see if non-linear and any signs of heteroscedascity
+modIncome <- lm(deathRate~medIncome, data = JamesCancer)
+modMale <- lm(deathRate~MedianAgeMale, data = JamesCancer)
+modFemale <- lm(deathRate~MedianAgeFemale, data = JamesCancer)
+modbinnedInc <- lm(deathRate~binnedInc, data = JamesCancer)
+
+par(mfrow = c(2,2))
+plot(modIncome, 1)
+plot(modMale, 1)
+plot(modFemale, 1)
+plot(modbinnedInc, 1)
+
+#Kinda have a heteroscedasicity for medIncome, no signs for the others.
+#Need to deal with heteroscaedscatic, use a spread level plot
+```
+
+``` {r 5}
+ncvTest(lm(deathRate~medIncome, data = JamesCancer))
+#Heteroscedastic
+```
+
+```{r outliers}
+outlierTest(modIncome)
+outlierTest(modMale)
+outlierTest(modFemale)
+outlierTest(modbinnedInc)
+```
+
+``` {r multicollinearity}
+vif(lm(deathRate~binnedInc + medIncome, data = cancer2))
+```
