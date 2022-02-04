@@ -1,1 +1,337 @@
+---
+title: "???????"
+author: "Group 6"
+date: "12/02/2022"
+output: 
+  pdf_document:
+    fig_caption: yes
+---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+##Technical Appendix
+
+First we load the dataset and required libraries
+
+```{r packages, warning = FALSE}
+load("cancer.rdata")
+library(VIM)
+library(GGally)
+library(usmap)
+library(car)
+library(stringr)
+```
+
+## Summary
+
+First lets have a look at a summary of all the data:
+
+```{r summary}
+summary(cancer)
+```
+
+We notice that there is one categorical variable (binnedInc) and one ID variable (Geography). Geography shouldn't be used as an explanatory variable but could be used as a visual aid.
+
+We also note that PctEmployed16_Over has 152 missing values that should be investigated.
+
+## Univariate Plots:
+
+```{r uni, echo = FALSE, warning = FALSE}
+#Alex
+par(mfrow = c(2,2))
+hist(cancer$AvgHouseholdSize)
+hist(cancer$PctEmployed16_Over)
+hist(cancer$PctBlack)
+hist(cancer$PctUnemployed16_Over)
+# We note that PctBlack has very large right skew and will need transforming to fix this.
+# We also note that there are some very suspicious low values in AvgHouseholdSize which are outliers. We create a new dataset containing these suspicious values.
+
+```
+```{r univariate, echo = FALSE}
+#Remus
+DF %>% gather() %>%
+  ggplot(aes(x = value)) + facet_wrap(~key, scales = "free") +
+  geom_histogram(col = c("blue"), fill = "blue", alpha=0.6)
+# We can see that the three Coverage variables are symmetrical but povertyPercent is right-skewed.
+# A transformation is needed to tackle this skewness.
+```
+
+## Transformation
+Try cube rooting.
+```{r fix skew}
+DF$povertyFIX <- (DF$povertyPercent)^(1/3)
+ggplot(DF, aes(povertyFIX))+geom_density()
+```
+
+
+```{r 1}
+#James
+par(mfrow = c(2,2))
+hist(cancer2$medIncome)
+hist(cancer2$MedianAgeFemale)
+hist(cancer2$MedianAgeMale)
+#medIncome seem to have a right skew, more skew than any others.
+```
+
+
+#NEW SECTION
+```{r strange}
+sus <- subset(cancer, AvgHouseholdSize < 0.5)
+head(sus)
+```
+
+I will use an alternate source to check if the AvgHousehold Size is correct for Berkeley County.
+
+```{r Berk}
+sus[1,"AvgHouseholdSize"]
+```
+
+Reference:
+https://data.census.gov/cedsci/table?q=average%20household%20size&g=0500000US54003&y=2013&tid=ACSST1Y2013.S1101
+
+From the same census data we have that the average household size of this county is 2.61. This indicates the data has been incorrectly inputted into this dataset or the data is missing. Either way, this incorrect data could cause the distribution to be unstable and should be considered as missing.
+
+```{r NA implement}
+cancer1 <- cancer
+susPoint <- which(cancer1$AvgHouseholdSize < 0.5)
+cancer1$AvgHouseholdSize[susPoint] <- NA
+summary(cancer1)
+```
+
+
+## Missing Values and Strange Values:
+
+There are now two predictor variables with what we would consider missing or strange values. We have to decide what kind of missing values these are. We can use plots from the VIM package to do this.
+
+```{r Miss}
+par(mfrow = c(1,4))
+for (i in c(2:5)){ 
+  pbox(cancer1,pos=i) 
+}
+```
+
+From the plots the difference in boxplots between missing values and non missing is quite similar across the board. We can consider these missing values MCAR and should just omit those rows with missing values as there isn't that many so should not cause our data to be unstable.
+
+```{r NA Omit}
+cancer2 <- na.omit(cancer1)
+```
+
+## Comparing Predictors and Response
+
+```{r}
+#MIGHT WANT TO MAKE THIS SO ALL ARE VARIABLES ARE INCLUDED IN THIS ONE BIT
+ggpairs(cancer2, columns = c(8,10,11,15,18), mapping = aes(alpha = 0.6),
+        upper = list(continuous=wrap("cor", size=2.5, digits=2, stars=FALSE)),
+        lower = list(continuous=wrap("points", size = 0.5)),
+        diag = list(continuous="densityDiag"),
+        progress = FALSE) +
+  theme(text=element_text(size=6))
+  
+#The following relates to more than what is currently above^
+#medIncome is right skewed, can do a transformation on this
+#MedianAgeFemale and MedianAgeMale are heavily positively correlated
+#No clue what is happening with the binned income 😂 might be worth doing this plot without binned income and doing that as a seperate thing to then do the correlaiton as it is hard to see the intervals
+#Death rate and median age has almost no correlation.
+#Variance inflation factors to look at binnedincome and median income - if high, multicollinearity exists and we can argue to get rid of it.
+
+#povertyPercent, PctPrivateCoverage, PctEmpCoverage, PctPublicCoverage: The three coverage variables are highly correlated as expected. However, the deathRate is not significantly correlated to any of the coverage variables.
+#The correlation coefficicent between deathRate and the coverage variables do not exceed 0.45.
+
+# Unemployed and Employed 16 or over have high correlation with each other.
+
+#We haven't looked at all together so there might be some new correlations.
+```
+
+Below we have some plots of our variables against death rate:
+
+```{r Plot Death, echo = FALSE,fig.cap = "\\label{fig:figs}Predictors vs Death Plots"}
+par(mfrow = c(2,2))
+plot(deathRate~AvgHouseholdSize, data = cancer2)
+plot(deathRate~PctEmployed16_Over, data = cancer2)
+plot(deathRate~PctUnemployed16_Over, data = cancer2)
+plot(deathRate~PctBlack, data = cancer2)
+```
+
+PctBlack is incredibly right skewed, we can try a log transformation to fix it. 
+
+```{r Fixing Black}
+cancer2$blackFix <- log(cancer2$PctBlack)
+ggplot(cancer2, aes(blackFix)) + geom_density()
+```
+
+PctUnemployed16_Over is also slightly right skewed. We can try a square root transformation to fix this.
+
+```{r Fix Unemployment}
+cancer2$UnempFix <- sqrt(cancer2$PctUnemployed16_Over)
+ggplot(cancer2, aes(UnempFix)) + geom_density()
+```
+
+Average household size maybe needs fixing
+
+```{r Size Fix}
+cancer2$Avgfix <- log(cancer2$AvgHouseholdSize)
+ggplot(cancer2, aes(Avgfix)) + geom_density()
+```
+
+We have evidence of multicolinearity between Unemployment and Employment.
+
+## HETEROSCEDASTICITY
+
+```{r Residual Plots, echo = FALSE, fig.cap = "\\label{fig:figs}Residual Plots"}
+par(mfrow = c(2,2))
+plot(lm(deathRate~AvgHouseholdSize, data = cancer2), 1)
+plot(lm(deathRate~PctUnemployed16_Over, data = cancer2), 1)
+plot(lm(deathRate~PctEmployed16_Over, data = cancer2), 1)
+plot(lm(deathRate~PctBlack, data = cancer2), 1)
+# We have evidence of a lot of heteroscedasticity for PctBlack, we can use a spread level plot for a suggested transformation
+
+modIncome <- lm(deathRate~medIncome, data = JamesCancer)
+modMale <- lm(deathRate~MedianAgeMale, data = JamesCancer)
+modFemale <- lm(deathRate~MedianAgeFemale, data = JamesCancer)
+modbinnedInc <- lm(deathRate~binnedInc, data = JamesCancer)
+par(mfrow = c(2,2))
+plot(modIncome, 1)
+plot(modMale, 1)
+plot(modFemale, 1)
+plot(modbinnedInc, 1)
+# Kinda have a heteroscedasicity for medIncome, no signs for the others.
+# Need to deal with heteroscaedscatic, use a spread level plot
+
+
+par(mfrow=c(2,2))
+plot(lm(deathRate~povertyPercent, data = cancer), 1)
+title(sub="PovertyPercent")
+plot(lm(deathRate~PctPrivateCoverage, data = cancer), 1)
+title(sub="PctPrivateCoverage")
+plot(lm(deathRate~PctEmpPrivCoverage, data = cancer), 1)
+title(sub="PctEmpPrivCoverage")
+plot(lm(deathRate~PctPublicCoverage, data = cancer), 1)
+title(sub="PctPublicCoverage")
+# There is potential heteroscedascity in PctEmpPrivCoverage
+```
+
+## TESTING HETEROSCEDACITY
+```{r Spread Level}
+spreadLevelPlot(lm(deathRate~PctBlack, data = cancer2))
+ncvTest(lm(deathRate~PctBlack, data = cancer2))
+
+ncvTest(lm(deathRate~PctEmpPrivCoverage, data = cancer))
+spreadLevelPlot(lm(deathRate~PctEmpPrivCoverage, data = df))
+
+ncvTest(lm(deathRate~medIncome, data = JamesCancer))
+spreadLevelPlot(lm(deathRate~medIncome, data = JamesCancer))
+```
+## FIXING HETEROSCEDACITYIT
+
+```{r hetroscedascity fix}
+# Try power=5
+plot(lm(deathRate^(5)~PctEmpPrivCoverage, data = df),1)
+ncvTest(lm(deathRate^5~PctEmpPrivCoverage, data = df))
+
+# We try cubing the response to fix the heteroscedasticity
+
+plot(lm(deathRate^3~PctBlack, data = cancer2), 1)
+spreadLevelPlot(lm(deathRate^3~PctBlack, data = cancer2))
+
+# This seems to have mostly fixed heteroscedasticity
+
+# This is a different transformation than the one used to fix the density though
+
+# There is also some heteroscedasticity present for employed 16 or over.
+
+ncvTest(lm(deathRate~PctEmployed16_Over, data = cancer2))
+spreadLevelPlot(lm(deathRate~PctEmployed16_Over, data = cancer2))
+# Fix
+plot(lm(deathRate^(-2)~PctEmployed16_Over, data = cancer2), 1)
+spreadLevelPlot(lm(deathRate^(-2)~PctEmployed16_Over, data = cancer2))
+```
+
+## Multicolinearity
+
+We have high correlation between employed 16 and over and unemployed 16 and over. We will test to see if both are necessary.
+
+```{r Multi}
+# We have high correlation between employed 16 and over and unemployed 16 and over. We will test to see if both are necessary.
+
+vif(lm(deathRate~PctEmployed16_Over + PctUnemployed16_Over, data = cancer2))
+
+# Variance inflation factors are low though, so we could potentially use both as they aren't measuring the exact same thing.
+
+vif(lm(deathRate~PctPrivateCoverage+PctEmpPrivCoverage+ PctPublicCoverage, data = df))
+vif(lm(deathRate~PctPrivateCoverage+PctEmpPrivCoverage+ PctPublicCoverage+ povertyPercent, data = df))
+# Although VIF are not very big,the three healthcare coverage variables are clearly correlated.
+# I would discard PctPrivateCoverage and PctEmpPrivCoverage in fitting a model.
+# I leave PctPublicCoverage because it is the least correlated variable with povertyPercent among the healthcare coverage variables.
+vif(lm(deathRate~binnedInc + medIncome, data = cancer2))
+```
+## OUTLIERS
+```{r outliers}
+#James
+outlierTest(modIncome)
+outlierTest(modMale)
+outlierTest(modFemale)
+outlierTest(modbinnedInc)
+```
+First we use box-plots to see if there are any suspicous value.
+
+```{r boxplot, echo=FALSE}
+#Remus
+DF %>% gather() %>%
+  ggplot(aes(x = value)) + facet_wrap(~key, scales = "free") +
+  geom_boxplot(shape=1, alpha=0.3)
+# From the box-plots, all four variables have a quite a big number of extreme values. We need further investigations.
+```
+
+```{r iqr, echo=FALSE}
+IQRpov<- quantile(DF$povertyFIX, 0.75) - quantile(DF$povertyFIX, 0.25)
+UPpov<- quantile(DF$povertyFIX, 0.5) + 1.5*IQRpov
+LOWpov<- quantile(DF$povertyFIX, 0.5) - 1.5*IQRpov
+IQRprivate<- quantile(DF$PctPrivateCoverage, 0.75) - quantile(DF$PctPrivateCoverage,0.25)
+UPprivate<- quantile(DF$PctPrivateCoverage, 0.5) +1.5*IQRprivate
+LOWprivate<- quantile(DF$PctPrivateCoverage, 0.5) -1.5*IQRprivate
+IQRemp<- quantile(DF$PctEmpPrivCoverage, 0.75) - quantile(DF$PctEmpPrivCoverage,0.25)
+UPemp<-  quantile(DF$PctEmpPrivCoverage, 0.5) +1.5*IQRemp
+LOWemp<- quantile(DF$PctEmpPrivCoverage, 0.5) -1.5*IQRemp
+IQRpub<- quantile(DF$PctPublicCoverage, 0.75) - quantile(DF$PctPublicCoverage,0.25)
+UPpub<-  quantile(DF$PctPublicCoverage, 0.5) +1.5*IQRpub
+LOWpub<- quantile(DF$PctPublicCoverage, 0.5) -1.5*IQRpub
+DF_IQRoutlier<- subset(DF, (povertyFIX<= LOWpov | povertyFIX >= UPpov) |
+                           (PctPrivateCoverage<= LOWprivate | PctPrivateCoverage >= UPprivate)|
+                           (PctEmpPrivCoverage<= LOWemp | PctEmpPrivCoverage >= UPemp)|
+                           (PctPublicCoverage<= LOWpub | PctPublicCoverage >= UPpub))
+```
+
+
+### LOOKING AT DEATH RATE IN THE USA
+```{r}
+cancer3 <- cancer
+uwu2 <- str_split(cancer3$Geography, pattern = ", ")
+cancer3$state <- rep(0, length(cancer3$Geography))
+for(i in 1:length(cancer3$Geography)){
+  cancer3$state[i] <- uwu2[[i]][2]
+}
+cancer3$county <- rep(0, length(cancer3$Geography))
+for(i in 1:length(cancer3$Geography)){
+  cancer3$county[i] <- uwu2[[i]][1]
+}
+cancer3$county[167] <- "Dona Ana County"
+cancer3$county[821] <- "La Salle Parish"
+cancer3$fips <- rep("0", length(cancer3$Geography))
+for(i in 1:length(cancer3$Geography)){
+  cancer3$fips[i] <- fips(cancer3$state[i], cancer3$county[i])
+}
+deathMap <- subset(cancer3, select = c("fips", "county", "deathRate"))
+plot_usmap(data = deathMap,regions = "counties", values = "deathRate", include = cancer3$fips, color = "red") +
+  scale_fill_continuous(low = "yellow", high = "red", name = "Death Rate", label = scales::comma) +
+  labs(title = "Death rates in the states") +
+  theme(legend.position = "right")
+```
+
+The map above gives a nice illustration of what death rate looks like accross the United States, whites indicate that county was missing from the original dataset.
+
+My recommendations for fixing would be apply the above transforms to fix skew, also remove the suspect and missing data as well to make sure our data isn't unstable.
+
+```{r Binned Check}
+vif(lm(deathRate~binnedInc + medIncome, data = cancer2))
+```
