@@ -1,0 +1,113 @@
+---
+title: "Assignment 1 ~ IncidenceRate, PercentMarried,PctMarriedHouseholds, Edu18_24"
+author: "jena"
+output:
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+We are analysing 4 variables of the Cancer data: Incidence Rate, Percent Married, PctMarriedHouseholds and Edu18_24. 
+
+# Load Data and Summary of the Data
+```{r initial look at  variables}
+load("cancer.RData")
+str(cancer)
+head(cancer)
+tail(cancer)
+library(dplyr)
+cancer_select<- select(cancer, incidenceRate, PercentMarried,PctMarriedHouseholds, Edu18_24)
+summary(cancer_select)
+
+```
+# Check for missing values
+```{r missing values}
+sum(is.na(cancer_select))
+```
+# Univariate Analysis
+```{r plots}
+par(mfrow=c(2,1))
+hist(cancer$incidenceRate, breaks = 30, main = "Histogram of Incidence Rate")
+plot(density(cancer$incidenceRate), main= "Density estimate of Incidence Rate") 
+
+par(mfrow=c(2,1))
+hist(cancer$PercentMarried, breaks = 30, main = "Histogram of Percent Married")
+plot(density(cancer$PercentMarried), main="Density estimate of Percent Married") 
+
+par(mfrow=c(2,1))
+hist(cancer$PctMarriedHouseholds, breaks = 30, main = "Histogram of PctMarriedHouseholds")
+plot(density(cancer$PctMarriedHouseholds), main="Density estimate of PctMarriedHouseholds")
+
+par(mfrow=c(2,1))
+hist(cancer$Edu18_24, breaks = 30, main = "Histogram of Edu18_24")
+plot(density(cancer$Edu18_24), main="Density estimate of Edu18_24")
+```
+We note that incidence rate shows a severe postive skew. We need to fix the skewness by considering a possible logarithmic transformation. 
+
+# Transformation
+```{r transformation}
+
+cancer$incidenceRate <- log(cancer$incidenceRate)
+hist(cancer$incidenceRate, main = "Histogram of Transformed Incidence Rate")
+plot(density(cancer$incidenceRate), main= "Density estimate of Transformed Incidence Rate")
+
+```
+The transformed predictor variable now has a normal spread and therefore the skewness is fixed.
+
+# Check for Outliers 
+```{r outliers}
+library(ggplot2)
+ggplot(cancer, aes(incidenceRate)) + geom_boxplot()
+ggplot(cancer, aes(PercentMarried)) + geom_boxplot()
+ggplot(cancer,aes(PctMarriedHouseholds)) + geom_boxplot()
+ggplot(cancer, aes(Edu18_24)) + geom_boxplot()
+```
+
+We observe that the  outliers are present for all predictor variables. The boxplot for Incidence rate shows the existence of extreme high values. Therefore, we might want to investigate into the outliers of incidence rate only and decide how we might want to treat them. Possible options include deleting the outliers or imputing them. This might depend on whether the outlier is due to some error (data entry, sampling, measurement) or whether the outlier is natural. 
+
+# Bivariate Analysis
+```{r bivariate analysis}
+library(GGally)
+ggpairs(cancer, columns = c("incidenceRate", "PercentMarried", "PctMarriedHouseholds", "Edu18_24" ,"deathRate"), title = "Multivariate Plots")
+
+```
+We observe that there is a high correlation of 0.87 between Percent Married and PctMarriedHouseholds. These two variables do not differ significantly as they both represent samples of married individuals. Otherwise, all four variables have a low correlation with the response variable, deathRate. The predictor variables, PercentMarried, PctMarriedHouseholds and Edu18_24 do not have a strong linear relationship with death Rate. However, incidence rate does show a postive linear relationship with the response variable. 
+
+# Residual plots of Predictors and Reponse variables
+```{r heterscedasticity}
+plot(lm(cancer$deathRate~incidenceRate),1)
+plot(lm(cancer$deathRate~PercentMarried),1)
+plot(lm(cancer$deathRate~PctMarriedHouseholds),1)
+plot(lm(cancer$deathRate~Edu18_24),1)
+```
+There is possible heterscedasticity for Incidence Rate and Edu18_24.
+
+# Check for heteroscedasticity
+```{r heteroscedasticity}
+library(car)
+ncvTest(lm(deathRate~incidenceRate), data=cancer)
+ncvTest(lm(deathRate~Edu18_24), data=cancer)
+```
+
+# Stabilise spread and fix heterscedasticity
+```{r spreadlevelplot}
+spreadLevelPlot(lm(deathRate~incidenceRate))
+plot(lm(deathRate^(1.5)~incidenceRate))
+spreadLevelPlot(lm(deathRate~Edu18_24))
+plot(lm(deathRate^(-3)~Edu18_24),1)
+```
+
+#Check for Multicollinearity
+```{r multicollinearity}
+vif(lm(deathRate~incidenceRate+PercentMarried+Edu18_24), data=cancer)
+
+vif(lm(deathRate~incidenceRate+PercentMarried+PctMarriedHouseholds+Edu18_24), data=cancer)
+```
+
+PercentMarried and PctMarriedHouseholds are clearly highly correlated. Therefore, I would suggest that it is best to leave out PctMarriedHouseholds to reduce multicollinearity in the model. 
+
+
+
+
+
