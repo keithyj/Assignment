@@ -74,6 +74,36 @@ hist(cancer2$MedianAgeMale)
 #medIncome seem to have a right skew, more skew than any others.
 ```
 
+#Jena
+
+par(mfrow=c(2,1))
+hist(cancer$incidenceRate, breaks = 30, main = "Histogram of Incidence Rate")
+plot(density(cancer$incidenceRate), main= "Density estimate of Incidence Rate") 
+
+par(mfrow=c(2,1))
+hist(cancer$PercentMarried, breaks = 30, main = "Histogram of Percent Married")
+plot(density(cancer$PercentMarried), main="Density estimate of Percent Married") 
+
+par(mfrow=c(2,1))
+hist(cancer$PctMarriedHouseholds, breaks = 30, main = "Histogram of PctMarriedHouseholds")
+plot(density(cancer$PctMarriedHouseholds), main="Density estimate of PctMarriedHouseholds")
+
+par(mfrow=c(2,1))
+hist(cancer$Edu18_24, breaks = 30, main = "Histogram of Edu18_24")
+plot(density(cancer$Edu18_24), main="Density estimate of Edu18_24")
+```
+# We note that incidence rate shows a severe postive skew. 
+# We need to fix the skewness by considering a possible logarithmic transformation. 
+
+# Transformation
+```{r transformation}
+
+cancer$incidenceRate <- log(cancer$incidenceRate)
+hist(cancer$incidenceRate, main = "Histogram of Transformed Incidence Rate")
+plot(density(cancer$incidenceRate), main= "Density estimate of Transformed Incidence Rate")
+
+```
+# The transformed predictor variable now has a normal spread and therefore the skewness is fixed.
 
 #NEW SECTION
 ```{r strange}
@@ -210,6 +240,15 @@ plot(lm(deathRate~PctPublicCoverage, data = cancer), 1)
 title(sub="PctPublicCoverage")
 # There is potential heteroscedascity in PctEmpPrivCoverage
 ```
+```{r residual plots}
+par(mfrow=c(2,2))
+plot(lm(deathRate~incidenceRate),1)
+plot(lm(deathRate~PercentMarried),1)
+plot(lm(deathRate~PctMarriedHouseholds),1)
+plot(lm(deathRate~Edu18_24),1)
+```
+# There is possible heteroscedasticity for Incidence Rate and Edu18_24. Can use spreadlevelplot to fix heteroscedasticity.
+
 
 ## TESTING HETEROSCEDACITY
 ```{r Spread Level}
@@ -221,6 +260,7 @@ spreadLevelPlot(lm(deathRate~PctEmpPrivCoverage, data = df))
 
 ncvTest(lm(deathRate~medIncome, data = JamesCancer))
 spreadLevelPlot(lm(deathRate~medIncome, data = JamesCancer))
+
 ```
 ## FIXING HETEROSCEDACITYIT
 
@@ -246,6 +286,17 @@ spreadLevelPlot(lm(deathRate~PctEmployed16_Over, data = cancer2))
 plot(lm(deathRate^(-2)~PctEmployed16_Over, data = cancer2), 1)
 spreadLevelPlot(lm(deathRate^(-2)~PctEmployed16_Over, data = cancer2))
 ```
+# Stabilise spread and fix heterscedasticity
+
+ncvTest(lm(deathRate~incidenceRate), data=cancer)
+ncvTest(lm(deathRate~Edu18_24), data=cancer)
+
+spreadLevelPlot(lm(deathRate~incidenceRate))
+Try power=1.5
+plot(lm(deathRate^(1.5)~incidenceRate))
+spreadLevelPlot(lm(deathRate~Edu18_24))
+Try power= -3
+plot(lm(deathRate^(-3)~Edu18_24),1)
 
 ## Multicolinearity
 
@@ -265,6 +316,17 @@ vif(lm(deathRate~PctPrivateCoverage+PctEmpPrivCoverage+ PctPublicCoverage+ pover
 # I leave PctPublicCoverage because it is the least correlated variable with povertyPercent among the healthcare coverage variables.
 vif(lm(deathRate~binnedInc + medIncome, data = cancer2))
 ```
+
+```{r multicollinearity}
+vif(lm(deathRate~incidenceRate+PercentMarried+Edu18_24), data=cancer)
+
+vif(lm(deathRate~incidenceRate+PercentMarried+PctMarriedHouseholds+Edu18_24), data=cancer)
+```
+
+# PercentMarried and PctMarriedHouseholds are clearly highly correlated. 
+
+# Therefore, I would suggest that it is best to leave out PctMarriedHouseholds to reduce multicollinearity in the model. 
+
 ## OUTLIERS
 ```{r outliers}
 #James
@@ -301,6 +363,23 @@ DF_IQRoutlier<- subset(DF, (povertyFIX<= LOWpov | povertyFIX >= UPpov) |
                            (PctEmpPrivCoverage<= LOWemp | PctEmpPrivCoverage >= UPemp)|
                            (PctPublicCoverage<= LOWpub | PctPublicCoverage >= UPpub))
 ```
+#Jena
+```{r outliers}
+ggplot(cancer, aes(incidenceRate)) + geom_boxplot()
+ggplot(cancer, aes(PercentMarried)) + geom_boxplot()
+ggplot(cancer,aes(PctMarriedHouseholds)) + geom_boxplot()
+ggplot(cancer, aes(Edu18_24)) + geom_boxplot()
+```
+
+# We observe that the  outliers are present for all predictor variables. 
+
+# The boxplot for Incidence rate shows the existence of extreme high values. 
+
+# Therefore, we might want to investigate into the outliers of incidence rate only and decide how we might want to treat them. 
+
+# Possible options include deleting the outliers or imputing them. 
+
+# This might depend on whether the outlier is due to some error (data entry, sampling, measurement) or whether the outlier is natural. 
 
 
 ### LOOKING AT DEATH RATE IN THE USA
