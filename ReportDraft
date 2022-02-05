@@ -10,14 +10,38 @@
 **** What issues did we identify in the initial EDA? How will these impact on modelling decisions when you come to build your statistical model?
 ******** Missing values
 -- Can you suggest a mechanism for missing data (MCAR/MAR/MNAR)?
+
+We have a few missing values in PctEmployed16_Over. 152 missing values that should be investigated here. We note that as a proportion of the dataset 152 rows having missing data isn't a large proportion.
+
+To investigate the missing values we use the pbox funtion from the VIM package. This shows us how different are values look when the missing rows are removed.
+Accross all values our box plots look similar to each other which suggests our data is MCAR.
+
+For MCAR data our easiest solution to deal with it is simply to delete the rows where missing data is present. This lowers our data representation a little bit and might increase variance in the data but overall due to the low amount of missing values it should be okay to just delete the rows experiencing missing data.
+
 -- What should be done with missing values when you come to build your statistical model?
+
+The rows should be deleted as our statisitcal model will not rely on geography and the proportion of rows with missing values is small.
 ******** Skewness
+
+PctBlack is incredibly right skewed as are a number of other distributions. A log transform mostly fixes pctBlack and sqrt transformations of other distribtuions also help with the skew, this, however does noth elp with heteroscedasticity so we might just have to deal with the skew.
 -- Which variables, if any, have a highly skewed distribution? What transformations might be applied to reduce skewness and stabilize the spread of the observations? (This might be different to transformations required to make the relationship linear/homoscedastic with the dependent variable)
 ******** Outliers
 -- Do any of the variables have outlying values? How should outliers be treated?
+
+Most notable outlier is the strange data present in the AvgHouseholdSize variable. A lot of these are unrealistically close to 0. I have compared some of these with census estimates from a different source and the two give totally different results.
+My theory is that this is wrongly inputted data, either its missing or just mistakenly entered. And should be removed and then treated as a missing value to determine whether or not it is MCAR.
+
 ******** Univariate
 -- Which variables are highly correlated with each other? Are there variables that represent different
 ways of measuring the same thing?
+
+MedianIncome and Binned Income are highly correlated and have VIF of over 10, so over our rule of thumb.
+
+They probably measure the same thing in different ways.
+
+Healthcare variables also highly correlated as is poverty.
+
+Incidence rate doesn't really correlate with any other predictors.
 ******** Heteroscedacity
 ******** Bivariate
 ******** Heteroscedacity
@@ -42,3 +66,15 @@ i.e
     url={https://www.abc.net.au/news/2020-02-27/federal-government-coronavirus-pandemic-emergency-plan/12005734},
     year = {2020},
   }
+
+@HouseHoldDataBerekelyCounty{HouseHoldDataBerekelyCounty,
+    author = {United States Census Bureau },
+    title = {American Community Survey, S1101 HOUSEHOLDS AND FAMILIES},
+    publisher = {United States Census Bureau},
+    url = {https://data.census.gov/cedsci/table?q=average%20household%20size&g=0500000US54003&y=2013&tid=ACSST1Y2013.S1101},
+    year = {2013},
+  }
+
+
+
+
