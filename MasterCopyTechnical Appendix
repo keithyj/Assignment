@@ -19,6 +19,9 @@ library(GGally)
 library(usmap)
 library(car)
 library(stringr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
 ```
 
 ## Summary
@@ -32,6 +35,7 @@ susPoint <- which(cancer1$AvgHouseholdSize < 0.5)
 cancer1$AvgHouseholdSize[susPoint] <- NA
 cancer2 <- na.omit(cancer1)
 summary(cancer1)
+DF<-cancer[,c(5, 12:14)]
 ```
 
 We notice that there is one categorical variable (binnedInc) and one ID variable (Geography). Geography shouldn't be used as an explanatory variable but could be used as a visual aid.
