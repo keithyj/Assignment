@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 ```{r packages, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 # First we load the dataset and required libraries
-load("cancer.rdata")
+load("~/Downloads/cancer.RData")
 library(VIM)
 library(GGally)
 library(usmap)
@@ -258,7 +258,7 @@ plot(modIncome, 1)
 plot(modMale, 1)
 plot(modFemale, 1)
 plot(modbinnedInc, 1)
-# Kinda have a heteroscedasicity for medIncome, no signs for the others.
+# Potential heteroscedasicity for medIncome, no signs for the others.
 # Need to deal with heteroscaedscatic, use a spread level plot
 
 
@@ -301,6 +301,7 @@ spreadLevelPlot(lm(deathRate~incidenceRate, data = cancer2))
 
 ncvTest(lm(deathRate~Edu18_24, data=cancer2))
 spreadLevelPlot(lm(deathRate~Edu18_24, data = cancer2))
+
 ```
 ## FIXING HETEROSCEDASCITY
 
@@ -373,11 +374,10 @@ vif(lm(deathRate~MedianAgeMale + MedianAgeFemale, data = cancer2))
 ## OUTLIERS
 First we use box-plots to see if there are any suspicous value.
 ```{r outlier, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-#James
-ggplot(cancer2, aes(modIncome)) + geom_boxplot()
-ggplot(cancer2, aes(modMale)) + geom_boxplot()
-ggplot(cancer2, aes(modFemale)) + geom_boxplot()
-ggplot(cancer2, aes(modbinnedInc)) + geom_boxplot()
+ggplot(cancer2, aes(medIncome)) + geom_boxplot()
+ggplot(cancer2, aes(MedianAgeMale)) + geom_boxplot()
+ggplot(cancer2, aes(MedianAgeFemale)) + geom_boxplot()
+ggplot(cancer2, aes(binnedInc)) + geom_boxplot()
 ```
 ```{r boxplot, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 
