@@ -206,6 +206,12 @@ DF$povertyFIX <- (DF$povertyPercent)^(1/3)
 ggplot(DF, aes(povertyFIX))+geom_density()
 ```
 
+```{r fix skew, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+# Try log for medincome.
+cancer2$medIncomeFix <- log(cancer2$medIncome)
+ggplot(cancer2, aes(medIncomeFix))+geom_density()
+```
+
 ```{r Fixing Black, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 # PctBlack is incredibly right skewed, we can try a log transformation to fix it. 
 cancer2$blackFix <- log(cancer2$PctBlack)
