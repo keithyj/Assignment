@@ -32,9 +32,12 @@ The rows should be deleted as our statisitcal model will not rely on geography a
 ******** Skewness
 
 PctBlack is incredibly right skewed as are a number of other distributions. A log transform mostly fixes pctBlack and sqrt transformations of other distribtuions also help with the skew, this, however does noth elp with heteroscedasticity so we might just have to deal with the skew.
-Incidence Rate also has a positive skew due to some extreme values e.g incidenceRate in Union County, Florida (Incidence Rate of 1260 per 100000) - log transformation is needed to fix skewness. 
+
+Incidence Rate also has a positive skew - log transformation is needed to fix skewness. 
+
 povertyPercent is right-skewed. Cube-root transformation to fix skewness.
 
+PctUnemployed16_Over and AvgHousehold size slightly right skewed - Sqrt transformation 
 -- Which variables, if any, have a highly skewed distribution? What transformations might be applied to reduce skewness and stabilize the spread of the observations? (This might be different to transformations required to make the relationship linear/homoscedastic with the dependent variable)
 ******** Outliers
 -- Do any of the variables have outlying values? How should outliers be treated?
