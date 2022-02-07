@@ -156,7 +156,7 @@ plot(density(cancer2$Edu18_24), main="Density estimate of Edu18_24")
 
 ```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 #NEED TO LOOK AT WHICH OTHER VARIABLES HAVE A CORRELATION
-ggpairs(cancer2, columns = c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19), mapping = aes(alpha = 0.6),
+ggpairs(cancer2, columns = c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18), mapping = aes(alpha = 0.6),
         upper = list(continuous=wrap("cor", size=2.5, digits=2, stars=FALSE)),
         lower = list(continuous=wrap("points", size = 0.5)),
         diag = list(continuous="densityDiag"),
