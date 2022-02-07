@@ -102,13 +102,13 @@ plot(density(cancer2$Edu18_24), main="Density estimate of Edu18_24")
 # Transformation
 ```{r transformation}
 
-cance2r$incidenceRate <- log(cancer2$incidenceRate)
+cancer2$incidenceRate <- log(cancer2$incidenceRate)
 hist(cancer2$incidenceRate, main = "Histogram of Transformed Incidence Rate")
 plot(density(cancer2$incidenceRate), main= "Density estimate of Transformed Incidence Rate")
 
-cancer$PercentMarried<- cancer$PercentMarried^(2)
-hist(cancer$PercentMarried, breaks = 30, main = "Histogram of transformed Percent Married")
-plot(density(cancer$PercentMarried), main="Density estimate of transformed Percent Married") 
+cancer2$PercentMarried<- cancer2$PercentMarried^(2)
+hist(cancer2$PercentMarried, breaks = 30, main = "Histogram of transformed Percent Married")
+plot(density(cancer2$PercentMarried), main="Density estimate of transformed Percent Married") 
 ```
 # The transformed predictor variables, ie, Incidence Rate and PercentMarried, now have a normal spread and therefore skewness is fixed.
 
