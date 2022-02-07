@@ -309,15 +309,15 @@ spreadLevelPlot(lm(deathRate^(-2)~PctEmployed16_Over, data = cancer2))
 ```
 # Stabilise spread and fix heterscedasticity
 ``` {r something, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-ncvTest(lm(deathRate~incidenceRate), data=cancer2)
-ncvTest(lm(deathRate~Edu18_24), data=cancer2)
+ncvTest(lm(deathRate~incidenceRate, data=cancer2))
+ncvTest(lm(deathRate~Edu18_24, data=cancer2))
 
-spreadLevelPlot(lm(deathRate~incidenceRate))
+spreadLevelPlot(lm(deathRate~incidenceRate, data = cancer2))
 Try power=1.5
-plot(lm(deathRate^(1.5)~incidenceRate))
-spreadLevelPlot(lm(deathRate~Edu18_24))
+plot(lm(deathRate^(1.5)~incidenceRate, , data = cancer2))
+spreadLevelPlot(lm(deathRate~Edu18_24, , data = cancer2))
 Try power= -3
-plot(lm(deathRate^(-3)~Edu18_24),1)
+plot(lm(deathRate^(-3)~Edu18_24, , data = cancer2),1)
 ```
 
 ## Multicolinearity
