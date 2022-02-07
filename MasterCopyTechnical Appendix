@@ -95,8 +95,9 @@ par(mfrow=c(2,1))
 hist(cancer2$Edu18_24, breaks = 30, main = "Histogram of Edu18_24")
 plot(density(cancer2$Edu18_24), main="Density estimate of Edu18_24")
 ```
-# We note that incidence rate shows a severe postive skew. 
-# We need to fix the skewness by considering a possible logarithmic transformation. 
+We note that incidence rate shows a severe postive skew. 
+We need to fix the skewness by considering a possible logarithmic transformation. 
+PercentMarried also shows moderate negative skewness. We can fix this using square transformation for negatively skewed data.
 
 # Transformation
 ```{r transformation}
