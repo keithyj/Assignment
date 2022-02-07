@@ -378,6 +378,10 @@ ggplot(cancer2, aes(medIncome)) + geom_boxplot()
 ggplot(cancer2, aes(MedianAgeMale)) + geom_boxplot()
 ggplot(cancer2, aes(MedianAgeFemale)) + geom_boxplot()
 ggplot(cancer2, aes(binnedInc)) + geom_boxplot()
+ggplot(cancer2, aes(PctBlack)) + geom_boxplot()
+ggplot(cancer2, aes(AvgHouseholdSize)) + geom_boxplot()
+ggplot(cancer2, aes(PctUnemployed16_Over)) + geom_boxplot()
+ggplot(cancer2, aes(PctEmployed16_Over)) + geom_boxplot()
 ```
 ```{r boxplot, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 
