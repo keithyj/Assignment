@@ -1,4 +1,12 @@
 ### Executive Summary (3 bullet points max)
+What are we trying to answer? - How death rate (due to cancer) differ across US counties and possibly relate to different factors such as incidence rate, income, poverty, employment, education, private or public coverage. Also, we attempt to check if death rate varies amongst males, females, Black community and married individuals. 
+Missing values in the dataset found in PctEmployed16_over variable Omitted before statistical analysis carried out. Noted suspicious average household size which was also omitted 
+
+After analysis, Percent Married and Pct Married Households highly correlated and measure the same thing - Suggested to discard PctMarriedHouseholds. Suggested to discard PctPrivateCoverage and PctEmpPrivCoverage due to high correlation with povertyPercent
+medIncome and BinnedIncome also measure the same things and are highly correlated - suggested to discard BinnedIncome??
+
+From EDA, required variables in modelling cancer deathrates in US counties:
+Geography, incidence rate, medincome, povertyPercent, AvgHouseholdsize, PercentMarried, PctEmployed16_Over, PctUnemployed16_over, PctPublicCoverage, PctBlack, Edu18_24.
 
 ### Introduction
 
@@ -24,6 +32,9 @@ The rows should be deleted as our statisitcal model will not rely on geography a
 ******** Skewness
 
 PctBlack is incredibly right skewed as are a number of other distributions. A log transform mostly fixes pctBlack and sqrt transformations of other distribtuions also help with the skew, this, however does noth elp with heteroscedasticity so we might just have to deal with the skew.
+Incidence Rate also has a positive skew due to some extreme values e.g incidenceRate in Union County, Florida (Incidence Rate of 1260 per 100000) - log transformation is needed to fix skewness. 
+povertyPercent is right-skewed. Cube-root transformation to fix skewness.
+
 -- Which variables, if any, have a highly skewed distribution? What transformations might be applied to reduce skewness and stabilize the spread of the observations? (This might be different to transformations required to make the relationship linear/homoscedastic with the dependent variable)
 ******** Outliers
 -- Do any of the variables have outlying values? How should outliers be treated?
