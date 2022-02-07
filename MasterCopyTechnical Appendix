@@ -263,10 +263,10 @@ title(sub="PctPublicCoverage")
 ```
 ```{r residual plots, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 par(mfrow=c(2,2))
-plot(lm(deathRate~incidenceRate),1)
-plot(lm(deathRate~PercentMarried),1)
-plot(lm(deathRate~PctMarriedHouseholds),1)
-plot(lm(deathRate~Edu18_24),1)
+plot(lm(deathRate~incidenceRate, data = cancer2),1)
+plot(lm(deathRate~PercentMarried, data = cancer2),1)
+plot(lm(deathRate~PctMarriedHouseholds, data = cancer2),1)
+plot(lm(deathRate~Edu18_24, data = cancer2),1)
 ```
 # There is possible heteroscedasticity for Incidence Rate and Edu18_24. Can use spreadlevelplot to fix heteroscedasticity.
 
