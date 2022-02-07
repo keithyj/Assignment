@@ -350,7 +350,7 @@ vif(lm(deathRate~incidenceRate+PercentMarried+PctMarriedHouseholds+Edu18_24, dat
 # Therefore, I would suggest that it is best to leave out PctMarriedHouseholds to reduce multicollinearity in the model. 
 
 ## OUTLIERS
-```{r outliers, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+```{r outlier, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 #James
 outlierTest(modIncome)
 outlierTest(modMale)
