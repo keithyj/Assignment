@@ -31,7 +31,7 @@ For MCAR data our easiest solution to deal with it is simply to delete the rows 
 The rows should be deleted as our statisitcal model will not rely on geography and the proportion of rows with missing values is small.
 ******** Skewness
 
-PctBlack is incredibly right skewed as are a number of other distributions. A log transform mostly fixes pctBlack and sqrt transformations of other distribtuions also help with the skew, this, however does noth elp with heteroscedasticity so we might just have to deal with the skew.
+PctBlack is incredibly right skewed as are a number of other distributions. A log transform mostly fixes pctBlack and skewness of other distributions are also fixed using log, sqrt and cube root transformations, this, however might not always help with heteroscedasticity so we might just have to deal with the skew.
 
 Incidence Rate also has a positive skew - log transformation is needed to fix skewness. 
 
