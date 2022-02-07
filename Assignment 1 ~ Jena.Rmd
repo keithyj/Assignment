@@ -41,6 +41,7 @@ plot(density(cancer$Edu18_24), main="Density estimate of Edu18_24")
 ```
 We note that incidence rate shows a severe postive skew. 
 We need to fix the skewness by considering a possible logarithmic transformation. 
+PercentMarried also shows moderate negative skewness. We can fix this using square transformation for negatively skewed data.
 
 # Transformation
 ```{r transformation}
@@ -49,8 +50,11 @@ cancer$incidenceRate <- log(cancer$incidenceRate)
 hist(cancer$incidenceRate, main = "Histogram of Transformed Incidence Rate")
 plot(density(cancer$incidenceRate), main= "Density estimate of Transformed Incidence Rate")
 
+cancer$PercentMarried<- cancer$PercentMarried^(2)
+hist(cancer$PercentMarried, breaks = 30, main = "Histogram of transformed Percent Married")
+plot(density(cancer$PercentMarried), main="Density estimate of transformed Percent Married") 
 ```
-The transformed predictor variable now has a normal spread and therefore the skewness is fixed.
+The transformed predictor variables, ie, Incidence Rate and PercentMarried, now have a normal spread and therefore skewness is fixed.
 
 # Check for Outliers 
 ```{r outliers}
@@ -75,7 +79,6 @@ This might depend on whether the outlier is due to some error (data entry, sampl
 ```{r bivariate analysis}
 library(GGally)
 ggpairs(cancer, columns = c("incidenceRate", "PercentMarried", "PctMarriedHouseholds", "Edu18_24" ,"deathRate"), title = "Multivariate Plots")
-
 ```
 We observe that there is a high correlation of 0.87 between Percent Married and PctMarriedHouseholds. 
 
