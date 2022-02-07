@@ -31,99 +31,34 @@ library(ggplot2)
 library(tidyr)
 ```
 
-## Summary
-
-First lets have a look at a summary of all the data:
-
-```{r summary, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-summary(cancer)
-cancer1 <- cancer
-susPoint <- which(cancer1$AvgHouseholdSize < 0.5)
-cancer1$AvgHouseholdSize[susPoint] <- NA
-cancer2 <- na.omit(cancer1)
-summary(cancer1)
-DF<-cancer[,c(5, 12:14)]
+### LOOKING AT DEATH RATE IN THE USA
+```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+cancer3 <- cancer
+uwu2 <- str_split(cancer3$Geography, pattern = ", ")
+cancer3$state <- rep(0, length(cancer3$Geography))
+for(i in 1:length(cancer3$Geography)){
+  cancer3$state[i] <- uwu2[[i]][2]
+}
+cancer3$county <- rep(0, length(cancer3$Geography))
+for(i in 1:length(cancer3$Geography)){
+  cancer3$county[i] <- uwu2[[i]][1]
+}
+cancer3$county[167] <- "Dona Ana County"
+cancer3$county[821] <- "La Salle Parish"
+cancer3$fips <- rep("0", length(cancer3$Geography))
+for(i in 1:length(cancer3$Geography)){
+  cancer3$fips[i] <- fips(cancer3$state[i], cancer3$county[i])
+}
+deathMap <- subset(cancer3, select = c("fips", "county", "deathRate"))
+plot_usmap(data = deathMap,regions = "counties", values = "deathRate", include = cancer3$fips, color = "red") +
+  scale_fill_continuous(low = "yellow", high = "red", name = "Death Rate", label = scales::comma) +
+  labs(title = "Death rates in the states") +
+  theme(legend.position = "right")
 ```
 
-We notice that there is one categorical variable (binnedInc) and one ID variable (Geography). Geography shouldn't be used as an explanatory variable but could be used as a visual aid.
-
-We also note that PctEmployed16_Over has 152 missing values that should be investigated.
-
-## Univariate Plots:
-
-```{r uni, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-#Alex
-par(mfrow = c(2,2))
-hist(cancer$AvgHouseholdSize)
-hist(cancer$PctEmployed16_Over)
-hist(cancer$PctBlack)
-hist(cancer$PctUnemployed16_Over)
-# We note that PctBlack has very large right skew and will need transforming to fix this.
-# We also note that there are some very suspicious low values in AvgHouseholdSize which are outliers. We create a new dataset containing these suspicious values.
-
-```
-```{r univariate, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-#Remus
-DF %>% gather() %>%
-  ggplot(aes(x = value)) + facet_wrap(~key, scales = "free") +
-  geom_histogram(col = c("blue"), fill = "blue", alpha=0.6)
-# We can see that the three Coverage variables are symmetrical but povertyPercent is right-skewed.
-# A transformation is needed to tackle this skewness.
-```
-
-## Transformation
-Try cube rooting.
-```{r fix skew, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-DF$povertyFIX <- (DF$povertyPercent)^(1/3)
-ggplot(DF, aes(povertyFIX))+geom_density()
-```
+The map above gives a nice illustration of what death rate looks like accross the United States, whites indicate that county was missing from the original dataset.
 
 
-```{r1, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-#James
-par(mfrow = c(2,2))
-hist(cancer2$medIncome)
-hist(cancer2$MedianAgeFemale)
-hist(cancer2$MedianAgeMale)
-#medIncome seem to have a right skew, more skew than any others.
-```
-
-#Jena
-```{r22, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-par(mfrow=c(2,1))
-hist(cancer2$incidenceRate, breaks = 30, main = "Histogram of Incidence Rate")
-plot(density(cancer2$incidenceRate), main= "Density estimate of Incidence Rate") 
-
-par(mfrow=c(2,1))
-hist(cancer2$PercentMarried, breaks = 30, main = "Histogram of Percent Married")
-plot(density(cancer2$PercentMarried), main="Density estimate of Percent Married") 
-
-par(mfrow=c(2,1))
-hist(cancer2$PctMarriedHouseholds, breaks = 30, main = "Histogram of PctMarriedHouseholds")
-plot(density(cancer2$PctMarriedHouseholds), main="Density estimate of PctMarriedHouseholds")
-
-par(mfrow=c(2,1))
-hist(cancer2$Edu18_24, breaks = 30, main = "Histogram of Edu18_24")
-plot(density(cancer2$Edu18_24), main="Density estimate of Edu18_24")
-```
-# We note that incidence rate shows a severe postive skew. 
-# We need to fix the skewness by considering a possible logarithmic transformation. 
-# PercentMarried also shows moderate negative skewness. We can fix this using square transformation for negatively skewed data.
-
-# Transformation
-```{r transformation, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-
-cancer2$incidenceRate <- log(cancer2$incidenceRate)
-hist(cancer2$incidenceRate, main = "Histogram of Transformed Incidence Rate")
-plot(density(cancer2$incidenceRate), main= "Density estimate of Transformed Incidence Rate")
-
-cancer2$PercentMarried<- cancer2$PercentMarried^(2)
-hist(cancer2$PercentMarried, breaks = 30, main = "Histogram of transformed Percent Married")
-plot(density(cancer2$PercentMarried), main="Density estimate of transformed Percent Married") 
-```
-# The transformed predictor variables, ie, Incidence Rate and PercentMarried, now have a normal spread and therefore skewness is fixed.
-
-#NEW SECTION
 ```{r strange, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 sus <- subset(cancer, AvgHouseholdSize < 0.5)
 head(sus)
@@ -138,18 +73,21 @@ sus[1,"AvgHouseholdSize"]
 Reference:
 https://data.census.gov/cedsci/table?q=average%20household%20size&g=0500000US54003&y=2013&tid=ACSST1Y2013.S1101
 
-From the same census data we have that the average household size of this county is 2.61. This indicates the data has been incorrectly inputted into this dataset or the data is missing. Either way, this incorrect data could cause the distribution to be unstable and should be considered as missing.
+From the same census data we have that the average household size of this county is 2.61. This indicates the data has been incorrectly 
+inputted into this dataset or the data is missing. Either way, this incorrect data could cause the distribution to be unstable and should be considered as missing.
 
-```{r NA implement, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+## Summary
+
+First lets have a look at a summary of all the data:
+
+```{r summary, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+summary(cancer)
 cancer1 <- cancer
 susPoint <- which(cancer1$AvgHouseholdSize < 0.5)
 cancer1$AvgHouseholdSize[susPoint] <- NA
-cancer2 <- na.omit(cancer1)
 summary(cancer1)
+DF<-cancer[,c(5, 12:14)]
 ```
-
-
-
 ## Missing Values and Strange Values:
 
 There are now two predictor variables with what we would consider missing or strange values. We have to decide what kind of missing values these are. We can use plots from the VIM package to do this.
@@ -168,18 +106,63 @@ these missing values MCAR and should just omit those rows with missing values as
 cancer2 <- na.omit(cancer1)
 ```
 
+We notice that there is one categorical variable (binnedInc) and one ID variable (Geography). Geography shouldn't be used as an explanatory variable but could be used as a visual aid.
+
+We also note that PctEmployed16_Over has 152 missing values that should be investigated.
+
+## Univariate Plots:
+
+```{r uni, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+#Alex
+par(mfrow = c(2,2))
+hist(cancer$AvgHouseholdSize)
+hist(cancer$PctEmployed16_Over)
+hist(cancer$PctBlack)
+hist(cancer$PctUnemployed16_Over)
+DF %>% gather() %>%
+  ggplot(aes(x = value)) + facet_wrap(~key, scales = "free") +
+  geom_histogram(col = c("blue"), fill = "blue", alpha=0.6)
+hist(cancer2$medIncome)
+hist(cancer2$MedianAgeFemale)
+hist(cancer2$MedianAgeMale)
+par(mfrow=c(2,1))
+hist(cancer2$incidenceRate, breaks = 30, main = "Histogram of Incidence Rate")
+plot(density(cancer2$incidenceRate), main= "Density estimate of Incidence Rate") 
+
+par(mfrow=c(2,1))
+hist(cancer2$PercentMarried, breaks = 30, main = "Histogram of Percent Married")
+plot(density(cancer2$PercentMarried), main="Density estimate of Percent Married") 
+
+par(mfrow=c(2,1))
+hist(cancer2$PctMarriedHouseholds, breaks = 30, main = "Histogram of PctMarriedHouseholds")
+plot(density(cancer2$PctMarriedHouseholds), main="Density estimate of PctMarriedHouseholds")
+
+par(mfrow=c(2,1))
+hist(cancer2$Edu18_24, breaks = 30, main = "Histogram of Edu18_24")
+plot(density(cancer2$Edu18_24), main="Density estimate of Edu18_24")
+# We note that incidence rate shows a severe postive skew. 
+# We need to fix the skewness by considering a possible logarithmic transformation. 
+# PercentMarried also shows moderate negative skewness. We can fix this using square transformation for negatively skewed data.
+
+#medIncome seem to have a right skew, more skew than any others.
+# We note that PctBlack has very large right skew and will need transforming to fix this.
+# We also note that there are some very suspicious low values in AvgHouseholdSize which are outliers. We create a new dataset containing these suspicious values.
+# We can see that the three Coverage variables are symmetrical but povertyPercent is right-skewed.
+# A transformation is needed to tackle this skewness.
+
+```
+
 ## Comparing Predictors and Response
 
 ```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-#MIGHT WANT TO MAKE THIS SO ALL ARE VARIABLES ARE INCLUDED IN THIS ONE BIT
-ggpairs(cancer2, columns = c(8,10,11,15,18), mapping = aes(alpha = 0.6),
+#NEED TO LOOK AT WHICH OTHER VARIABLES HAVE A CORRELATION
+ggpairs(cancer2, columns = c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19), mapping = aes(alpha = 0.6),
         upper = list(continuous=wrap("cor", size=2.5, digits=2, stars=FALSE)),
         lower = list(continuous=wrap("points", size = 0.5)),
         diag = list(continuous="densityDiag"),
         progress = FALSE) +
   theme(text=element_text(size=6))
   
-#The following relates to more than what is currently above^
 #medIncome is right skewed, can do a transformation on this
 #MedianAgeFemale and MedianAgeMale are heavily positively correlated
 #No clue what is happening with the binned income might be worth doing this plot without binned income and doing that as a seperate thing to then do the correlaiton as it is hard to see the intervals
@@ -202,28 +185,57 @@ plot(deathRate~AvgHouseholdSize, data = cancer2)
 plot(deathRate~PctEmployed16_Over, data = cancer2)
 plot(deathRate~PctUnemployed16_Over, data = cancer2)
 plot(deathRate~PctBlack, data = cancer2)
+plot(deathRate~medIncome, data = cancer2)
+plot(deathRate~MedianAgeFemale, data = cancer2)
+plot(deathRate~MedianAgeMale, data = cancer2)
+plot(deathRate~povertyPercent, data = cancer2)
+plot(deathRate~PctPrivateCoverage, data = cancer2)
+plot(deathRate~PctEmpPrivCoverage, data = cancer2)
+plot(deathRate~PctPublicCoverage, data = cancer2)
+plot(deathRate~incidenceRate, data = cancer2)
+plot(deathRate~PercentMarried, data = cancer2)
+plot(deathRate~PctMarriedHouseholds, data = cancer2)
+plot(deathRate~Edu18_24, data = cancer2)
+
 ```
 
-PctBlack is incredibly right skewed, we can try a log transformation to fix it. 
+## Transformation in Skew
+```{r fix skew, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+# Try cube rooting for poverty.
+DF$povertyFIX <- (DF$povertyPercent)^(1/3)
+ggplot(DF, aes(povertyFIX))+geom_density()
+```
 
 ```{r Fixing Black, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+# PctBlack is incredibly right skewed, we can try a log transformation to fix it. 
 cancer2$blackFix <- log(cancer2$PctBlack)
 ggplot(cancer2, aes(blackFix)) + geom_density()
 ```
 
-PctUnemployed16_Over is also slightly right skewed. We can try a square root transformation to fix this.
-
 ```{r Fix Unemployment, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+# PctUnemployed16_Over is also slightly right skewed. We can try a square root transformation to fix this.
 cancer2$UnempFix <- sqrt(cancer2$PctUnemployed16_Over)
 ggplot(cancer2, aes(UnempFix)) + geom_density()
 ```
 
-Average household size maybe needs fixing
-
 ```{r Size Fix, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+# Average household size maybe needs fixing
 cancer2$Avgfix <- log(cancer2$AvgHouseholdSize)
 ggplot(cancer2, aes(Avgfix)) + geom_density()
 ```
+
+```{r transformation, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+# Try fixing incidence rate and percent married
+cancer2$incidenceRate <- log(cancer2$incidenceRate)
+hist(cancer2$incidenceRate, main = "Histogram of Transformed Incidence Rate")
+plot(density(cancer2$incidenceRate), main= "Density estimate of Transformed Incidence Rate")
+
+cancer2$PercentMarried<- cancer2$PercentMarried^(2)
+hist(cancer2$PercentMarried, breaks = 30, main = "Histogram of transformed Percent Married")
+plot(density(cancer2$PercentMarried), main="Density estimate of transformed Percent Married")
+# The transformed predictor variables, ie, Incidence Rate and PercentMarried, now have a normal spread and therefore skewness is fixed.
+```
+
 
 We have evidence of multicolinearity between Unemployment and Employment.
 
@@ -267,9 +279,8 @@ plot(lm(deathRate~incidenceRate, data = cancer2),1)
 plot(lm(deathRate~PercentMarried, data = cancer2),1)
 plot(lm(deathRate~PctMarriedHouseholds, data = cancer2),1)
 plot(lm(deathRate~Edu18_24, data = cancer2),1)
-```
 # There is possible heteroscedasticity for Incidence Rate and Edu18_24. Can use spreadlevelplot to fix heteroscedasticity.
-
+```
 
 ## TESTING HETEROSCEDACITY
 ```{r Spread Level, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
@@ -282,8 +293,16 @@ spreadLevelPlot(lm(deathRate~PctEmpPrivCoverage, data = cancer2))
 ncvTest(lm(deathRate~medIncome, data = cancer2))
 spreadLevelPlot(lm(deathRate~medIncome, data = cancer2))
 
+ncvTest(lm(deathRate~PctEmployed16_Over, data = cancer2))
+spreadLevelPlot(lm(deathRate~PctEmployed16_Over, data = cancer2))
+
+ncvTest(lm(deathRate~incidenceRate, data=cancer2))
+spreadLevelPlot(lm(deathRate~incidenceRate, data = cancer2))
+
+ncvTest(lm(deathRate~Edu18_24, data=cancer2))
+spreadLevelPlot(lm(deathRate~Edu18_24, data = cancer2))
 ```
-## FIXING HETEROSCEDACITYIT
+## FIXING HETEROSCEDASCITY
 
 ```{r hetroscedascity fix, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 # Try power=5
@@ -301,28 +320,22 @@ spreadLevelPlot(lm(deathRate^3~PctBlack, data = cancer2))
 
 # There is also some heteroscedasticity present for employed 16 or over.
 
-ncvTest(lm(deathRate~PctEmployed16_Over, data = cancer2))
-spreadLevelPlot(lm(deathRate~PctEmployed16_Over, data = cancer2))
-# Fix
+
+# Fixing employed over 16
 plot(lm(deathRate^(-2)~PctEmployed16_Over, data = cancer2), 1)
 spreadLevelPlot(lm(deathRate^(-2)~PctEmployed16_Over, data = cancer2))
 ```
-# Stabilise spread and fix heterscedasticity
-``` {r something, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-ncvTest(lm(deathRate~incidenceRate, data=cancer2))
-ncvTest(lm(deathRate~Edu18_24, data=cancer2))
 
-spreadLevelPlot(lm(deathRate~incidenceRate, data = cancer2))
+``` {r something, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+# Stabilise spread and fix heterscedasticity
 #Try power=1.5
 plot(lm(deathRate^(1.5)~incidenceRate, , data = cancer2))
-spreadLevelPlot(lm(deathRate~Edu18_24, , data = cancer2))
 #Try power= -3
 plot(lm(deathRate^(-3)~Edu18_24, , data = cancer2),1)
 ```
 
 ## Multicolinearity
 
-We have high correlation between employed 16 and over and unemployed 16 and over. We will test to see if both are necessary.
 
 ```{r Multi, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 # We have high correlation between employed 16 and over and unemployed 16 and over. We will test to see if both are necessary.
@@ -343,37 +356,43 @@ vif(lm(deathRate~binnedInc + medIncome, data = cancer2))
 vif(lm(deathRate~incidenceRate+PercentMarried+Edu18_24, data=cancer2))
 
 vif(lm(deathRate~incidenceRate+PercentMarried+PctMarriedHouseholds+Edu18_24, data=cancer2))
-```
+
 
 # PercentMarried and PctMarriedHouseholds are clearly highly correlated. 
 
 # Therefore, I would suggest that it is best to leave out PctMarriedHouseholds to reduce multicollinearity in the model. 
+```
+```{r Binned Check, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+vif(lm(deathRate~binnedInc + medIncome, data = cancer2))
+# Highly correlated, best to leave out binnedIncome
+vif(lm(deathRate~MedianAgeMale + MedianAgeFemale, data = cancer2))
+# Highly correlated, best to take an average and have just one variable as MedianAge
+```
+
 
 ## OUTLIERS
+First we use box-plots to see if there are any suspicous value.
 ```{r outlier, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 #James
-outlierTest(modIncome)
-outlierTest(modMale)
-outlierTest(modFemale)
-outlierTest(modbinnedInc)
+ggplot(cancer2, aes(modIncome)) + geom_boxplot()
+ggplot(cancer2, aes(modMale)) + geom_boxplot()
+ggplot(cancer2, aes(modFemale)) + geom_boxplot()
+ggplot(cancer2, aes(modbinnedInc)) + geom_boxplot()
 ```
-First we use box-plots to see if there are any suspicous value.
-
 ```{r boxplot, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-#Remus
-cancer2 %>% gather() %>%
+
+DF %>% gather() %>%
   ggplot(aes(x = value)) + facet_wrap(~key, scales = "free") +
   geom_boxplot(shape=1, alpha=0.3)
 # From the box-plots, all four variables have a quite a big number of extreme values. We need further investigations.
 ```
 
-#Jena
+
 ```{r outliers, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 ggplot(cancer2, aes(incidenceRate)) + geom_boxplot()
 ggplot(cancer2, aes(PercentMarried)) + geom_boxplot()
 ggplot(cancer2,aes(PctMarriedHouseholds)) + geom_boxplot()
 ggplot(cancer2, aes(Edu18_24)) + geom_boxplot()
-```
 
 # We observe that the  outliers are present for all predictor variables. 
 
@@ -384,37 +403,5 @@ ggplot(cancer2, aes(Edu18_24)) + geom_boxplot()
 # Possible options include deleting the outliers or imputing them. 
 
 # This might depend on whether the outlier is due to some error (data entry, sampling, measurement) or whether the outlier is natural. 
-
-
-### LOOKING AT DEATH RATE IN THE USA
-```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-cancer3 <- cancer
-uwu2 <- str_split(cancer3$Geography, pattern = ", ")
-cancer3$state <- rep(0, length(cancer3$Geography))
-for(i in 1:length(cancer3$Geography)){
-  cancer3$state[i] <- uwu2[[i]][2]
-}
-cancer3$county <- rep(0, length(cancer3$Geography))
-for(i in 1:length(cancer3$Geography)){
-  cancer3$county[i] <- uwu2[[i]][1]
-}
-cancer3$county[167] <- "Dona Ana County"
-cancer3$county[821] <- "La Salle Parish"
-cancer3$fips <- rep("0", length(cancer3$Geography))
-for(i in 1:length(cancer3$Geography)){
-  cancer3$fips[i] <- fips(cancer3$state[i], cancer3$county[i])
-}
-deathMap <- subset(cancer3, select = c("fips", "county", "deathRate"))
-plot_usmap(data = deathMap,regions = "counties", values = "deathRate", include = cancer3$fips, color = "red") +
-  scale_fill_continuous(low = "yellow", high = "red", name = "Death Rate", label = scales::comma) +
-  labs(title = "Death rates in the states") +
-  theme(legend.position = "right")
 ```
 
-The map above gives a nice illustration of what death rate looks like accross the United States, whites indicate that county was missing from the original dataset.
-
-My recommendations for fixing would be apply the above transforms to fix skew, also remove the suspect and missing data as well to make sure our data isn't unstable.
-
-```{r Binned Check, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-vif(lm(deathRate~binnedInc + medIncome, data = cancer2))
-```
