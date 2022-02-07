@@ -95,9 +95,9 @@ par(mfrow=c(2,1))
 hist(cancer2$Edu18_24, breaks = 30, main = "Histogram of Edu18_24")
 plot(density(cancer2$Edu18_24), main="Density estimate of Edu18_24")
 ```
-We note that incidence rate shows a severe postive skew. 
-We need to fix the skewness by considering a possible logarithmic transformation. 
-PercentMarried also shows moderate negative skewness. We can fix this using square transformation for negatively skewed data.
+# We note that incidence rate shows a severe postive skew. 
+# We need to fix the skewness by considering a possible logarithmic transformation. 
+# PercentMarried also shows moderate negative skewness. We can fix this using square transformation for negatively skewed data.
 
 # Transformation
 ```{r transformation}
@@ -106,8 +106,11 @@ cance2r$incidenceRate <- log(cancer2$incidenceRate)
 hist(cancer2$incidenceRate, main = "Histogram of Transformed Incidence Rate")
 plot(density(cancer2$incidenceRate), main= "Density estimate of Transformed Incidence Rate")
 
+cancer$PercentMarried<- cancer$PercentMarried^(2)
+hist(cancer$PercentMarried, breaks = 30, main = "Histogram of transformed Percent Married")
+plot(density(cancer$PercentMarried), main="Density estimate of transformed Percent Married") 
 ```
-# The transformed predictor variable now has a normal spread and therefore the skewness is fixed.
+# The transformed predictor variables, ie, Incidence Rate and PercentMarried, now have a normal spread and therefore skewness is fixed.
 
 #NEW SECTION
 ```{r strange}
