@@ -1,0 +1,75 @@
+---
+title: "Correlation"
+author: "Remus"
+date: "2022/2/7"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Correlation
+
+Focus on 1) correlations between response variable and predictor variable (checking linearity)
+         2) correlations between predictor variables (multicollinearity)
+         
+## Loading data and packages
+
+```{r Loading, message = FALSE}
+load("cancer.RData")
+load("cancer2.RData")
+library(dplyr)
+library(GGally) 
+library(ggplot2)
+library(tidyr)  
+
+```
+
+## Using Alex's cancer2 (removed missing or incorrect values)
+```{r cancer2}
+cancer1 <- cancer
+susPoint <- which(cancer1$AvgHouseholdSize < 0.5)
+cancer1$AvgHouseholdSize[susPoint] <- NA
+cancer2 <- na.omit(cancer1)
+```
+
+## Linearity
+
+First we plot the response variable (deathRate) against every predictor variable.
+
+```{r Linearity, echo=FALSE}
+cancer2 %>% gather(-deathRate,-Geography,-binnedInc, key="predictor", value="value") %>%
+  ggplot(aes(x = value, y=deathRate)) + facet_wrap(~predictor, scales = "free") +
+  geom_point(size=0.35)
+```
+
+From the plots, we can see that most variables have a linear trend. (Use PctEmployed16_Over as an example?)
+AvgHouseholdsize, MedianAgeFemale, MedianAgeMale, PctBlack and medIncome do not show clear linearity.
+In particular, medIncome shows a exponential distribution and PctBlack does not show a relationship at all.
+Therefore, PctBlack and medIncome need transformations.
+
+```{r medIncome,echo=FALSE}
+ggplot(cancer2,aes(x=medIncome, y=deathRate))+
+  geom_point(size=0.8)
+```
+```{r PctBlack,echo=FALSE}
+ggplot(cancer2,aes(x=PctBlack, y=deathRate))+
+  geom_point(size=0.8)
+```
+
+## Correlation between predictor variables
+
+First we plot the correlation matrix.
+Don't know how to shift the labels.
+```{r Correlation matrix, echo=FALSE}
+ggcorr(cancer2[,-c(1,4)], label=TRUE,size = 2)
+```
+
+We can also see the scatter plots between the predictor variables.
+```{r Correlation scatter,echo=FALSE}
+ggpairs(cancer2[,-c(1,4)],
+        upper = list(continuous = wrap("cor", size = 3)),
+        lower = list(continuous = wrap("points", alpha = 0.3, size=0.01)))
+```
+
