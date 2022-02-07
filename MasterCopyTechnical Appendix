@@ -313,10 +313,10 @@ ncvTest(lm(deathRate~incidenceRate, data=cancer2))
 ncvTest(lm(deathRate~Edu18_24, data=cancer2))
 
 spreadLevelPlot(lm(deathRate~incidenceRate, data = cancer2))
-Try power=1.5
+#Try power=1.5
 plot(lm(deathRate^(1.5)~incidenceRate, , data = cancer2))
 spreadLevelPlot(lm(deathRate~Edu18_24, , data = cancer2))
-Try power= -3
+#Try power= -3
 plot(lm(deathRate^(-3)~Edu18_24, , data = cancer2),1)
 ```
 
