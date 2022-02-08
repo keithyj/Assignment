@@ -34,7 +34,16 @@ library(tidyr)
 library(dlookr)
 ```
 
-### LOOKING AT DEATH RATE IN THE USA
+## Executive Summary
+
+
+## Key Findings
+
+
+## Statistical Methodology
+
+
+### 1. LOOKING AT DEATH RATE IN THE USA
 ```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 cancer3 <- cancer
 uwu2 <- str_split(cancer3$Geography, pattern = ", ")
@@ -79,7 +88,7 @@ https://data.census.gov/cedsci/table?q=average%20household%20size&g=0500000US540
 From the same census data we have that the average household size of this county is 2.61. This indicates the data has been incorrectly 
 inputted into this dataset or the data is missing. Either way, this incorrect data could cause the distribution to be unstable and should be considered as missing.
 
-## Summary
+## 2. Summary
 
 First lets have a look at a summary of all the data:
 
@@ -150,7 +159,7 @@ We notice that there is one categorical variable (binnedInc) and one ID variable
 
 We also note that PctEmployed16_Over has 152 missing values that should be investigated.
 
-## Univariate Plots:
+## 3. Univariate Plots:
 
 ```{r uni, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 #Alex
@@ -192,7 +201,7 @@ plot(density(cancer2$Edu18_24), main="Density estimate of Edu18_24")
 
 ```
 
-## Comparing Predictors and Response
+## 4. Comparing Predictors and Response
 
 ```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 #NEED TO LOOK AT WHICH OTHER VARIABLES HAVE A CORRELATION
@@ -243,7 +252,7 @@ plot(deathRate~Edu18_24, data = cancer2)
 
 ```
 
-## Transformation in Skew
+## 5. Transformation in Skew
 ```{r fix skew, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 # Try cube rooting for poverty.
 DF$povertyFIX <- (DF$povertyPercent)^(1/3)
@@ -289,7 +298,7 @@ plot(density(cancer2$PercentMarried), main="Density estimate of transformed Perc
 
 We have evidence of multicolinearity between Unemployment and Employment.
 
-## HETEROSCEDASTICITY
+## 6. HETEROSCEDASTICITY
 
 ```{r Residual Plots, echo = FALSE, fig.cap = "\\label{fig:figs}Residual Plots", eval = TRUE, warning = FALSE, message = FALSE}
 par(mfrow = c(2,2))
@@ -332,7 +341,7 @@ plot(lm(deathRate~Edu18_24, data = cancer2),1)
 # There is possible heteroscedasticity for Incidence Rate and Edu18_24. Can use spreadlevelplot to fix heteroscedasticity.
 ```
 
-## TESTING HETEROSCEDACITY
+## 7. TESTING HETEROSCEDACITY
 ```{r Spread Level, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 spreadLevelPlot(lm(deathRate~PctBlack, data = cancer2))
 ncvTest(lm(deathRate~PctBlack, data = cancer2))
@@ -353,7 +362,7 @@ ncvTest(lm(deathRate~Edu18_24, data=cancer2))
 spreadLevelPlot(lm(deathRate~Edu18_24, data = cancer2))
 
 ```
-## FIXING HETEROSCEDASCITY
+## 8. FIXING HETEROSCEDASCITY
 
 ```{r hetroscedascity fix, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 # Try power=5
@@ -385,7 +394,7 @@ plot(lm(deathRate^(1.5)~incidenceRate, , data = cancer2))
 plot(lm(deathRate^(-3)~Edu18_24, , data = cancer2),1)
 ```
 
-## Multicolinearity
+## 9. Multicolinearity
 
 
 ```{r Multi, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
@@ -421,7 +430,7 @@ vif(lm(deathRate~MedianAgeMale + MedianAgeFemale, data = cancer2))
 ```
 
 
-## OUTLIERS
+## 10. OUTLIERS
 First we use box-plots to see if there are any suspicous value.
 ```{r outlier, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 ggplot(cancer2, aes(medIncome)) + geom_boxplot()
