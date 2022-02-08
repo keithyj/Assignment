@@ -72,4 +72,41 @@ ggpairs(cancer2[,-c(1,4)],
         upper = list(continuous = wrap("cor", size = 3)),
         lower = list(continuous = wrap("points", alpha = 0.3, size=0.01)))
 ```
+We have the following pairs/clusters of highly correlated(greater than 0.7) 
+predictor variables.
+
+1) medIncome with
+  povertyPercent, PctEmployed_Over16, PctPrivateCoverage, PctEmpPrivCoverage, PctPublicCoverage
+  
+medIncome and povertyPercent are measuring very similar things.
+Higher median income means people are likely to afford private healthcare, and
+do not require public heathcare.
+
+Note that medIncome is highly correlated with PctEmployed_Over16 (0.7) but
+not with PctUnemployed_Over16 (-0.5)
+
+2) povertyPercent with 
+  PctUnemployed_Over16, PctEmployed_Over16, PctPrivateCoverage, PctEmpPrivCoverage, PctPublicCoverage
+
+Similar to medIncome. But we can see povertyPercent is highly correlated to PctUnemployed_Over16,
+while medIncome does not.
+  
+3) MedianAgeMale with
+  MedianAgeFemale
+  
+4) PercentMarried with
+  PctMarriedHouseholds
+
+These two pairs are each measuring almost the exact same thing.
+  
+6) PctEmployed16_Over with 
+   PctPrivateCoverage, PctEmpPrivCoverage, PctPublicCoverage
+
+A higher employment means they probably get private healthcare from their companies.
+Simikar reasons to medIncome.
+   
+7) PctPrivateCoverage with
+  PctEmpPrivCoverage, PctPublicCoverage
+  
+Healthcare coverage variables are measuring similar thing,
 
