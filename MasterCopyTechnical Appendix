@@ -143,6 +143,8 @@ plot_correlate(cancer2)
 
 Below we have some plots of our variables against death rate:
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ```{r Plot Death, echo = FALSE, fig.cap = "\\label{fig:figs}Predictors vs Death Plots", eval = TRUE, warning = FALSE, message = FALSE}
 par(mfrow = c(2,2))
 plot(deathRate~AvgHouseholdSize, data = cancer2)
@@ -162,6 +164,8 @@ plot(deathRate~PctMarriedHouseholds, data = cancer2)
 plot(deathRate~Edu18_24, data = cancer2)
 
 ```
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ### Univariate Plots:
 
@@ -204,7 +208,8 @@ plot(density(cancer2$Edu18_24), main="Density estimate of Edu18_24")
 # A transformation is needed to tackle this skewness.
 ```
 ### HETEROSCEDASTICITY
-
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ```{r Residual Plots, echo = FALSE, fig.cap = "\\label{fig:figs}Residual Plots", eval = TRUE, warning = FALSE, message = FALSE}
 par(mfrow = c(2,2))
 plot(lm(deathRate~AvgHouseholdSize, data = cancer2), 1)
@@ -245,6 +250,11 @@ plot(lm(deathRate~PctMarriedHouseholds, data = cancer2),1)
 plot(lm(deathRate~Edu18_24, data = cancer2),1)
 # There is possible heteroscedasticity for Incidence Rate and Edu18_24. Can use spreadlevelplot to fix heteroscedasticity.
 ```
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ### TESTING HETEROSCEDACITY
 ```{r Spread Level, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 spreadLevelPlot(lm(deathRate~PctBlack, data = cancer2))
@@ -264,11 +274,14 @@ spreadLevelPlot(lm(deathRate~incidenceRate, data = cancer2))
 
 ncvTest(lm(deathRate~Edu18_24, data=cancer2))
 spreadLevelPlot(lm(deathRate~Edu18_24, data = cancer2))
-
 ```
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 ### Multicolinearity
 
-
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ```{r Multi, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 # We have high correlation between employed 16 and over and unemployed 16 and over. We will test to see if both are necessary.
 
@@ -300,6 +313,11 @@ vif(lm(deathRate~binnedInc + medIncome, data = cancer2))
 vif(lm(deathRate~MedianAgeMale + MedianAgeFemale, data = cancer2))
 # Highly correlated, best to take an average and have just one variable as MedianAge
 ```
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
 ### OUTLIERS
 First we use box-plots to see if there are any suspicous value.
 ```{r outlier, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
@@ -384,7 +402,8 @@ plot(density(cancer2$PercentMarried), main="Density estimate of transformed Perc
 We have evidence of multicolinearity between Unemployment and Employment.
 
 ### FIXING HETEROSCEDASCITY
-
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ```{r hetroscedascity fix, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 # Try power=5
 plot(lm(deathRate^(5)~PctEmpPrivCoverage, data = cancer2),1)
@@ -406,7 +425,6 @@ spreadLevelPlot(lm(deathRate^3~PctBlack, data = cancer2))
 plot(lm(deathRate^(-2)~PctEmployed16_Over, data = cancer2), 1)
 spreadLevelPlot(lm(deathRate^(-2)~PctEmployed16_Over, data = cancer2))
 ```
-
 ``` {r something, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 # Stabilise spread and fix heterscedasticity
 #Try power=1.5
@@ -414,6 +432,8 @@ plot(lm(deathRate^(1.5)~incidenceRate, , data = cancer2))
 #Try power= -3
 plot(lm(deathRate^(-3)~Edu18_24, , data = cancer2),1)
 ```
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 
