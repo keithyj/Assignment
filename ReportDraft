@@ -1,5 +1,5 @@
 ### Executive Summary (3 bullet points max)
-What are we trying to answer? - How death rate (due to cancer) differ across US counties and possibly relate to different factors such as incidence rate, income, poverty, employment, education, private or public coverage. Also, we attempt to check if death rate varies amongst males, females, Black community and married individuals. 
+ 
 Missing values in the dataset found in PctEmployed16_over variable Omitted before statistical analysis carried out. Noted suspicious average household size which was also omitted 
 
 After analysis, Percent Married and Pct Married Households highly correlated and measure the same thing - Suggested to discard PctMarriedHouseholds. Suggested to discard PctPrivateCoverage and PctEmpPrivCoverage due to high correlation with povertyPercent
@@ -9,9 +9,10 @@ From EDA, required variables in modelling cancer deathrates in US counties:
 Geography, incidence rate, medincome, povertyPercent, AvgHouseholdsize, PercentMarried, PctEmployed16_Over, PctUnemployed16_over, PctPublicCoverage, PctBlack, Edu18_24.
 
 ### Introduction
-
+What are we trying to answer? - How death rate (due to cancer) differ across US counties and possibly relate to different factors such as incidence rate, income, poverty, employment, education, private or public coverage. Also, we attempt to check if death rate varies amongst males, females, Black community and married individuals.
 ### Findings (2 pages max)
-**** Which variables show a strong relationship with the outcome variable? ◦ Can the relationship be characterized as a linear?
+**** Which variables show a strong relationship with the outcome variable? 
+◦ Can the relationship be characterized as a linear?
 ◦ Does the relationship appear to be homoscedastic?
 ◦ Are any transformations, required? If so which ones?
 
@@ -87,13 +88,6 @@ to fit a linear model?
 
 ### References - Ideally put it in the form which we can make into a bib file immediately: 
 i.e 
-@AUSTravelBan{AUSTravelBan,
-    author = {Worthington, Brett },
-    title = {Coronavirus pandemic fears prompt Government to activate emergency response and extend travel ban},
-    publisher = {ABC News},
-    url={https://www.abc.net.au/news/2020-02-27/federal-government-coronavirus-pandemic-emergency-plan/12005734},
-    year = {2020},
-  }
 
 @HouseHoldDataBerekelyCounty{HouseHoldDataBerekelyCounty,
     author = {United States Census Bureau },
