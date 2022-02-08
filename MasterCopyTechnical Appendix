@@ -150,34 +150,10 @@ plot_correlate(cancer2)
 
 Below we have some plots of our variables against death rate:
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-```{r Plot Death, echo = FALSE, fig.cap = "\\label{fig:figs}Predictors vs Death Plots", eval = TRUE, warning = FALSE, message = FALSE}
-par(mfrow = c(2,2))
-plot(deathRate~AvgHouseholdSize, data = cancer2)
-plot(deathRate~PctEmployed16_Over, data = cancer2)
-plot(deathRate~PctUnemployed16_Over, data = cancer2)
-plot(deathRate~PctBlack, data = cancer2)
-plot(deathRate~medIncome, data = cancer2)
-plot(deathRate~MedianAgeFemale, data = cancer2)
-plot(deathRate~MedianAgeMale, data = cancer2)
-plot(deathRate~povertyPercent, data = cancer2)
-plot(deathRate~PctPrivateCoverage, data = cancer2)
-plot(deathRate~PctEmpPrivCoverage, data = cancer2)
-plot(deathRate~PctPublicCoverage, data = cancer2)
-plot(deathRate~incidenceRate, data = cancer2)
-plot(deathRate~PercentMarried, data = cancer2)
-plot(deathRate~PctMarriedHouseholds, data = cancer2)
-plot(deathRate~Edu18_24, data = cancer2)
-
-```
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ### Univariate Plots:
 
 ```{r uni, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-#Alex
 par(mfrow = c(2,2))
 hist(cancer$AvgHouseholdSize)
 hist(cancer$PctEmployed16_Over)
@@ -215,114 +191,11 @@ plot(density(cancer2$Edu18_24), main="Density estimate of Edu18_24")
 # A transformation is needed to tackle this skewness.
 ```
 ### HETEROSCEDASTICITY
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-```{r Residual Plots, echo = FALSE, fig.cap = "\\label{fig:figs}Residual Plots", eval = TRUE, warning = FALSE, message = FALSE}
-par(mfrow = c(2,2))
-plot(lm(deathRate~AvgHouseholdSize, data = cancer2), 1)
-plot(lm(deathRate~PctUnemployed16_Over, data = cancer2), 1)
-plot(lm(deathRate~PctEmployed16_Over, data = cancer2), 1)
-plot(lm(deathRate~PctBlack, data = cancer2), 1)
-# We have evidence of a lot of heteroscedasticity for PctBlack, we can use a spread level plot for a suggested transformation
 
-modIncome <- lm(deathRate~medIncome, data = cancer2)
-modMale <- lm(deathRate~MedianAgeMale, data = cancer2)
-modFemale <- lm(deathRate~MedianAgeFemale, data = cancer2)
-modbinnedInc <- lm(deathRate~binnedInc, data = cancer2)
-par(mfrow = c(2,2))
-plot(modIncome, 1)
-plot(modMale, 1)
-plot(modFemale, 1)
-plot(modbinnedInc, 1)
-# Potential heteroscedasicity for medIncome, no signs for the others.
-# Need to deal with heteroscaedscatic, use a spread level plot
-
-
-par(mfrow=c(2,2))
-plot(lm(deathRate~povertyPercent, data = cancer2), 1)
-title(sub="PovertyPercent")
-plot(lm(deathRate~PctPrivateCoverage, data = cancer2), 1)
-title(sub="PctPrivateCoverage")
-plot(lm(deathRate~PctEmpPrivCoverage, data = cancer2), 1)
-title(sub="PctEmpPrivCoverage")
-plot(lm(deathRate~PctPublicCoverage, data = cancer2), 1)
-title(sub="PctPublicCoverage")
-# There is potential heteroscedascity in PctEmpPrivCoverage
-```
-```{r residual plots, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-par(mfrow=c(2,2))
-plot(lm(deathRate~incidenceRate, data = cancer2),1)
-plot(lm(deathRate~PercentMarried, data = cancer2),1)
-plot(lm(deathRate~PctMarriedHouseholds, data = cancer2),1)
-plot(lm(deathRate~Edu18_24, data = cancer2),1)
-# There is possible heteroscedasticity for Incidence Rate and Edu18_24. Can use spreadlevelplot to fix heteroscedasticity.
-```
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ### TESTING HETEROSCEDACITY
-```{r Spread Level, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-spreadLevelPlot(lm(deathRate~PctBlack, data = cancer2))
-ncvTest(lm(deathRate~PctBlack, data = cancer2))
 
-ncvTest(lm(deathRate~PctEmpPrivCoverage, data = cancer2))
-spreadLevelPlot(lm(deathRate~PctEmpPrivCoverage, data = cancer2))
-
-ncvTest(lm(deathRate~medIncome, data = cancer2))
-spreadLevelPlot(lm(deathRate~medIncome, data = cancer2))
-
-ncvTest(lm(deathRate~PctEmployed16_Over, data = cancer2))
-spreadLevelPlot(lm(deathRate~PctEmployed16_Over, data = cancer2))
-
-ncvTest(lm(deathRate~incidenceRate, data=cancer2))
-spreadLevelPlot(lm(deathRate~incidenceRate, data = cancer2))
-
-ncvTest(lm(deathRate~Edu18_24, data=cancer2))
-spreadLevelPlot(lm(deathRate~Edu18_24, data = cancer2))
-```
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ### Multicolinearity
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-```{r Multi, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-# We have high correlation between employed 16 and over and unemployed 16 and over. We will test to see if both are necessary.
-
-vif(lm(deathRate~PctEmployed16_Over + PctUnemployed16_Over, data = cancer2))
-
-# Variance inflation factors are low though, so we could potentially use both as they aren't measuring the exact same thing.
-
-vif(lm(deathRate~PctPrivateCoverage+PctEmpPrivCoverage+ PctPublicCoverage, data = cancer2))
-vif(lm(deathRate~PctPrivateCoverage+PctEmpPrivCoverage+ PctPublicCoverage+ povertyPercent, data = cancer2))
-# Although VIF are not very big,the three healthcare coverage variables are clearly correlated.
-# I would discard PctPrivateCoverage and PctEmpPrivCoverage in fitting a model.
-# I leave PctPublicCoverage because it is the least correlated variable with povertyPercent among the healthcare coverage variables.
-vif(lm(deathRate~binnedInc + medIncome, data = cancer2))
-```
-
-```{r multicollinearity, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-vif(lm(deathRate~incidenceRate+PercentMarried+Edu18_24, data=cancer2))
-
-vif(lm(deathRate~incidenceRate+PercentMarried+PctMarriedHouseholds+Edu18_24, data=cancer2))
-
-
-# PercentMarried and PctMarriedHouseholds are clearly highly correlated. 
-
-# Therefore, I would suggest that it is best to leave out PctMarriedHouseholds to reduce multicollinearity in the model. 
-```
-```{r Binned Check, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-vif(lm(deathRate~binnedInc + medIncome, data = cancer2))
-# Highly correlated, best to leave out binnedIncome
-vif(lm(deathRate~MedianAgeMale + MedianAgeFemale, data = cancer2))
-# Highly correlated, best to take an average and have just one variable as MedianAge
-```
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
 
 ### OUTLIERS
@@ -409,6 +282,172 @@ plot(density(cancer2$PercentMarried), main="Density estimate of transformed Perc
 We have evidence of multicolinearity between Unemployment and Employment.
 
 ### FIXING HETEROSCEDASCITY
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+```{r Plot Death, echo = FALSE, fig.cap = "\\label{fig:figs}Predictors vs Death Plots", eval = TRUE, warning = FALSE, message = FALSE}
+par(mfrow = c(2,2))
+plot(deathRate~AvgHouseholdSize, data = cancer2)
+plot(deathRate~PctEmployed16_Over, data = cancer2)
+plot(deathRate~PctUnemployed16_Over, data = cancer2)
+plot(deathRate~PctBlack, data = cancer2)
+plot(deathRate~medIncome, data = cancer2)
+plot(deathRate~MedianAgeFemale, data = cancer2)
+plot(deathRate~MedianAgeMale, data = cancer2)
+plot(deathRate~povertyPercent, data = cancer2)
+plot(deathRate~PctPrivateCoverage, data = cancer2)
+plot(deathRate~PctEmpPrivCoverage, data = cancer2)
+plot(deathRate~PctPublicCoverage, data = cancer2)
+plot(deathRate~incidenceRate, data = cancer2)
+plot(deathRate~PercentMarried, data = cancer2)
+plot(deathRate~PctMarriedHouseholds, data = cancer2)
+plot(deathRate~Edu18_24, data = cancer2)
+
+```
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+```{r Residual Plots, echo = FALSE, fig.cap = "\\label{fig:figs}Residual Plots", eval = TRUE, warning = FALSE, message = FALSE}
+par(mfrow = c(2,2))
+plot(lm(deathRate~AvgHouseholdSize, data = cancer2), 1)
+plot(lm(deathRate~PctUnemployed16_Over, data = cancer2), 1)
+plot(lm(deathRate~PctEmployed16_Over, data = cancer2), 1)
+plot(lm(deathRate~PctBlack, data = cancer2), 1)
+# We have evidence of a lot of heteroscedasticity for PctBlack, we can use a spread level plot for a suggested transformation
+
+modIncome <- lm(deathRate~medIncome, data = cancer2)
+modMale <- lm(deathRate~MedianAgeMale, data = cancer2)
+modFemale <- lm(deathRate~MedianAgeFemale, data = cancer2)
+modbinnedInc <- lm(deathRate~binnedInc, data = cancer2)
+par(mfrow = c(2,2))
+plot(modIncome, 1)
+plot(modMale, 1)
+plot(modFemale, 1)
+plot(modbinnedInc, 1)
+# Potential heteroscedasicity for medIncome, no signs for the others.
+# Need to deal with heteroscaedscatic, use a spread level plot
+
+
+par(mfrow=c(2,2))
+plot(lm(deathRate~povertyPercent, data = cancer2), 1)
+title(sub="PovertyPercent")
+plot(lm(deathRate~PctPrivateCoverage, data = cancer2), 1)
+title(sub="PctPrivateCoverage")
+plot(lm(deathRate~PctEmpPrivCoverage, data = cancer2), 1)
+title(sub="PctEmpPrivCoverage")
+plot(lm(deathRate~PctPublicCoverage, data = cancer2), 1)
+title(sub="PctPublicCoverage")
+# There is potential heteroscedascity in PctEmpPrivCoverage
+```
+```{r residual plots, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+par(mfrow=c(2,2))
+plot(lm(deathRate~incidenceRate, data = cancer2),1)
+plot(lm(deathRate~PercentMarried, data = cancer2),1)
+plot(lm(deathRate~PctMarriedHouseholds, data = cancer2),1)
+plot(lm(deathRate~Edu18_24, data = cancer2),1)
+# There is possible heteroscedasticity for Incidence Rate and Edu18_24. Can use spreadlevelplot to fix heteroscedasticity.
+```
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+```{r Spread Level, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+spreadLevelPlot(lm(deathRate~PctBlack, data = cancer2))
+ncvTest(lm(deathRate~PctBlack, data = cancer2))
+
+ncvTest(lm(deathRate~PctEmpPrivCoverage, data = cancer2))
+spreadLevelPlot(lm(deathRate~PctEmpPrivCoverage, data = cancer2))
+
+ncvTest(lm(deathRate~medIncome, data = cancer2))
+spreadLevelPlot(lm(deathRate~medIncome, data = cancer2))
+
+ncvTest(lm(deathRate~PctEmployed16_Over, data = cancer2))
+spreadLevelPlot(lm(deathRate~PctEmployed16_Over, data = cancer2))
+
+ncvTest(lm(deathRate~incidenceRate, data=cancer2))
+spreadLevelPlot(lm(deathRate~incidenceRate, data = cancer2))
+
+ncvTest(lm(deathRate~Edu18_24, data=cancer2))
+spreadLevelPlot(lm(deathRate~Edu18_24, data = cancer2))
+```
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+```{r Multi, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+# We have high correlation between employed 16 and over and unemployed 16 and over. We will test to see if both are necessary.
+
+vif(lm(deathRate~PctEmployed16_Over + PctUnemployed16_Over, data = cancer2))
+
+# Variance inflation factors are low though, so we could potentially use both as they aren't measuring the exact same thing.
+
+vif(lm(deathRate~PctPrivateCoverage+PctEmpPrivCoverage+ PctPublicCoverage, data = cancer2))
+vif(lm(deathRate~PctPrivateCoverage+PctEmpPrivCoverage+ PctPublicCoverage+ povertyPercent, data = cancer2))
+# Although VIF are not very big,the three healthcare coverage variables are clearly correlated.
+# I would discard PctPrivateCoverage and PctEmpPrivCoverage in fitting a model.
+# I leave PctPublicCoverage because it is the least correlated variable with povertyPercent among the healthcare coverage variables.
+vif(lm(deathRate~binnedInc + medIncome, data = cancer2))
+```
+
+```{r multicollinearity, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+vif(lm(deathRate~incidenceRate+PercentMarried+Edu18_24, data=cancer2))
+
+vif(lm(deathRate~incidenceRate+PercentMarried+PctMarriedHouseholds+Edu18_24, data=cancer2))
+
+
+# PercentMarried and PctMarriedHouseholds are clearly highly correlated. 
+
+# Therefore, I would suggest that it is best to leave out PctMarriedHouseholds to reduce multicollinearity in the model. 
+```
+```{r Binned Check, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+vif(lm(deathRate~binnedInc + medIncome, data = cancer2))
+# Highly correlated, best to leave out binnedIncome
+vif(lm(deathRate~MedianAgeMale + MedianAgeFemale, data = cancer2))
+# Highly correlated, best to take an average and have just one variable as MedianAge
+```
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ```{r hetroscedascity fix, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
@@ -441,25 +480,6 @@ plot(lm(deathRate^(-3)~Edu18_24, , data = cancer2),1)
 ```
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
