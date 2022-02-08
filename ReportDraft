@@ -14,6 +14,20 @@ Geography, incidence rate, medincome, povertyPercent, AvgHouseholdsize, PercentM
 **** Which variables show a strong relationship with the outcome variable? ◦ Can the relationship be characterized as a linear?
 ◦ Does the relationship appear to be homoscedastic?
 ◦ Are any transformations, required? If so which ones?
+
+## Suspicious and Missing values
+
+## Skew
+
+## Outliers
+
+- Identified two counties with high outliers #Alexcode
+
+## Correlations
+
+## Recommendations
+
+
 ### Statistical Methodology
 **** What issues did we identify in the initial EDA? How will these impact on modelling decisions when you come to build your statistical model?
 ******** Missing values
