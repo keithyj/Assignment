@@ -18,6 +18,8 @@ What are we trying to answer? - How death rate (due to cancer) differ across US 
 
 ## Suspicious and Missing values
 
+## Linearity
+
 ## Skew
 
 ## Outliers
@@ -27,7 +29,6 @@ What are we trying to answer? - How death rate (due to cancer) differ across US 
 ## Correlations
 
 ## Recommendations
-
 
 ### Statistical Methodology
 **** What issues did we identify in the initial EDA? How will these impact on modelling decisions when you come to build your statistical model?
