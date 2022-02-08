@@ -41,6 +41,13 @@ library(dlookr)
 
 
 ## Statistical Methodology
+### Introduction
+
+This report examines how death rate (due to cancer) differ across US counties and possibly relate to different factors such as incidence rate, income, poverty, employment, education, private or public coverage. Also, we attempt to check if death rate varies amongst males, females, Black community and married individuals.
+We will explore which variables show a strong relationship with the death rate and answer using exploratory data analysis (EDA) techniques to understand the distribution of the variables and the relationships between them. Ultimately, answering whether the model assumptions are met - allowing us to, in future, build a statistical model.
+Some EDA techniques we will use are: observing if any heteroscedacity exists, observing if the relationships are linear, identify any outliers and missing values, observing the skew of relationships, and determining if any transformations are required.
+
+
 ### Summary
 
 First lets have a look at a summary of all the data:
