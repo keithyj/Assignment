@@ -4,6 +4,8 @@ author: "Group 6"
 date: "12/02/2022"
 output: 
   pdf_document:
+  fontsize: 11pt
+  geometry: margin = 1in
     fig_caption: yes
 ---
 
