@@ -41,10 +41,22 @@ library(dlookr)
 
 
 ## Statistical Methodology
+2
+11
+4
+3
+6
+7
+9
+10
+5
+8
+
+
 
 
 ### 1. LOOKING AT DEATH RATE IN THE USA
-```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+```{r, echo = FALSE, eval = FALSE, warning = FALSE, message = FALSE}
 cancer3 <- cancer
 uwu2 <- str_split(cancer3$Geography, pattern = ", ")
 cancer3$state <- rep(0, length(cancer3$Geography))
@@ -100,7 +112,7 @@ cancer1$AvgHouseholdSize[susPoint] <- NA
 summary(cancer1)
 DF<-cancer[,c(5, 12:14)]
 ```
-## Missing Values and Strange Values:
+## 11. Missing Values and Strange Values:
 
 ```{r}
 load("cancer.rdata")
