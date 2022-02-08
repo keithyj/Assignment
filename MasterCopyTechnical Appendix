@@ -29,6 +29,7 @@ library(stringr)
 library(dplyr)
 library(ggplot2)
 library(tidyr)
+library(dlookr)
 ```
 
 ### LOOKING AT DEATH RATE IN THE USA
@@ -90,21 +91,58 @@ DF<-cancer[,c(5, 12:14)]
 ```
 ## Missing Values and Strange Values:
 
-There are now two predictor variables with what we would consider missing or strange values. We have to decide what kind of missing values these are. We can use plots from the VIM package to do this.
+```{r}
+load("cancer.rdata")
+summary(cancer)
+```
 
-```{r Miss, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+There are some missing values in PctEmployed16_Over which need to be checked.
+Before that is checked though we should note that the outliers in AvgHouseholdSize should be treated as missing values as they are wrongly inputted (reference).
+
+```{r}
+cancer1 <- cancer
+cancer1$AvgHouseholdSize[cancer1$AvgHouseholdSize < 0.5] <- NA
+```
+
+Now I use the VIM package and the pbox() function to show that the missing data are all MCAR and can thus be easily dealt with.
+
+```{r, message = FALSE}
+library(VIM)
 par(mfrow = c(1,4))
-for (i in c(2:5)){ 
-  pbox(cancer1,pos=i) 
+for(i in 2:5){
+  pbox(cancer1, pos = i)
 }
 ```
 
-From the plots the difference in boxplots between missing values and non missing is quite similar across the board. We can consider 
-these missing values MCAR and should just omit those rows with missing values as there isn't that many so should not cause our data to be unstable.
+```{r}
+par(mfrow = c(1,4))
+for(i in 6:9){
+  pbox(cancer1, pos = i)
+}
+```
 
-```{r NA Omit, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+
+```{r}
+par(mfrow = c(1,4))
+for(i in 10:13){
+  pbox(cancer1, pos = i)
+}
+```
+
+```{r}
+par(mfrow = c(1,5))
+for(i in 14:18){
+  pbox(cancer1, pos = i)
+}
+```
+
+From the pbox plots we have evidence that the missing values interrogated are MCAR. Since the proportion of rows with missing values is small I recommend simply deleting the rows with missing values as it should not affect the validity of our analysis on the whole dataset as the smaller sample is still representative.
+
+```{r}
 cancer2 <- na.omit(cancer1)
 ```
+
+Our other option is to use the reference to fill in all our other missing values. Despite this being possible it is also un-necessary as the data is MCAR and won't significantly affect our analysis.
 
 We notice that there is one categorical variable (binnedInc) and one ID variable (Geography). Geography shouldn't be used as an explanatory variable but could be used as a visual aid.
 
@@ -162,6 +200,8 @@ ggpairs(cancer2, columns = c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18), mappin
         diag = list(continuous="densityDiag"),
         progress = FALSE) +
   theme(text=element_text(size=6))
+  
+plot_correlate(cancer2)
   
 #medIncome is right skewed, can do a transformation on this
 #MedianAgeFemale and MedianAgeMale are heavily positively correlated
