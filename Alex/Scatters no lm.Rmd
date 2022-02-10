@@ -15,18 +15,25 @@ library(car)
 library(stringr)
 ```
 
-```{r Pct Black ggplot}
+```{r Pct Black ggplot, include = FALSE, eval = FALSE}
 plot(deathRate~PctBlack, data = cancer)
 #ahh <- smooth.spline(cancer$PctBlack, cancer$deathRate)
 scatter.smooth(cancer$PctBlack, cancer$deathRate)
 ```
 
-```{r Outlier Incidence}
+```{r Outlier Incidence, include = FALSE, eval = FALSE}
 par(mfrow = c(1,2))
 with(cancer2, scatter.smooth(deathRate~incidenceRate, col = "red"))
 #Outlier at 267
 with(cancer2[-267,], scatter.smooth(deathRate~incidenceRate, col = "red"))
 ```
+
+```{r}
+cancer1 <- cancer
+cancer1$AvgHouseholdSize[cancer1$AvgHouseholdSize < 0.5] <- NA
+cancer2 <- na.omit(cancer1)
+```
+
 
 ```{r Big Plot}
 mod_points=function(data,mapping,...) {
@@ -94,9 +101,9 @@ I Recommend a log transform for pctBlack and sqrt transforms for pct unemployed 
 
 ```{r Transforms}
 par(mfrow = c(1,3))
-hist(sqrt(cancer2$AvgHouseholdSize))
-hist(sqrt(cancer2$PctUnemployed16_Over))
-hist(log(cancer2$PctBlack))
+hist(sqrt(cancer2$AvgHouseholdSize), main = "Transformed AvgHouseholdSize")
+hist(sqrt(cancer2$PctUnemployed16_Over), main = "Transformed PctUnemployed16_Over")
+hist(log(cancer2$PctBlack), main = "Transformed PctBlack")
 ```
 
 ### Box Plots
@@ -104,5 +111,32 @@ hist(log(cancer2$PctBlack))
 Our Box Plots show we have quite a number of what we would consider outliers accross all our variables. This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
 
 We have a severe amount of outliers in PctBlack according to our box plot. This could be due to the very long tail as shown in the scatter plot above.
+
+### BIG MAP
+
+```{r}
+cancer4 <- cancer2
+uwu2 <- str_split(cancer4$Geography, pattern = ", ")
+cancer4$state <- rep(0, length(cancer4$Geography))
+for(i in 1:length(cancer4$Geography)){
+  cancer4$state[i] <- uwu2[[i]][2]
+}
+
+cancer4$county <- rep(0, length(cancer4$Geography))
+for(i in 1:length(cancer4$Geography)){
+  cancer4$county[i] <- uwu2[[i]][1]
+}
+cancer4$county[159] <- "Dona Ana County"
+cancer4$county[775] <- "La Salle Parish"
+cancer4$fips <- rep("0", length(cancer4$Geography))
+for(i in 1:length(cancer4$Geography)){
+  cancer4$fips[i] <- fips(cancer4$state[i], cancer4$county[i])
+}
+deathMap <- subset(cancer4, select = c("fips", "county", "deathRate"))
+plot_usmap(data = deathMap,regions = "counties", values = "deathRate", include = cancer4$fips, color = "red") +
+  scale_fill_continuous(low = "yellow", high = "red", name = "Death Rate", label = scales::comma) +
+  labs(title = "Death rates in the United States") +
+  theme(legend.position = "right")
+```
 
 
