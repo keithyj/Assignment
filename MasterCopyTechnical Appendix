@@ -213,7 +213,7 @@ plot(density(cancer2$Edu18_24), main="Density estimate of Edu18_24")
 # We can see that the three Coverage variables are symmetrical but povertyPercent is right-skewed.
 # A transformation is needed to tackle this skewness.
 ```
-###Linearity and heteroscedascity
+### Linearity and heteroscedascity
 ```{r Plots against deathRate}
 par(mfrow = c(2,2))
 with(cancer2, scatter.smooth(deathRate~medIncome, col = "red"))
@@ -225,6 +225,23 @@ with(cancer2, scatter.smooth(deathRate~binnedInc, col = "red"))
 There is definite heteroscedasticity in medIncome and for both MedianAgeFemale and MedianAgeMale we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic. We could also consider combining the two variables by taking an average as their relationship with Death Rate are very similar. BinnedInc does not show us much other than it is linear.
 
 From the scatter plots there are no clear outliers.
+
+```{r transformation, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+
+par(mfrow=c(2,2))
+scatter.smooth(cancer2$incidenceRate, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate",xlab="Incidence Rate")
+scatter.smooth(cancer2$PercentMarried, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate", xlab="Percent Married")
+scatter.smooth(cancer2$PctMarriedHouseholds, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate",xlab="PctMarriedHouseholds")
+scatter.smooth(cancer2$Edu18_24, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate",xlab="Edu18_24")
+```
+
+From the scatterplots, the predictor variables show a fairly linear relationship with death Rate. 
+The fitted lines for PercentMarried, PctMarriedHouseholds and Edu18_24 show an inverse relationship with the response variable. 
+However,the fitted line for incidence rate indicates that the outliers might have a high influence on the model and therefore we can observe that there is heteroscedasticity.
+We need to perform further investigation and tests after fitting a model and we can use spreadLevelPlot() to fix heteroscedasticity.  
 
 ```{r Scatter smooth,echo=FALSE}
 par(mfrow=c(2,2))
@@ -284,11 +301,6 @@ ggplot(cancer2, aes(x=PctPrivateCoverage^(2)))+
 ```
 #The skewness is in PctPrivateCoverage is removed by the square transformation.
 
-### HETEROSCEDASTICITY
-
-### TESTING HETEROSCEDACITY
-
-
 ### Multicolinearity
 
 We have evidence of multicolinearity between Unemployment and Employment.
@@ -299,6 +311,10 @@ matrix(cor(cancer2[,c("incidenceRate","PercentMarried","PctMarriedHouseholds","E
 PercentMarried and PctMarriedHouseholds are clearly highly correlated with correlation value 0.87. 
 
 We can further check using Pearson Correlation Coefficient test.
+#Correlation Test
+```{r cor test, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+cor.test(cancer2$PercentMarried,cancer2$PctMarriedHouseholds)
+```
 
 #Poverty with PctUnemployed_Over16, PctEmployed_Over16, PctPrivateCoverage, PctEmpPrivCoverage, PctPublicCoverage
 ```{r cor, echo=FALSE}
@@ -317,11 +333,6 @@ cor.test(cancer2$povertyPercent, cancer2$PctUnemployed16_Over)
 cor.test(cancer2$povertyPercent, cancer2$PctPrivateCoverage)
 cor.test(cancer2$povertyPercent, cancer2$PctEmpPrivCoverage)
 cor.test(cancer2$povertyPercent, cancer2$PctPublicCoverage)
-```
-
-#Correlation Test
-```{r cor test, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-cor.test(cancer2$PercentMarried,cancer2$PctMarriedHouseholds)
 ```
 
 ### OUTLIERS
@@ -348,7 +359,7 @@ cancer3 %>% gather() %>%
 #Further discoveries and decisions on the outliers should be done when fitting a  model.
 
 
-```{r outliers, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+```{r outliers}
 ggplot(cancer2, aes(incidenceRate)) + geom_boxplot()
 ggplot(cancer2, aes(PercentMarried)) + geom_boxplot()
 ggplot(cancer2,aes(PctMarriedHouseholds)) + geom_boxplot()
@@ -420,32 +431,6 @@ hist(PctMarriedFix, breaks = 30, main = "Histogram of transformed Percent Marrie
 
 # The transformed predictor variables now have a normal spread and therefore skewness is fixed.
 ```
-
-### FIXING HETEROSCEDASCITY
-
-```{r transformation, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-
-par(mfrow=c(2,2))
-scatter.smooth(cancer2$incidenceRate, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate",xlab="Incidence Rate")
-scatter.smooth(cancer2$PercentMarried, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
-ylab="deathRate", xlab="Percent Married")
-scatter.smooth(cancer2$PctMarriedHouseholds, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
-ylab="deathRate",xlab="PctMarriedHouseholds")
-scatter.smooth(cancer2$Edu18_24, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
-ylab="deathRate",xlab="Edu18_24")
-```
-
-From the scatterplots, the predictor variables show a fairly linear relationship with death Rate. 
-The fitted lines for PercentMarried, PctMarriedHouseholds and Edu18_24 show an inverse relationship with the response variable. 
-However,the fitted line for incidence rate indicates that the outliers might have a high influence on the model and therefore we can observe that there is heteroscedasticity.
-We need to perform further investigation and tests after fitting a model and we can use spreadLevelPlot() to fix heteroscedasticity.  
-
-
-
-
-
-
-
 
 
 
