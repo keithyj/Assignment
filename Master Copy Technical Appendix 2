@@ -103,7 +103,7 @@ binnedInc does not tell us much from this graph - we will instead look at binned
 Massive right skew for pctBlack. PctUnemployed and AvgHouseholdSize are also a little right skew.
 I Recommend a log transform for pctBlack and sqrt transforms for pct unemployed and avg household size.
 
-```{r Transforms, fig.cap = "\\label{fig:figs}Our transformed histograms", fig.width=5, fig.asp=0.68, fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r transforms, fig.cap = "\\label{fig:figs}Our transformed histograms", fig.width=5, fig.asp=0.68, fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 par(mfrow = c(1,3))
 with(cancer2, hist(sqrt(AvgHouseholdSize), main = "Transformed AvgHouseholdSize"))
 with(cancer2, hist(sqrt(PctUnemployed16_Over), main = "Transformed PctUnemployed16_Over"))
