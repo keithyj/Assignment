@@ -133,7 +133,17 @@ ggplot(cancer2, aes(PercentMarried)) + geom_boxplot()
 ggplot(cancer2,aes(PctMarriedHouseholds)) + geom_boxplot()
 ggplot(cancer2, aes(Edu18_24)) + geom_boxplot()
 ```
-
+##Remus scatter
+```{r Scatter smooth,echo=FALSE}
+par(mfrow=c(2,2))
+scatter.smooth(cancer2$povertyPercent, cancer2$deathRate, lpars=list(col = "red", lwd = 2), ylab="deathRate",xlab="povertyPercent")
+scatter.smooth(cancer2$PctPrivateCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
+ylab="deathRate", xlab="PctPrivateCoverage")
+scatter.smooth(cancer2$PctPublicCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
+ylab="deathRate",xlab="PctPublicCoverage")
+scatter.smooth(cancer2$PctEmpPrivCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
+ylab="deathRate",xlab="PctEmpPrivCoverage")
+```
 ## Analysis of the above plots
 
 ### Scatter Plots
@@ -148,6 +158,14 @@ From the scatterplots, the predictor variables show a fairly linear relationship
 The fitted lines for PercentMarried, PctMarriedHouseholds and Edu18_24 show an inverse relationship with the response variable. 
 However,the fitted line for incidence rate indicates that the outliers might have a high influence on the model and therefore we can observe that there is heteroscedasticity.
 We need to perform further investigation and tests after fitting a model and we can use spreadLevelPlot() to fix heteroscedasticity.  
+
+#Remus scatter
+We can see all four variables have fairlty straight fitted lines. This support
+them being linear.
+The data points of PctEmpPrivCoverage are getting closer to the fitted line
+which shows that the variance is decreasing.
+We might use spreadLevelPlot() to find appropriate power transformation to fix
+this problem.
 
 ### Histograms
 
@@ -172,6 +190,36 @@ We note that incidence rate shows a severe right skewness.
 We need to fix the skewness by considering a possible logarithmic transformation. 
 PercentMarried and PctMarriedHouseholds are also slightly left skewed. We can fix this using square transformation. 
 
+##Remus histogram
+```{r Skew ,echo=FALSE}
+cancer3<- cancer2[,c(5,12:14)]
+cancer3 %>% gather() %>%
+  ggplot(aes(x = value)) + facet_wrap(~key, scales = "free") +
+  geom_histogram(col = c("blue"), fill = "blue", alpha=0.6)
+```
+From the histograms, PctPrivateCoverage is slightly left skewed and povertyPercent
+is right skewed.
+Transformations are needed.
+Try cube root for povertyPercent.
+
+##Remus Transform
+```{r Transform1, echo=FALSE}
+ggplot(cancer2, aes(x=povertyPercent^(1/3)))+
+  geom_histogram(col = c("blue"), fill = "blue", alpha=0.6)+
+  ggtitle("Histogram of cubeth root of povertyPercent")+
+  ylab("Frequency")
+```
+The skewness in povertyPercent is removed in the cubeth rooting transfomation.
+Next try squaring for PctPrivateCoverage.
+
+```{r Trasnform2, echo=FALSE}
+ggplot(cancer2, aes(x=PctPrivateCoverage^(2)))+
+  geom_histogram(col = c("blue"), fill = "blue", alpha=0.6)+
+  ggtitle("Histogram of square of PctPrivateCoverage")+
+  ylab("Frequency")
+```
+The skewness is in PctPrivateCoverage is removed by the square transformation.
+
 ### Box Plots
 
 Our Box Plots show we have quite a number of what we would consider outliers accross all our variables. This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
@@ -186,6 +234,20 @@ Possible options might include deleting the outliers or imputing them.
 
 This might depend on whether the outlier is due to some error (data entry, sampling, measurement) or whether the outlier is natural. 
 
+##Remus Boxplot
+```{r boxplots, echo=FALSE}
+cancer3 %>% gather() %>%
+  ggplot(aes(x = value)) + facet_wrap(~key, scales = "free") +
+  geom_boxplot(shape=1, alpha=0.5, col="blue")+
+  coord_flip()
+```
+All four variables have points lying outside the boxes.
+Note that PctPrivateCoverage have points lying below the box and
+povertyPercent have points lying above the box only.
+This shows potential outliers in particular in PctPrivateCoverage and povertyPercent.
+Further discoveries and decisions on the outliers should be done when fitting a 
+model.
+
 ### Multicollinearity
 
 ```{r multicollinearity, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
@@ -199,6 +261,25 @@ We can further check using Pearson Correlation Coefficient test.
 cor.test(cancer2$PercentMarried,cancer2$PctMarriedHouseholds)
 ```
 
+##Remus Multicollinearity
+Poverty with PctUnemployed_Over16, PctEmployed_Over16, PctPrivateCoverage, PctEmpPrivCoverage, PctPublicCoverage
+```{r cor, echo=FALSE}
+round(cor(cancer2[,c(5,10:14)])[1,], digits = 2)
+```
+Correlation is at least 0.65. 
+In particular -0.74 with PctEmployed16_Over, -0.82 with PctPrivateCoverage.
+
+Proceed using Pearson Correlation Coefficent test.
+We get p-values 2.2e-16 for all five tests.
+We can conclude povertyPercent is significant correlated to these five variables.
+
+```{r cor test,echo=FALSE}
+cor.test(cancer2$povertyPercent, cancer2$PctEmployed16_Over)
+cor.test(cancer2$povertyPercent, cancer2$PctUnemployed16_Over)
+cor.test(cancer2$povertyPercent, cancer2$PctPrivateCoverage)
+cor.test(cancer2$povertyPercent, cancer2$PctEmpPrivCoverage)
+cor.test(cancer2$povertyPercent, cancer2$PctPublicCoverage)
+```
 
 ### BIG MAP
 
