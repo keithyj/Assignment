@@ -278,7 +278,6 @@ This shows potential outliers in particular in PctPrivateCoverage and povertyPer
 Further discoveries and decisions on the outliers should be done when fitting a  model.
 
 ### Multicollinearity
-#### Multicollinearity for Married
 
 ```{r multicollinearity, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 round(matrix(cor(cancer2[,c("PctUnemployed16_Over","PercentMarried","PctMarriedHouseholds","PctEmployed16_Over", "MedianAgeMale", "MedianAgeFemale")]), nrow=6, ncol=6), digits = 2)
