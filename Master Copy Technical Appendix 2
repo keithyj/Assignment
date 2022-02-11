@@ -139,19 +139,13 @@ Try cube root for povertyPercent.
 
 ##Remus Transform
 ```{r Transform1, echo=FALSE}
-ggplot(cancer2, aes(x=povertyPercent^(1/3)))+
-  geom_histogram(col = c("blue"), fill = "blue", alpha=0.6)+
-  ggtitle("Histogram of cubeth root of povertyPercent")+
-  ylab("Frequency")
+hist(cancer2$povertyPercent^(1/3), breaks = 30, main = "Histogram of cube root of povertyPercent")
 ```
 The skewness in povertyPercent is removed in the cubeth rooting transfomation.
 Next try squaring for PctPrivateCoverage.
 
 ```{r Trasnform2, echo=FALSE}
-ggplot(cancer2, aes(x=PctPrivateCoverage^(2)))+
-  geom_histogram(col = c("blue"), fill = "blue", alpha=0.6)+
-  ggtitle("Histogram of square of PctPrivateCoverage")+
-  ylab("Frequency")
+hist(cancer2$PctPrivateCoverage^(2), breaks = 30, main = "Histogram of square of PctPrivateCoverage")
 ```
 The skewness is in PctPrivateCoverage is removed by the square transformation.
 
