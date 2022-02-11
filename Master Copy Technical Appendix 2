@@ -165,7 +165,7 @@ with(cancer2, hist(log(cancer2$PctBlack), main = "Transformed PctBlack"))
 cancer2$IncidenceFix <- log(cancer2$incidenceRate)
 hist(IncidenceFix, main = "Histogram of Transformed Incidence Rate")
 
-cancer2$PctMarriedFix<- cancer$PercentMarried^(2)
+cancer2$PctMarriedFix<- cancer2$PercentMarried^(2)
 hist(PctMarriedFix, breaks = 30, main = "Histogram of transformed Percent Married")
 ```
 We note that incidence rate shows a severe right skewness. 
