@@ -80,7 +80,7 @@ Now that we have replaced the small values with NAs we can test the data to see 
 
 ```{r Miss, fig.cap = "\\label{fig:figs}Pbox plots showing difference between missing and non-missing data", results = "asis", fig.height = 3, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 par(mfrow = c(1,4))
-for (i in c(2:4, 18)){ 
+for (i in c(2,3,8 18)){ 
   pbox(cancer1,pos=i) 
 }
 ```
