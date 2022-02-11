@@ -165,26 +165,15 @@ DF %>% gather() %>%
 hist(cancer2$medIncome)
 hist(cancer2$MedianAgeFemale)
 hist(cancer2$MedianAgeMale)
-par(mfrow=c(2,1))
 hist(cancer2$incidenceRate, breaks = 30, main = "Histogram of Incidence Rate")
-plot(density(cancer2$incidenceRate), main= "Density estimate of Incidence Rate") 
-
-par(mfrow=c(2,1))
 hist(cancer2$PercentMarried, breaks = 30, main = "Histogram of Percent Married")
-plot(density(cancer2$PercentMarried), main="Density estimate of Percent Married") 
-
-par(mfrow=c(2,1))
 hist(cancer2$PctMarriedHouseholds, breaks = 30, main = "Histogram of PctMarriedHouseholds")
-plot(density(cancer2$PctMarriedHouseholds), main="Density estimate of PctMarriedHouseholds")
-
-par(mfrow=c(2,1))
 hist(cancer2$Edu18_24, breaks = 30, main = "Histogram of Edu18_24")
-plot(density(cancer2$Edu18_24), main="Density estimate of Edu18_24")
-# We note that incidence rate shows a severe postive skew. 
+```
+# We note that incidence rate shows a severe right skewness. 
 # We need to fix the skewness by considering a possible logarithmic transformation. 
-# PercentMarried also shows moderate negative skewness. We can fix this using square transformation for negatively skewed data.
-
-#medIncome seem to have a right skew, more skew than any others.
+# PercentMarried and PctMarriedHouseholds are also slightly left skewed. We can fix this using square transformation. 
+# medIncome seem to have a right skew, more skew than any others.
 # We note that PctBlack has very large right skew and will need transforming to fix this.
 # We also note that there are some very suspicious low values in AvgHouseholdSize which are outliers. We create a new dataset containing these suspicious values.
 # We can see that the three Coverage variables are symmetrical but povertyPercent is right-skewed.
