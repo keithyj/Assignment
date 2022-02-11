@@ -87,142 +87,6 @@ cancer2 <- na.omit(cancer1)
 We can see initially that medIncome is right skewed, also median age Male and Female are highly correlated. We will use a pearsons coefficient to check if multicollinearity exist (http://www.sthda.com/english/wiki/correlation-test-between-two-variables-in-r). 
 binnedInc does not tell us much from this graph - we will instead look at binnedInc and medIncome together as they measure similar data to check for multicollinearity. 
 
-
-## Multicollinearity for employment
-
-There is strong correlation between PctUnemployed16_over and PctEmployed16_Over. We run a correlation test between these two variables to check to see if there is an yevidence of multi colinearity that should be investigated later.
-
-```{r Multi, echo = FALSE}
-with(cancer2, cor.test(PctUnemployed16_Over, PctEmployed16_Over))
-```
-
-## Bivariate Plots
-
-```{r Plots against deathRate, fig.cap = "\\label{fig:figs}Plots showing deathRate against other variables", fig.width=5, fig.asp=1, fig.align="center", echo = FALSE}
-par(mfrow = c(2,2))
-with(cancer2, scatter.smooth(deathRate~AvgHouseholdSize, col = "red"))
-with(cancer2, scatter.smooth(deathRate~PctEmployed16_Over, col = "red"))
-with(cancer2, scatter.smooth(deathRate~PctUnemployed16_Over, col = "red"))
-with(cancer2, scatter.smooth(deathRate~PctBlack, col = "red"))
-```
-
-From the bivariate plots there is definite heteroskedasticity in pctBlack and for AvgHouseholdSize we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic.
-
-```{r Scatter smooths}
-par(mfrow=c(2,2))
-scatter.smooth(cancer2$incidenceRate, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate",xlab="Incidence Rate")
-scatter.smooth(cancer2$PercentMarried, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
-ylab="deathRate", xlab="Percent Married")
-scatter.smooth(cancer2$PctMarriedHouseholds, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
-ylab="deathRate",xlab="PctMarriedHouseholds")
-scatter.smooth(cancer2$Edu18_24, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
-ylab="deathRate",xlab="Edu18_24")
-```
-```{r jamesplots against deathRate}
-par(mfrow=c(2,2))
-scatter.smooth(cancer2$medIncome, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Income")
-scatter.smooth(cancer2$MedianAgeFemale, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Age Female")
-scatter.smooth(cancer2$MedianAgeMale, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Age Female")
-scatter.smooth(cancer2$binnedInc, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Income (Binned)")
-```
-
-There is definite heteroscedasticity in medIncome and for both MedianAgeFemale and MedianAgeMale we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic. We could also consider combining the two variables by taking an average as their relationship with Death Rate are very similar. BinnedInc does not show us much other than it is linear.
-
-From the scatter plots there are no clear outliers.
-
-
-
-```{r historgrams for skew, echo = FALSE, fig.cap = "\\label{fig:figs}Histograms of our predictor variables", fig.width=5, fig.asp=0.68, fig.align="center"}
-par(mfrow = c(2,3))
-with(cancer2, hist(AvgHouseholdSize))
-with(cancer2, hist(PctEmployed16_Over))
-with(cancer2, hist(PctUnemployed16_Over))
-with(cancer2, hist(PctBlack))
-with(cancer2, hist(deathRate))
-```
-```{r skewness}
-hist(cancer2$incidenceRate, breaks = 30, main = "Histogram of Incidence Rate")
-hist(cancer2$PercentMarried, breaks = 30, main = "Histogram of Percent Married")
-hist(cancer2$PctMarriedHouseholds, breaks = 30, main = "Histogram of PctMarriedHouseholds")
-hist(cancer2$Edu18_24, breaks = 30, main = "Histogram of Edu18_24")
-```
-```{r histograms james}
-par(mfrow = c(2,2))
-with(cancer2, hist(medIncome))
-with(cancer2, hist(MedianAgeFemale))
-with(cancer2, hist(MedianAgeMale))
-```
-Massive right skew for medIncome. Median age Male and Female seem to have a pretty symettrical skew.
-I recommend a log transform for medIncome.
-
-```{r Transforms}
-par(mfrow = c(1,1))
-hist(log(cancer2$medIncome), main = "Transformed medIncome")
-```
-
-There still exists a slight right skew but it is an improvement.
-
-```{r BoxPlots, echo = FALSE, fig.cap = "\\label{fig:figs}BoxPlots of our variables", fig.align="center"}
-par(mfrow = c(2,3))
-with(cancer2, boxplot(AvgHouseholdSize, main = "AvgHouseholdSize"))
-with(cancer2, boxplot(PctEmployed16_Over, main = "PctEmployed16_Over"))
-with(cancer2, boxplot(PctUnemployed16_Over, main = "PctUnemployed16_Over"))
-with(cancer2, boxplot(PctBlack, main = "PctBlack"))
-with(cancer2, boxplot(deathRate, main = "deathRate"))
-```
-```{r box plots james}
-par(mfrow = c(2,3))
-with(cancer2, boxplot(medIncome, main = "medIncome"))
-with(cancer2, boxplot(MedianAgeFemale, main = "MedianAgeFemale"))
-with(cancer2, boxplot(MedianAgeMale, main = "MedianAgeMale"))
-with(cancer2, boxplot(binnedInc, main = "binnedInc"))
-
-```
-Our box plots show we have quite a number of what we would consider outliers accross all our variables apart from binnedInc, which would be impossible due to the bins intervals. This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
-
-We have a severe amount of outliers in medIncome. This is most likely due to natural causes such as a CEO of a large company or a doctor (Reference needed about high paid jobs). 
-
-
-```{r outliers}
-ggplot(cancer2, aes(incidenceRate)) + geom_boxplot()
-ggplot(cancer2, aes(PercentMarried)) + geom_boxplot()
-ggplot(cancer2,aes(PctMarriedHouseholds)) + geom_boxplot()
-ggplot(cancer2, aes(Edu18_24)) + geom_boxplot()
-```
-##Remus scatter
-```{r Scatter smooth,echo=FALSE}
-par(mfrow=c(2,2))
-scatter.smooth(cancer2$povertyPercent, cancer2$deathRate, lpars=list(col = "red", lwd = 2), ylab="deathRate",xlab="povertyPercent")
-scatter.smooth(cancer2$PctPrivateCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
-ylab="deathRate", xlab="PctPrivateCoverage")
-scatter.smooth(cancer2$PctPublicCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
-ylab="deathRate",xlab="PctPublicCoverage")
-scatter.smooth(cancer2$PctEmpPrivCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
-ylab="deathRate",xlab="PctEmpPrivCoverage")
-```
-## Analysis of the above plots
-
-### Scatter Plots
-
-From the bivariate plots there is definite heteroskedasticity in pctBlack and for AvgHouseholdSize we see some non linearity. We see a concave shape so advising a more complex model, perhaps with a quadratic term might be advisable as the data is not monotonic.
-
-For heteroskedasticity we would need to perform further tests after fititng a model to check what kind of transformation we'd need to fix it.
-
-From the scatter plots there are no clear outliers, we'd need either some box plots or to look at cook's distance to identify that.
-
-From the scatterplots, the predictor variables show a fairly linear relationship with death Rate. 
-The fitted lines for PercentMarried, PctMarriedHouseholds and Edu18_24 show an inverse relationship with the response variable. 
-However,the fitted line for incidence rate indicates that the outliers might have a high influence on the model and therefore we can observe that there is heteroscedasticity.
-We need to perform further investigation and tests after fitting a model and we can use spreadLevelPlot() to fix heteroscedasticity.  
-
-#Remus scatter
-We can see all four variables have fairlty straight fitted lines. This support
-them being linear.
-The data points of PctEmpPrivCoverage are getting closer to the fitted line
-which shows that the variance is decreasing.
-We might use spreadLevelPlot() to find appropriate power transformation to fix
-this problem.
-
 ### Histograms
 
 Massive right skew for pctBlack. PctUnemployed and AvgHouseholdSize are also a little right skew.
@@ -234,6 +98,31 @@ with(cancer2, hist(sqrt(AvgHouseholdSize), main = "Transformed AvgHouseholdSize"
 with(cancer2, hist(sqrt(PctUnemployed16_Over), main = "Transformed PctUnemployed16_Over"))
 with(cancer2, hist(log(cancer2$PctBlack), main = "Transformed PctBlack"))
 ```
+
+```{r histograms james}
+par(mfrow = c(2,2))
+with(cancer2, hist(medIncome))
+with(cancer2, hist(MedianAgeFemale))
+with(cancer2, hist(MedianAgeMale))
+hist(cancer2$incidenceRate, breaks = 30, main = "Histogram of Incidence Rate")
+hist(cancer2$PercentMarried, breaks = 30, main = "Histogram of Percent Married")
+hist(cancer2$PctMarriedHouseholds, breaks = 30, main = "Histogram of PctMarriedHouseholds")
+hist(cancer2$Edu18_24, breaks = 30, main = "Histogram of Edu18_24")
+with(cancer2, hist(AvgHouseholdSize))
+with(cancer2, hist(PctEmployed16_Over))
+with(cancer2, hist(PctUnemployed16_Over))
+with(cancer2, hist(PctBlack))
+with(cancer2, hist(deathRate))
+```
+Massive right skew for medIncome. Median age Male and Female seem to have a pretty symettrical skew.
+I recommend a log transform for medIncome.
+
+```{r Transforms}
+par(mfrow = c(1,1))
+hist(log(cancer2$medIncome), main = "Transformed medIncome")
+```
+
+There still exists a slight right skew but it is an improvement.
 
 ##Remus histogram
 ```{r Skew ,echo=FALSE}
@@ -265,9 +154,81 @@ ggplot(cancer2, aes(x=PctPrivateCoverage^(2)))+
 ```
 The skewness is in PctPrivateCoverage is removed by the square transformation.
 
-### Box Plots
 
-Our Box Plots show we have quite a number of what we would consider outliers accross all our variables. This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
+## Bivariate Plots
+### Plots Against Death Rate
+```{r Plots against deathRate, fig.cap = "\\label{fig:figs}Plots showing deathRate against other variables", fig.width=5, fig.asp=1, fig.align="center", echo = FALSE}
+par(mfrow = c(2,2))
+with(cancer2, scatter.smooth(deathRate~AvgHouseholdSize, col = "red"))
+with(cancer2, scatter.smooth(deathRate~PctEmployed16_Over, col = "red"))
+with(cancer2, scatter.smooth(deathRate~PctUnemployed16_Over, col = "red"))
+with(cancer2, scatter.smooth(deathRate~PctBlack, col = "red"))
+scatter.smooth(cancer2$incidenceRate, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate",xlab="Incidence Rate")
+scatter.smooth(cancer2$PercentMarried, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate", xlab="Percent Married")
+scatter.smooth(cancer2$PctMarriedHouseholds, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate",xlab="PctMarriedHouseholds")
+scatter.smooth(cancer2$Edu18_24, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate",xlab="Edu18_24")
+scatter.smooth(cancer2$medIncome, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Income")
+scatter.smooth(cancer2$MedianAgeFemale, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Age Female")
+scatter.smooth(cancer2$MedianAgeMale, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Age Female")
+scatter.smooth(cancer2$binnedInc, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Income (Binned)")
+scatter.smooth(cancer2$povertyPercent, cancer2$deathRate, lpars=list(col = "red", lwd = 2), ylab="deathRate",xlab="povertyPercent")
+scatter.smooth(cancer2$PctPrivateCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
+ylab="deathRate", xlab="PctPrivateCoverage")
+scatter.smooth(cancer2$PctPublicCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
+ylab="deathRate",xlab="PctPublicCoverage")
+scatter.smooth(cancer2$PctEmpPrivCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
+ylab="deathRate",xlab="PctEmpPrivCoverage")
+```
+
+From the bivariate plots there is definite heteroskedasticity in pctBlack and for AvgHouseholdSize we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic.
+
+There is definite heteroscedasticity in medIncome and for both MedianAgeFemale and MedianAgeMale we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic. We could also consider combining the two variables by taking an average as their relationship with Death Rate are very similar. BinnedInc does not show us much other than it is linear.
+
+From the scatter plots there are no clear outliers.
+
+From the bivariate plots there is definite heteroskedasticity in pctBlack and for AvgHouseholdSize we see some non linearity. We see a concave shape so advising a more complex model, perhaps with a quadratic term might be advisable as the data is not monotonic.
+
+For heteroskedasticity we would need to perform further tests after fititng a model to check what kind of transformation we'd need to fix it.
+
+From the scatter plots there are no clear outliers, we'd need either some box plots or to look at cook's distance to identify that.
+
+From the scatterplots, the predictor variables show a fairly linear relationship with death Rate. 
+The fitted lines for PercentMarried, PctMarriedHouseholds and Edu18_24 show an inverse relationship with the response variable. 
+However,the fitted line for incidence rate indicates that the outliers might have a high influence on the model and therefore we can observe that there is heteroscedasticity.
+We need to perform further investigation and tests after fitting a model and we can use spreadLevelPlot() to fix heteroscedasticity.  
+
+We can see all four variables have fairlty straight fitted lines. This support
+them being linear.
+The data points of PctEmpPrivCoverage are getting closer to the fitted line
+which shows that the variance is decreasing.
+We might use spreadLevelPlot() to find appropriate power transformation to fix
+this problem.
+
+### Plots for Outliers
+```{r BoxPlots, echo = FALSE, fig.cap = "\\label{fig:figs}BoxPlots of our variables", fig.align="center"}
+par(mfrow = c(2,3))
+with(cancer2, boxplot(AvgHouseholdSize, main = "AvgHouseholdSize"))
+with(cancer2, boxplot(PctEmployed16_Over, main = "PctEmployed16_Over"))
+with(cancer2, boxplot(PctUnemployed16_Over, main = "PctUnemployed16_Over"))
+with(cancer2, boxplot(PctBlack, main = "PctBlack"))
+with(cancer2, boxplot(deathRate, main = "deathRate"))
+with(cancer2, boxplot(medIncome, main = "medIncome"))
+with(cancer2, boxplot(MedianAgeFemale, main = "MedianAgeFemale"))
+with(cancer2, boxplot(MedianAgeMale, main = "MedianAgeMale"))
+with(cancer2, boxplot(binnedInc, main = "binnedInc"))
+ggplot(cancer2, aes(incidenceRate)) + geom_boxplot()
+ggplot(cancer2, aes(PercentMarried)) + geom_boxplot()
+ggplot(cancer2,aes(PctMarriedHouseholds)) + geom_boxplot()
+ggplot(cancer2, aes(Edu18_24)) + geom_boxplot()
+```
+Our box plots show we have quite a number of what we would consider outliers accross all our variables apart from binnedInc, which would be impossible due to the bins intervals. This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
+
+We have a severe amount of outliers in medIncome. This is most likely due to natural causes such as a CEO of a large company or a doctor (Reference needed about high paid jobs). 
+
+ This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
 
 We have a severe amount of outliers in PctBlack according to our box plot. This could be due to the very long tail as shown in the scatter plot above.
 
@@ -294,7 +255,7 @@ Further discoveries and decisions on the outliers should be done when fitting a
 model.
 
 ### Multicollinearity
-
+#### Multicollinearity for Married
 ```{r multicollinearity, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 matrix(cor(cancer2[,c("incidenceRate","PercentMarried","PctMarriedHouseholds","Edu18_24")]), nrow=4, ncol=4)
 ```
@@ -306,7 +267,15 @@ We can further check using Pearson Correlation Coefficient test.
 cor.test(cancer2$PercentMarried,cancer2$PctMarriedHouseholds)
 ```
 
-##Remus Multicollinearity
+#### Multicollinearity for Employment
+
+There is strong correlation between PctUnemployed16_over and PctEmployed16_Over. We run a correlation test between these two variables to check to see if there is an yevidence of multi colinearity that should be investigated later.
+
+```{r Multi, echo = FALSE}
+with(cancer2, cor.test(PctUnemployed16_Over, PctEmployed16_Over))
+```
+
+#### Multicollinearity for Poverty
 Poverty with PctUnemployed_Over16, PctEmployed_Over16, PctPrivateCoverage, PctEmpPrivCoverage, PctPublicCoverage
 ```{r cor, echo=FALSE}
 round(cor(cancer2[,c(5,10:14)])[1,], digits = 2)
@@ -325,6 +294,8 @@ cor.test(cancer2$povertyPercent, cancer2$PctPrivateCoverage)
 cor.test(cancer2$povertyPercent, cancer2$PctEmpPrivCoverage)
 cor.test(cancer2$povertyPercent, cancer2$PctPublicCoverage)
 ```
+
+#### Multicollinearity for Income
 
 ```{r Income comparison}
 ggpairs(cancer2, columns = c(3,4), mapping = aes(alpha = 0.6),
