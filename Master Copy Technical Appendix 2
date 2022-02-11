@@ -267,7 +267,7 @@ Further discoveries and decisions on the outliers should be done when fitting a 
 #### Multicollinearity for Married
 
 ```{r multicollinearity, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
-matrix(cor(cancer2[,c("PctUnemployed16_Over","PercentMarried","PctMarriedHouseholds","PctEmployed16_Over", "MedianAgeMale", "MedianAgeFemale")]), nrow=6, ncol=6)
+round(matrix(cor(cancer2[,c("PctUnemployed16_Over","PercentMarried","PctMarriedHouseholds","PctEmployed16_Over", "MedianAgeMale", "MedianAgeFemale")]), nrow=6, ncol=6), digits = 2)
 ```
 From the plot we can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation ...), Poverty with PctEmployed_Over16 (-0.74) and PctPrivateCoverage (-0.82), 
 
