@@ -126,10 +126,11 @@ There still exists a slight right skew but it is an improvement.
 
 ##Remus histogram
 ```{r Skew ,echo=FALSE}
-cancer3<- cancer2[,c(5,12:14)]
-cancer3 %>% gather() %>%
-  ggplot(aes(x = value)) + facet_wrap(~key, scales = "free") +
-  geom_histogram(col = c("blue"), fill = "blue", alpha=0.6)
+par(mfrow=c(2,2))
+hist(cancer2$povertyPercent, breaks = 30, main = "Histogram of povertyPercent")
+hist(cancer2$PctPrivateCoverage, breaks = 30, main = "Histogram of PctPrivateCoverage")
+hist(cancer2$PctEmpPrivCoverage, breaks = 30, main = "Histogram of PctEmpPrivCoverage")
+hist(cancer2$PctPublicCoverage, breaks = 30, main = "Histogram of PctPublicCoverage")
 ```
 From the histograms, PctPrivateCoverage is slightly left skewed and povertyPercent
 is right skewed.
