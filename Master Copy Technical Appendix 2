@@ -14,8 +14,7 @@ header-includes:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
 	fig.align = "center",
-	fig.height = 7,
-	fig.width = 8,
+	fig.width = 7,
 	message = FALSE,
 	include = TRUE,
 	warnings = FALSE,
