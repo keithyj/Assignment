@@ -5,6 +5,9 @@ urlcolor: blue
 fontsize: 11pt
 geometry: margin = 1in
 fig_caption: yes
+header-includes: 
+- \usepackage{graphicx}
+- \usepackage{float}
 ---
 
 
@@ -15,7 +18,8 @@ knitr::opts_chunk$set(
 	fig.width = 8,
 	message = FALSE,
 	include = TRUE,
-	warnings = FALSE
+	warnings = FALSE,
+	fig.pos='H'
 )
 ```
 
