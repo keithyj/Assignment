@@ -1,0 +1,148 @@
+---
+title: "ST404 Assignment 1"
+author: "jena"
+output:
+ html_document
+  
+---
+
+We are analysing 4 variables of the Cancer data: Incidence Rate, Percent Married, PctMarriedHouseholds and Edu18_24. 
+
+# Load Data and Summary of the Data
+```{r initial look at  variables}
+load("cancer.RData")
+library(dplyr)
+library(GGally)
+library(ggplot2)
+library(car)
+
+cancer1 <- cancer
+cancer1$AvgHouseholdSize[cancer1$AvgHouseholdSize < 0.5] <- NA
+cancer2 <- na.omit(cancer1)
+cancer2_select<- select(cancer, incidenceRate, PercentMarried,PctMarriedHouseholds, Edu18_24)
+summary(cancer2_select)
+```
+
+# Check for missing values
+```{r missing values}
+sum(is.na(cancer2_select))
+```
+
+No missing values found in the variables.
+
+# Univariate Analysis
+```{r skewness}
+hist(cancer2$incidenceRate, breaks = 30, main = "Histogram of Incidence Rate")
+
+hist(cancer2$PercentMarried, breaks = 30, main = "Histogram of Percent Married")
+
+hist(cancer2$PctMarriedHouseholds, breaks = 30, main = "Histogram of PctMarriedHouseholds")
+
+hist(cancer2$Edu18_24, breaks = 30, main = "Histogram of Edu18_24")
+```
+
+
+We note that incidence rate shows a severe right skewness. 
+We need to fix the skewness by considering a possible logarithmic transformation. 
+
+PercentMarried and PctMarriedHouseholds are also slightly left skewed. We can fix this using square transformation. 
+
+
+# Transformation
+```{r transformation}
+
+IncidenceFix <- log(cancer2$incidenceRate)
+hist(IncidenceFix, main = "Histogram of Transformed Incidence Rate")
+
+PctMarriedFix<- cancer$PercentMarried^(2)
+hist(PctMarriedFix, breaks = 30, main = "Histogram of transformed Percent Married")
+
+PctMarriedHHFix<- cancer$PctMarriedHouseholds^(2)
+hist(PctMarriedHHFix, breaks = 30, main = "Histogram of transformed PctMarriedHouseholds")
+
+```
+
+Therefore skewness is removed in Incidence Rate, Percent Married, and PctMarriedHouseholds.
+
+# Check for Outliers 
+```{r outliers}
+library(ggplot2)
+ggplot(cancer2, aes(incidenceRate)) + geom_boxplot()
+ggplot(cancer2, aes(PercentMarried)) + geom_boxplot()
+ggplot(cancer2,aes(PctMarriedHouseholds)) + geom_boxplot()
+ggplot(cancer2, aes(Edu18_24)) + geom_boxplot()
+```
+
+We observe that the  outliers are present for all predictor variables. 
+
+In particular, the boxplot for Incidence rate shows the existence of extreme high values. 
+
+Therefore, we might want to investigate into the outliers of the predictor variables and decide how we might want to treat them before fitting the model. 
+
+Possible options might include deleting the outliers or imputing them. 
+
+This might depend on whether the outlier is due to some error (data entry, sampling, measurement) or whether the outlier is natural. 
+
+# Bivariate Analysis
+```{r linearity}
+par(mfrow=c(2,2))
+ggplot(cancer2, aes(x=incidenceRate,y=deathRate))+
+  geom_point()+
+  ggtitle("Scatterplot of deathRate vs IncidenceRate")
+
+ggplot(cancer2, aes(x=PercentMarried,y=deathRate))+
+  geom_point()+
+  ggtitle("Scatterplot of deathRate vs Percent Married")
+
+ggplot(cancer2, aes(x=PctMarriedHouseholds,y=deathRate))+
+  geom_point()+
+  ggtitle("Scatterplot of deathRate vs PctMarriedHouseholds")
+
+ggplot(cancer2, aes(x=Edu18_24,y=deathRate))+
+  geom_point()+
+  ggtitle("Scatterplot of deathRate vs Edu18_24")
+
+```
+
+```{r Scatter smooth}
+par(mfrow=c(2,2))
+scatter.smooth(cancer2$incidenceRate, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate",xlab="Incidence Rate")
+
+scatter.smooth(cancer2$PercentMarried, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate", xlab="Percent Married")
+
+scatter.smooth(cancer2$PctMarriedHouseholds, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate",xlab="PctMarriedHouseholds")
+
+scatter.smooth(cancer2$Edu18_24, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate",xlab="Edu18_24")
+
+
+```
+
+From the scatterplots, the predictor variables show a fairly linear relationship with death Rate. 
+
+The fitted lines for PercentMarried, PctMarriedHouseholds and Edu18_24 show an inverse relationship with the response variable. 
+
+However,the fitted line for incidence rate indicates that the outliers might have a high influence on the model and therefore we can observe that there is heteroscedasticity.
+
+We need to perform further investigation and tests after fitting a model and we can use spreadLevelPlot() to fix heteroscedasticity.  
+
+#Check for Multicollinearity
+```{r multicollinearity}
+matrix(cor(cancer2[,c("incidenceRate","PercentMarried","PctMarriedHouseholds","Edu18_24")]), nrow=4, ncol=4)
+```
+
+PercentMarried and PctMarriedHouseholds are clearly highly correlated. Correlation is 0.87. 
+
+We can further check using Pearson Correlation Coefficient test. 
+
+#Correlation Test
+```{r cor test}
+cor.test(cancer2$PercentMarried,cancer2$PctMarriedHouseholds)
+```
+
+
+
+
+
