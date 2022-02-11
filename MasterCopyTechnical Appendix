@@ -119,6 +119,12 @@ We notice that there is one categorical variable (binnedInc) and one ID variable
 
 We also note that PctEmployed16_Over has 152 missing values that should be investigated.
 
+### Linearity
+
+We observe that the predictor variable, Incidence rate, does not show a linear relationship with death rate. This may be due to the presence of outliers and therefore further investigations must be performed to decide on how to treat these outliers. 
+The plot below illustrates the relationship between incidence rate and death rate.
+
+
 ### Comparing Predictors and Response
 
 ```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
