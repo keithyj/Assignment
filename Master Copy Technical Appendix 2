@@ -33,10 +33,23 @@ library(stringr)
 library(knitr)
 library(tidyr)  
 ```
+# Executive Summary 
+* Missing values appear in the % of county residents ages 16 and over employed, and for the mean household size in a county. This missing data is identified as MCAR and due to this we will deal with this by removing the rows with missing entries as there are only few of these.
+* The model assumptions are not met by the predictor variables: 
+* To build a model we would recommend combining the medIncome and binnedInc variables.
 
+\pagebreak
+
+# Findings
+Using the data taken from Rippner, we have concluded the following findings in our EDA.
+...
+
+\pagebreak
+
+# Statistical Methodology
+\scriptsize
 ## Checking the summary and initial EDA
 
-\scriptsize
 
 ```{r Summary, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 summary(cancer)
@@ -91,6 +104,9 @@ With our data we could replace all the data with an alternate source but as the 
 ```{r remove miss, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 cancer2 <- na.omit(cancer1)
 ```
+
+## Multicollinearity
+
 ```{r, echo = FALSE, fig.cap = "A large plot containing densities, bivariate plots and correlations", eval = FALSE}
 mod_points=function(data,mapping,...) {
   ggally_smooth_loess(data, mapping,pch=20, ...) +
@@ -106,11 +122,13 @@ ggpairs(cancer2, columns = c(2:3, 5:18), mapping = aes(alpha = 0.6),
         progress = FALSE) +
         theme(text=element_text(size=6))
 ```
-
+From this plot we can see that there is potential multicollinearity between: PercentMarried and PctMarried Households, PctUnemployed16_over and PctEmployed16_Over, Poverty with PctEmployed_Over16 and PctPrivateCoverage, and MedianAgeMale and MedianAgeFemale. This is shown by the correlations being either close to -1 or 1. 
+This could lead us to exclude some variables from the model building process. However, the case of multicollinearity should still be explored as excluding a variable would simplify the model slightly. We observe that for the first 9 bins in binnedInc, medIncome shows very similar data. We will therefore consider only using medIncome in our model as the binnedInc will not be significant in the model.
+We could use a pearsons coefficient to check if multicollinearity exist (http://www.sthda.com/english/wiki/correlation-test-between-two-variables-in-r). 
 
 ## Analysis of deathRate
 
-Our assignment brief tells us we should investigate deathRate as a repsonse variable when it comes to our investigation. So we first make sure that a normal linear model is appropriate by making sure that deathRate is normally distributed.
+We should investigate deathRate as a response variable when it comes to our investigation. So we first make sure that a normal linear model is appropriate by making sure that deathRate is normally distributed.
 
 ```{r qqnorm and density, fig.asp = 0.5, echo = FALSE}
 par(mfrow = c(1,2))
@@ -145,17 +163,11 @@ hist(cancer2$PctPublicCoverage, breaks = 30, main = "Histogram of PctPublicCover
 with(cancer2, hist(deathRate))
 ```
 
-#### Analysis on PctBlack, MedIncome, AverageHousehold, Incidence Rate
-
-Massive right skew for pctBlack. PctUnemployed and AvgHouseholdSize are also a little right skew.
-I Recommend a log transform for pctBlack and sqrt transforms for pct unemployed and avg household size.
-Massive right skew for medIncome. Median age Male and Female seem to have a pretty symettrical skew.
-I recommend a log transform for medIncome.
-
-From the histograms, PctPrivateCoverage is slightly left skewed and povertyPercent
-is right skewed.
-Transformations are needed.
-Try cube root for povertyPercent.
+The histograms above show us that there is a right skew in pctBlack and also for medIncome. PctUnemployed and AvgHouseholdSize are also right-skewed, but less. Furthermore, PctPrivateCoverage is slightly left skewed and povertyPercent
+is right skewed. This will impact on modelling decisions because ...
+To fix the skew and reduce the impact of this when building a model we should consider transformations. 
+Based on the distribution of the variables we would recommend a log transform for pctBlack and medIncome, and sqrt transforms for pct unemployed and avg household size.
+As well as a cube root transformation for povertyPercent.
 
 ```{r Transformsinclude, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.3}
 par(mfrow = c(1,4))
@@ -170,13 +182,8 @@ hist(cancer2$PctPrivateCoverage^(2), breaks = 30, main = "Histogram of square of
 hist(cancer2$PctPrivateCoverage^(2), breaks = 30, main = "Histogram of square of PctPrivateCoverage")
 with(cancer2, hist(sqrt(PctUnemployed16_Over), main = "Transformed PctUnemployed16_Over"))
 ```
-#### Analysis of Transformed Histograms
-There still exists a slight right skew for medIncome but it is an improvement.
 
-The skewness in povertyPercent is removed in the cubeth rooting transfomation.
-
-The skewness is in PctPrivateCoverage is removed by the square transformation.
-
+There still exists a slight right skew for medIncome but it is an improvement. The issue of skew in povertyPercent is removed in the cubeth rooting transfomation and in PctPrivateCoverage it is removed by the square transformation. Hence, we will transform all three of these variables because ...
 
 ## Bivariate Plots
 ### Plots Against Death Rate
@@ -209,26 +216,10 @@ ylab="deathRate",xlab="PctPublicCoverage") #No
 scatter.smooth(cancer2$PctEmpPrivCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
 ylab="deathRate",xlab="PctEmpPrivCoverage") #No
 ```
-From the bivariate plots there is definite heteroskedasticity in pctBlack and for AvgHouseholdSize we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic.
-
-There is definite heteroscedasticity in medIncome and for both MedianAgeFemale and MedianAgeMale we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic. We could also consider combining the two variables by taking an average as their relationship with Death Rate are very similar. BinnedInc does not show us much other than it is linear.
-
-From the scatter plots there are no clear outliers.
-
-From the bivariate plots there is definite heteroskedasticity in pctBlack and for AvgHouseholdSize we see some non linearity. We see a concave shape so advising a more complex model, perhaps with a quadratic term might be advisable as the data is not monotonic.
-
-For heteroskedasticity we would need to perform further tests after fititng a model to check what kind of transformation we'd need to fix it.
-
-From the scatter plots there are no clear outliers, we'd need either some box plots or to look at cook's distance to identify that.
-
-From the scatterplots, the predictor variables show a fairly linear relationship with death Rate. 
-The fitted lines for PercentMarried, PctMarriedHouseholds and Edu18_24 show an inverse relationship with the response variable. 
-However,the fitted line for incidence rate indicates that the outliers might have a high influence on the model and therefore we can observe that there is heteroscedasticity.
-We need to perform further investigation and tests after fitting a model and we can use spreadLevelPlot() to fix heteroscedasticity.  
-
-We can see all four variables have fairlty straight fitted lines. This support them being linear.
-The data points of PctEmpPrivCoverage are getting closer to the fitted line which shows that the variance is decreasing.
-We might use spreadLevelPlot() to find appropriate power transformation to fix this problem.
+We notice the difference in variance, it is larger at one end than the other, from the line of best fit? that there is definite heteroscedasticity in pctBlack, incidence rate, PctEmpPrivCoverage and medIncome. This will impact the modelling decisions when building a model because...
+For heteroskedasticity we would need to perform further tests after fititng a model to check what kind of transformation we'd need to fix it. We might use spreadLevelPlot() to find appropriate power transformation to fix this problem.
+We also see some non-linearity in AvgHouseholdSize, MedianAgeFemale, MedianAgeMale and ? . We see a concave shape for ... so we would advise a more compex model with a quadratic term might as the data is not monotonic.
+All other variables show signs of linearity and no heteroscedacity. From the scatter plots there are no clear outliers,  we'd need either to observe box plots or cook's distance to identify that (reference cooks distance?)
 
 ### Plots for Outliers
 ```{r BoxPlots, fig.cap = "\\label{fig:figs}BoxPlots of our variables", fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.45}
@@ -255,34 +246,16 @@ with(cancer2, boxplot(PctPrivateCoverage, main = "PctPrivateCoverage"))
 with(cancer2, boxplot(PctEmpPrivCoverage, main = "PctEmpPrivCoverage"))
 with(cancer2, boxplot(PctPublicCoverage, main = "PctPublicCoverage"))
 ```
-Our box plots show we have quite a number of what we would consider outliers accross all our variables apart from binnedInc, which would be impossible due to the bins intervals. This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
+Outliers can impact modelling decisions when building a model because ... 
+Our box plots show we have a large amount of outliers accross all our variables. This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
+We have a severe amount of outliers in medIncome. This is most likely due to natural causes such as a CEO of a large company or a doctor (Reference needed about high paid jobs).  We also have a large number of outliers in PctBlack according to our box plot. This could be due to the very long tail as shown in the scatter plot above.
+The boxplot for Incidence rate shows the existence of extreme high values. Therefore, we might want to investigate into the outliers of the predictor variables and decide how we might want to treat them before fitting the model.  Possible options might include deleting the outliers or imputing them.  This might depend on whether the outlier is due to some error (data entry, sampling, measurement) or whether the outlier is natural. 
+Note that PctPrivateCoverage have points lying below the box and povertyPercent have points lying above the box only. This shows potential outliers in particular in PctPrivateCoverage and povertyPercent.
 
-We have a severe amount of outliers in medIncome. This is most likely due to natural causes such as a CEO of a large company or a doctor (Reference needed about high paid jobs). 
-
-This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
-
-We have a severe amount of outliers in PctBlack according to our box plot. This could be due to the very long tail as shown in the scatter plot above.
-
-The boxplot for Incidence rate shows the existence of extreme high values. 
-
-Therefore, we might want to investigate into the outliers of the predictor variables and decide how we might want to treat them before fitting the model. 
-
-Possible options might include deleting the outliers or imputing them. 
-
-This might depend on whether the outlier is due to some error (data entry, sampling, measurement) or whether the outlier is natural. 
-
-
-All four variables???? have points lying outside the boxes.
-Note that PctPrivateCoverage have points lying below the box and povertyPercent have points lying above the box only.
-This shows potential outliers in particular in PctPrivateCoverage and povertyPercent.
-Further discoveries and decisions on the outliers should be done when fitting a  model.
-
-### Multicollinearity
 
 ```{r multicollinearity, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 round(matrix(cor(cancer2[,c("PctUnemployed16_Over","PercentMarried","PctMarriedHouseholds","PctEmployed16_Over", "MedianAgeMale", "MedianAgeFemale")]), nrow=6, ncol=6), digits = 2)
 ```
-From the GGPairs plot at the beginning we can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation ...), Poverty with PctEmployed_Over16 (-0.74) and PctPrivateCoverage (-0.82), 
 
 \scriptsize
 
@@ -295,9 +268,6 @@ round(cor(cancer2[,c(5,10:14)])[1,], digits = 2)
 with(cancer2, plot(binnedInc, medIncome, main = "Comparison of medIncome and binnedInc", xlab = "binnedInc", ylab = "medIncome"))
 ```
 
-We can observe that for the first 9 bins medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model.
-Median age Male and Female are highly correlated. We will use a pearsons coefficient to check if multicollinearity exist (http://www.sthda.com/english/wiki/correlation-test-between-two-variables-in-r). 
-binnedInc does not tell us much from this graph - we will instead look at binnedInc and medIncome together as they measure similar data to check for multicollinearity. 
 ``` {r pearson test age not, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 cor.test(cancer2$MedianAgeMale, cancer2$MedianAgeFemale, method = c("pearson"))
 ```
@@ -316,6 +286,11 @@ cor.test(cancer2$povertyPercent, cancer2$PctPrivateCoverage)
 cor.test(cancer2$povertyPercent, cancer2$PctEmpPrivCoverage)
 cor.test(cancer2$povertyPercent, cancer2$PctPublicCoverage)
 ```
+\pagebreak
+
+# Authors Contributions
+
+
 
 \pagebreak
 
