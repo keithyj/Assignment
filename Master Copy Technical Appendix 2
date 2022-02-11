@@ -49,11 +49,11 @@ There are some missing values in PctEmployed16_Over which need to be checked.
 
 The minimum value in AvgHouseholdSize is very small which is suspicious and should be immediately investigated.
 
-```{r Sus Plot, echo = FALSE, fig.cap = "\\label{fig:figs}deathRate vs AvgHouseholdSize", fig.asp = 0.5, eval = TRUE, message = FALSE, warning = FALSE}
+```{r Sus Plot, echo = FALSE, fig.cap = "\\label{fig:figs}deathRate vs AvgHouseholdSize", fig.asp = 0.5, eval = FALSE, message = FALSE, warning = FALSE}
 plot(deathRate ~ AvgHouseholdSize, data = cancer, main = "deathRate against AvgHouseholdSize")
 ```
 
-From the above plot we note that there are many extremely suspicious points with small AvgHouseholdSize.
+We notice many extreme points with small AvgHouseholdSize.
 
 We identify one of these points and investigate it:
 
@@ -61,9 +61,7 @@ We identify one of these points and investigate it:
 kable(subset(cancer, AvgHouseholdSize < 0.5)[1,c("Geography", "AvgHouseholdSize")])
 ```
 
-To check the validity of this data point we find an alternate source of the data at:
-
-https://data.census.gov/cedsci/table?q=average%20household%20size&g=0500000US54003&y=2013&tid=ACSST1Y2013.S1101
+To check the validity of this data point we find an alternate source of the data (@HouseHoldDataBerkeleyCounty).
 
 We note that this data recording AvgHouseholdSize in the same year as our data lists the size at 2.61. This is completely different and this is similar for other small values in our dataset.
 
@@ -95,18 +93,12 @@ With our data we could replace all the data with an alternate source but as the 
 cancer2 <- na.omit(cancer1)
 ```
 
-
-- GG pairs analysis 
-
-We can see initially that medIncome is right skewed, also median age Male and Female are highly correlated. We will use a pearsons coefficient to check if multicollinearity exist (http://www.sthda.com/english/wiki/correlation-test-between-two-variables-in-r). 
-binnedInc does not tell us much from this graph - we will instead look at binnedInc and medIncome together as they measure similar data to check for multicollinearity. 
-
 ### Histograms
 
 
 ```{r histograms included, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.5}
 
-par(mfrow = c(2,2))
+par(mfrow = c(1,4))
 hist(cancer2$medIncome, breaks = 30, main = "Histogram of Median Income", ylab = "Frequency", xlab = "medIncome") # Keep
 hist(cancer2$incidenceRate, breaks = 30, main = "Histogram of Incidence Rate", ylab = "Frequency", xlab = "incidenceRate") # Keep
 hist(cancer2$AvgHouseholdSize, breaks = 30, main = "Histogram of Average Household Size", ylab = "Frequency", xlab = "AvgHouseholdSize") # Keep
@@ -141,7 +133,7 @@ Transformations are needed.
 Try cube root for povertyPercent.
 
 ```{r Transformsinclude, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
-par(mfrow = c(2,2))
+par(mfrow = c(1,4))
 hist(log(cancer2$medIncome), breaks = 30, main = "Transformed medIncome", ylab = "Frequency", xlab = "log(medIncome)")
 hist(sqrt(cancer2$AvgHouseholdSize), breaks = 30, main = "Transformed AvgHouseholdSize", ylab = "Frequency", xlab = "sqrt(AvgHouseholdSize)")
 hist(cancer2$povertyPercent^(1/3), breaks = 30, main = "Histogram of cube root of povertyPercent", ylab = "Frequency", xlab = "povertyPercent^(1/3)")
@@ -163,14 +155,14 @@ The skewness is in PctPrivateCoverage is removed by the square transformation.
 
 ## Bivariate Plots
 ### Plots Against Death Rate
-```{r Plots against deathRate, fig.cap = "\\label{fig:figs}Plots showing deathRate against other variables", fig.width=5, fig.asp=1, fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r Plots against deathRate, fig.cap = "\\label{fig:figs}Plots showing deathRate against other variables", fig.asp=0.3, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 par(mfrow = c(1,3))
 with(cancer2, scatter.smooth(deathRate~PctBlack, col = "red"), ylab="deathRate", xlab="PctBlack") # keep
 scatter.smooth(cancer2$incidenceRate, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate",xlab="Incidence Rate") # Keep
 scatter.smooth(cancer2$medIncome, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Income") # Keep
 ```
 
-```{r Plots against deathRate not included, fig.cap = "\\label{fig:figs}Plots showing deathRate against other variables", fig.width=5, fig.asp=1, fig.align="center", echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
+```{r Plots against deathRate not included, fig.cap = "\\label{fig:figs}Plots showing deathRate against other variables", fig.asp=1, fig.align="center", echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 par(mfrow = c(1,3))
 with(cancer2, scatter.smooth(deathRate~AvgHouseholdSize, col = "red")) # No
 with(cancer2, scatter.smooth(deathRate~PctEmployed16_Over, col = "red")) # No
@@ -214,7 +206,7 @@ The data points of PctEmpPrivCoverage are getting closer to the fitted line whic
 We might use spreadLevelPlot() to find appropriate power transformation to fix this problem.
 
 ### Plots for Outliers
-```{r BoxPlots, fig.cap = "\\label{fig:figs}BoxPlots of our variables", fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r BoxPlots, fig.cap = "\\label{fig:figs}BoxPlots of our variables", fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.5}
 par(mfrow = c(2,3))
 with(cancer2, boxplot(PctUnemployed16_Over, main = "PctUnemployed16_Over")) #Keep
 with(cancer2, boxplot(PctBlack, main = "PctBlack")) # Keep
@@ -268,21 +260,24 @@ round(matrix(cor(cancer2[,c("PctUnemployed16_Over","PercentMarried","PctMarriedH
 ```
 From the plot we can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation ...), Poverty with PctEmployed_Over16 (-0.74) and PctPrivateCoverage (-0.82), 
 
+\scriptsize
 
 ```{r cor, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 round(cor(cancer2[,c(5,10:14)])[1,], digits = 2)
 ``` 
+\normalsize
 
-```{r Income comparison, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.cap = "medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model", fig.width = 7, fig.height = 4}
+```{r Income comparison, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE, fig.cap = "medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model", fig.width = 7, fig.height = 4}
 with(cancer2, plot(binnedInc, medIncome, main = "Comparison of medIncome and binnedInc", xlab = "binnedInc", ylab = "medIncome"))
 ```
 
 We can observe that for the first 9 bins medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model.
-
+Median age Male and Female are highly correlated. We will use a pearsons coefficient to check if multicollinearity exist (http://www.sthda.com/english/wiki/correlation-test-between-two-variables-in-r). 
+binnedInc does not tell us much from this graph - we will instead look at binnedInc and medIncome together as they measure similar data to check for multicollinearity. 
 ``` {r pearson test age not, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 cor.test(cancer2$MedianAgeMale, cancer2$MedianAgeFemale, method = c("pearson"))
 ```
-#### Correlation Tests on the above Variables
+
 ```{r cor tests, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 cor.test(cancer2$PercentMarried,cancer2$PctMarriedHouseholds)
 ```
