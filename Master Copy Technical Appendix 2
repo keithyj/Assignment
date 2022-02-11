@@ -234,7 +234,6 @@ with(cancer2, hist(sqrt(AvgHouseholdSize), main = "Transformed AvgHouseholdSize"
 with(cancer2, hist(sqrt(PctUnemployed16_Over), main = "Transformed PctUnemployed16_Over"))
 with(cancer2, hist(log(cancer2$PctBlack), main = "Transformed PctBlack"))
 ```
-```{r transformation, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 
 ##Remus histogram
 ```{r Skew ,echo=FALSE}
