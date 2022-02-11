@@ -186,6 +186,18 @@ Possible options might include deleting the outliers or imputing them.
 
 This might depend on whether the outlier is due to some error (data entry, sampling, measurement) or whether the outlier is natural. 
 
+### Multicollinearity
+
+```{r multicollinearity, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+matrix(cor(cancer2[,c("incidenceRate","PercentMarried","PctMarriedHouseholds","Edu18_24")]), nrow=4, ncol=4)
+```
+PercentMarried and PctMarriedHouseholds are clearly highly correlated with correlation value 0.87. 
+
+We can further check using Pearson Correlation Coefficient test.
+#Correlation Test
+```{r cor test, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+cor.test(cancer2$PercentMarried,cancer2$PctMarriedHouseholds)
+```
 
 
 ### BIG MAP
