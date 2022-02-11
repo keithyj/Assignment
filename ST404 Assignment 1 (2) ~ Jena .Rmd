@@ -19,7 +19,7 @@ library(car)
 cancer1 <- cancer
 cancer1$AvgHouseholdSize[cancer1$AvgHouseholdSize < 0.5] <- NA
 cancer2 <- na.omit(cancer1)
-cancer2_select<- select(cancer, incidenceRate, PercentMarried,PctMarriedHouseholds, Edu18_24)
+cancer2_select<- select(cancer2, incidenceRate, PercentMarried,PctMarriedHouseholds, Edu18_24)
 summary(cancer2_select)
 ```
 # Check for missing values
