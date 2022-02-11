@@ -34,8 +34,6 @@ library(knitr)
 library(tidyr)  
 ```
 
-# ST404 Assignment 1 Alex
-
 ## Checking the summary and initial EDA
 
 \scriptsize
@@ -93,9 +91,35 @@ With our data we could replace all the data with an alternate source but as the 
 ```{r remove miss, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 cancer2 <- na.omit(cancer1)
 ```
+```{r, echo = FALSE, fig.cap = "A large plot containing densities, bivariate plots and correlations", eval = FALSE}
+mod_points=function(data,mapping,...) {
+  ggally_smooth_loess(data, mapping,pch=20, ...) +
+    theme(text = element_text(size=8))
+}  
+mod_cor=function(data,mapping,...) {
+  ggally_cor(data, mapping,size=1.5,align_percent=0.9, digits = 2) + scale_colour_manual(values = c("red", "blue")) + theme(panel.grid.major = element_blank(),...)
+}
+ggpairs(cancer2, columns = c(2:3, 5:18), mapping = aes(alpha = 0.6),
+        upper = list(continuous=mod_cor),
+        lower = list(continuous=wrap(mod_points, col = "red")),
+        diag = list(continuous="densityDiag"),
+        progress = FALSE) +
+        theme(text=element_text(size=6))
+```
 
+
+## Analysis of deathRate
+
+Our assignment brief tells us we should investigate deathRate as a repsonse variable when it comes to our investigation. So we first make sure that a normal linear model is appropriate by making sure that deathRate is normally distributed.
+
+```{r qqnorm and density, fig.asp = 0.5, echo = FALSE}
+par(mfrow = c(1,2))
+plot(density(cancer2$deathRate), main = "Density Plot of deathRate")
+qqnorm(cancer2$deathRate, main = "QQ Plot of deathRate")
+qqline(cancer2$deathRate, col = "red")
+```
+## Univariate Plots
 ### Histograms
-
 
 ```{r histograms included, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.5}
 
@@ -133,7 +157,7 @@ is right skewed.
 Transformations are needed.
 Try cube root for povertyPercent.
 
-```{r Transformsinclude, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r Transformsinclude, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.3}
 par(mfrow = c(1,4))
 hist(log(cancer2$medIncome), breaks = 30, main = "Transformed medIncome", ylab = "Frequency", xlab = "log(medIncome)")
 hist(sqrt(cancer2$AvgHouseholdSize), breaks = 30, main = "Transformed AvgHouseholdSize", ylab = "Frequency", xlab = "sqrt(AvgHouseholdSize)")
@@ -207,7 +231,7 @@ The data points of PctEmpPrivCoverage are getting closer to the fitted line whic
 We might use spreadLevelPlot() to find appropriate power transformation to fix this problem.
 
 ### Plots for Outliers
-```{r BoxPlots, fig.cap = "\\label{fig:figs}BoxPlots of our variables", fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.5}
+```{r BoxPlots, fig.cap = "\\label{fig:figs}BoxPlots of our variables", fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.45}
 par(mfrow = c(2,3))
 with(cancer2, boxplot(PctUnemployed16_Over, main = "PctUnemployed16_Over")) #Keep
 with(cancer2, boxplot(PctBlack, main = "PctBlack")) # Keep
@@ -256,14 +280,14 @@ Further discoveries and decisions on the outliers should be done when fitting a 
 ### Multicollinearity
 #### Multicollinearity for Married
 
-```{r multicollinearity, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r multicollinearity, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 round(matrix(cor(cancer2[,c("PctUnemployed16_Over","PercentMarried","PctMarriedHouseholds","PctEmployed16_Over", "MedianAgeMale", "MedianAgeFemale")]), nrow=6, ncol=6), digits = 2)
 ```
-From the plot we can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation ...), Poverty with PctEmployed_Over16 (-0.74) and PctPrivateCoverage (-0.82), 
+From the GGPairs plot at the beginning we can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation ...), Poverty with PctEmployed_Over16 (-0.74) and PctPrivateCoverage (-0.82), 
 
 \scriptsize
 
-```{r cor, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r cor, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 round(cor(cancer2[,c(5,10:14)])[1,], digits = 2)
 ``` 
 \normalsize
