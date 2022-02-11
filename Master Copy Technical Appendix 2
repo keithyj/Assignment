@@ -100,7 +100,7 @@ with(cancer2, hist(log(cancer2$PctBlack), main = "Transformed PctBlack"))
 ```
 
 ```{r histograms james, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
-par(mfrow = c(2,2))
+par(mfrow = c(3,3))
 with(cancer2, hist(medIncome))
 with(cancer2, hist(MedianAgeFemale))
 with(cancer2, hist(MedianAgeMale))
@@ -113,47 +113,37 @@ with(cancer2, hist(PctEmployed16_Over))
 with(cancer2, hist(PctUnemployed16_Over))
 with(cancer2, hist(PctBlack))
 with(cancer2, hist(deathRate))
-```
-Massive right skew for medIncome. Median age Male and Female seem to have a pretty symettrical skew.
-I recommend a log transform for medIncome.
-
-```{r Transforms, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
-par(mfrow = c(1,1))
-hist(log(cancer2$medIncome), main = "Transformed medIncome")
-```
-
-There still exists a slight right skew but it is an improvement.
-
-##Remus histogram
-```{r Skew ,echo=FALSE}
-par(mfrow=c(2,2))
 hist(cancer2$povertyPercent, breaks = 30, main = "Histogram of povertyPercent")
 hist(cancer2$PctPrivateCoverage, breaks = 30, main = "Histogram of PctPrivateCoverage")
 hist(cancer2$PctEmpPrivCoverage, breaks = 30, main = "Histogram of PctEmpPrivCoverage")
 hist(cancer2$PctPublicCoverage, breaks = 30, main = "Histogram of PctPublicCoverage")
 ```
+Massive right skew for medIncome. Median age Male and Female seem to have a pretty symettrical skew.
+I recommend a log transform for medIncome.
+
 From the histograms, PctPrivateCoverage is slightly left skewed and povertyPercent
 is right skewed.
 Transformations are needed.
 Try cube root for povertyPercent.
 
-##Remus Transform
-```{r Transform1, echo=FALSE}
+```{r Transforms, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+par(mfrow = c(1,3))
+hist(log(cancer2$medIncome), main = "Transformed medIncome")
 hist(cancer2$povertyPercent^(1/3), breaks = 30, main = "Histogram of cube root of povertyPercent")
-```
-The skewness in povertyPercent is removed in the cubeth rooting transfomation.
-Next try squaring for PctPrivateCoverage.
-
-```{r Trasnform2, echo=FALSE}
 hist(cancer2$PctPrivateCoverage^(2), breaks = 30, main = "Histogram of square of PctPrivateCoverage")
 ```
+
+There still exists a slight right skew for medIncome but it is an improvement.
+
+The skewness in povertyPercent is removed in the cubeth rooting transfomation.
+
 The skewness is in PctPrivateCoverage is removed by the square transformation.
 
 
 ## Bivariate Plots
 ### Plots Against Death Rate
 ```{r Plots against deathRate, fig.cap = "\\label{fig:figs}Plots showing deathRate against other variables", fig.width=5, fig.asp=1, fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
-par(mfrow = c(2,2))
+par(mfrow = c(3,3))
 with(cancer2, scatter.smooth(deathRate~AvgHouseholdSize, col = "red"))
 with(cancer2, scatter.smooth(deathRate~PctEmployed16_Over, col = "red"))
 with(cancer2, scatter.smooth(deathRate~PctUnemployed16_Over, col = "red"))
