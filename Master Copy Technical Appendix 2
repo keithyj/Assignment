@@ -80,7 +80,7 @@ With our data we could replace all the data with an alternate source but as the 
 cancer2 <- na.omit(cancer1)
 ```
 
-## My allocation
+## Bivariate Plots
 
 ```{r Plots against deathRate, fig.cap = "\\label{fig:figs}Plots showing deathRate against other variables", fig.width=5, fig.asp=1, fig.align="center", echo = FALSE}
 par(mfrow = c(2,2))
@@ -92,6 +92,17 @@ with(cancer2, scatter.smooth(deathRate~PctBlack, col = "red"))
 
 From the bivariate plots there is definite heteroskedasticity in pctBlack and for AvgHouseholdSize we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic.
 
+ ```{r Scatter smooth}
+
+par(mfrow=c(2,2))
+scatter.smooth(cancer2$incidenceRate, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate",xlab="Incidence Rate")
+scatter.smooth(cancer2$PercentMarried, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate", xlab="Percent Married")
+scatter.smooth(cancer2$PctMarriedHouseholds, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate",xlab="PctMarriedHouseholds")
+scatter.smooth(cancer2$Edu18_24, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate",xlab="Edu18_24")
+```
 
 ```{r historgrams for skew, echo = FALSE, fig.cap = "\\label{fig:figs}Histograms of our predictor variables", fig.width=5, fig.asp=0.68, fig.align="center"}
 par(mfrow = c(2,3))
@@ -101,6 +112,12 @@ with(cancer2, hist(PctUnemployed16_Over))
 with(cancer2, hist(PctBlack))
 with(cancer2, hist(deathRate))
 ```
+```{r skewness}
+hist(cancer2$incidenceRate, breaks = 30, main = "Histogram of Incidence Rate")
+hist(cancer2$PercentMarried, breaks = 30, main = "Histogram of Percent Married")
+hist(cancer2$PctMarriedHouseholds, breaks = 30, main = "Histogram of PctMarriedHouseholds")
+hist(cancer2$Edu18_24, breaks = 30, main = "Histogram of Edu18_24")
+```
 
 ```{r BoxPlots, echo = FALSE, fig.cap = "\\label{fig:figs}BoxPlots of our variables", fig.align="center"}
 par(mfrow = c(2,3))
@@ -109,6 +126,12 @@ with(cancer2, boxplot(PctEmployed16_Over, main = "PctEmployed16_Over"))
 with(cancer2, boxplot(PctUnemployed16_Over, main = "PctUnemployed16_Over"))
 with(cancer2, boxplot(PctBlack, main = "PctBlack"))
 with(cancer2, boxplot(deathRate, main = "deathRate"))
+```
+```{r outliers}
+ggplot(cancer2, aes(incidenceRate)) + geom_boxplot()
+ggplot(cancer2, aes(PercentMarried)) + geom_boxplot()
+ggplot(cancer2,aes(PctMarriedHouseholds)) + geom_boxplot()
+ggplot(cancer2, aes(Edu18_24)) + geom_boxplot()
 ```
 
 ## Analysis of the above plots
@@ -121,6 +144,10 @@ For heteroskedasticity we would need to perform further tests after fititng a mo
 
 From the scatter plots there are no clear outliers, we'd need either some box plots or to look at cook's distance to identify that.
 
+From the scatterplots, the predictor variables show a fairly linear relationship with death Rate. 
+The fitted lines for PercentMarried, PctMarriedHouseholds and Edu18_24 show an inverse relationship with the response variable. 
+However,the fitted line for incidence rate indicates that the outliers might have a high influence on the model and therefore we can observe that there is heteroscedasticity.
+We need to perform further investigation and tests after fitting a model and we can use spreadLevelPlot() to fix heteroscedasticity.  
 
 ### Histograms
 
@@ -133,12 +160,33 @@ with(cancer2, hist(sqrt(AvgHouseholdSize), main = "Transformed AvgHouseholdSize"
 with(cancer2, hist(sqrt(PctUnemployed16_Over), main = "Transformed PctUnemployed16_Over"))
 with(cancer2, hist(log(cancer2$PctBlack), main = "Transformed PctBlack"))
 ```
+```{r transformation, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+# Try fixing incidence rate and percent married
+cancer2$IncidenceFix <- log(cancer2$incidenceRate)
+hist(IncidenceFix, main = "Histogram of Transformed Incidence Rate")
+
+cancer2$PctMarriedFix<- cancer$PercentMarried^(2)
+hist(PctMarriedFix, breaks = 30, main = "Histogram of transformed Percent Married")
+```
+We note that incidence rate shows a severe right skewness. 
+We need to fix the skewness by considering a possible logarithmic transformation. 
+PercentMarried and PctMarriedHouseholds are also slightly left skewed. We can fix this using square transformation. 
 
 ### Box Plots
 
 Our Box Plots show we have quite a number of what we would consider outliers accross all our variables. This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
 
 We have a severe amount of outliers in PctBlack according to our box plot. This could be due to the very long tail as shown in the scatter plot above.
+
+The boxplot for Incidence rate shows the existence of extreme high values. 
+
+Therefore, we might want to investigate into the outliers of the predictor variables and decide how we might want to treat them before fitting the model. 
+
+Possible options might include deleting the outliers or imputing them. 
+
+This might depend on whether the outlier is due to some error (data entry, sampling, measurement) or whether the outlier is natural. 
+
+
 
 ### BIG MAP
 
