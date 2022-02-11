@@ -124,6 +124,15 @@ We also note that PctEmployed16_Over has 152 missing values that should be inves
 We observe that the predictor variable, Incidence rate, does not show a linear relationship with death rate. This may be due to the presence of outliers and therefore further investigations must be performed to decide on how to treat these outliers. 
 The plot below illustrates the relationship between incidence rate and death rate.
 
+```{r uni, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+
+ggplot(cancer2, aes(x=incidenceRate,y=deathRate))+
+  geom_point()+
+  ggtitle("Scatterplot of deathRate vs IncidenceRate")
+
+scatter.smooth(cancer2$incidenceRate, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate",xlab="Incidence Rate")
+
+```
 
 ### Comparing Predictors and Response
 
