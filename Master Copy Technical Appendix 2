@@ -238,6 +238,14 @@ This might depend on whether the outlier is due to some error (data entry, sampl
 
 ##Remus Boxplot
 
+```{r Remus Boxplot,echo=FALSE}
+par(mfrow=c(2,2))
+with(cancer2, boxplot(povertyPercent, main = "povertyPercent"))
+with(cancer2, boxplot(PctPrivateCoverage, main = "PctPrivateCoverage"))
+with(cancer2, boxplot(PctEmpPrivCoverage, main = "PctEmpPrivCoverage"))
+with(cancer2, boxplot(PctPublicCoverage, main = "PctPublicCoverage"))
+```
+
 All four variables have points lying outside the boxes.
 Note that PctPrivateCoverage have points lying below the box and
 povertyPercent have points lying above the box only.
