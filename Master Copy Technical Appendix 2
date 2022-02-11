@@ -79,7 +79,13 @@ With our data we could replace all the data with an alternate source but as the 
 ```{r remove miss}
 cancer2 <- na.omit(cancer1)
 ```
+## Multicollinearity for employment
 
+There is strong correlation between PctUnemployed16_over and PctEmployed16_Over. We run a correlation test between these two variables to check to see if there is an yevidence of multi colinearity that should be investigated later.
+
+```{r Multi, echo = FALSE}
+with(cancer2, cor.test(PctUnemployed16_Over, PctEmployed16_Over))
+```
 ## Bivariate Plots
 
 ```{r Plots against deathRate, fig.cap = "\\label{fig:figs}Plots showing deathRate against other variables", fig.width=5, fig.asp=1, fig.align="center", echo = FALSE}
