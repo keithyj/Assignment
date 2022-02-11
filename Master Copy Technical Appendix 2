@@ -7,8 +7,19 @@ geometry: margin = 1in
 fig_caption: yes
 ---
 
-```{r setup, include = FALSE, message = FALSE, warning = FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	fig.align = "center",
+	fig.height = 7,
+	fig.width = 8,
+	message = FALSE,
+	include = TRUE,
+	warnings = FALSE
+)
+```
+
+``` {r load, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 load("cancer.rdata")
 library(VIM)
 library(GGally)
