@@ -226,7 +226,7 @@ There is definite heteroscedasticity in medIncome and for both MedianAgeFemale a
 
 From the scatter plots there are no clear outliers.
 
-```{r transformation, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+ ```{r Scatter smooth}
 
 par(mfrow=c(2,2))
 scatter.smooth(cancer2$incidenceRate, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate",xlab="Incidence Rate")
