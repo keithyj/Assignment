@@ -215,11 +215,11 @@ plot(density(cancer2$Edu18_24), main="Density estimate of Edu18_24")
 ```
 
 ```{r Plots against deathRate}
-par(mfrow = c(2,2))
-with(cancer2, scatter.smooth(deathRate~medIncome, col = "red"))
-with(cancer2, scatter.smooth(deathRate~MedianAgeFemale, col = "red"))
-with(cancer2, scatter.smooth(deathRate~MedianAgeMale, col = "red"))
-with(cancer2, scatter.smooth(deathRate~binnedInc, col = "red"))
+par(mfrow=c(2,2))
+scatter.smooth(cancer2$medIncome, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Income")
+scatter.smooth(cancer2$MedianAgeFemale, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Age Female")
+scatter.smooth(cancer2$MedianAgeMale, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Age Female")
+scatter.smooth(cancer2$binnedInc, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Income (Binned)")
 ```
 
 There is definite heteroscedasticity in medIncome and for both MedianAgeFemale and MedianAgeMale we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic. We could also consider combining the two variables by taking an average as their relationship with Death Rate are very similar. BinnedInc does not show us much other than it is linear.
