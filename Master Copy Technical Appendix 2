@@ -40,7 +40,7 @@ library(tidyr)
 
 \scriptsize
 
-```{r Summary, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r Summary, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 summary(cancer)
 ```
 
@@ -50,7 +50,7 @@ There are some missing values in PctEmployed16_Over which need to be checked.
 
 The minimum value in AvgHouseholdSize is very small which is suspicious and should be immediately investigated.
 
-```{r Sus Plot, echo = FALSE, fig.cap = "\\label{fig:figs}deathRate vs AvgHouseholdSize", fig.width=7, fig.asp = 0.5, fig.align="center", eval = TRUE, message = FALSE, warning = FALSE}
+```{r Sus Plot, echo = FALSE, fig.cap = "\\label{fig:figs}deathRate vs AvgHouseholdSize", fig.asp = 0.5, eval = TRUE, message = FALSE, warning = FALSE}
 plot(deathRate ~ AvgHouseholdSize, data = cancer, main = "deathRate against AvgHouseholdSize")
 ```
 
@@ -79,7 +79,7 @@ cancer1$AvgHouseholdSize[which(cancer1$AvgHouseholdSize < 0.5)] <- NA
 
 Now that we have replaced the small values with NAs we can test the data to see what kind of missing values we have.
 
-```{r Miss, fig.cap = "\\label{fig:figs}Pbox plots showing difference between missing and non-missing data", results = "asis", fig.align = "center", fig.height = 3, fig.width = 7, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r Miss, fig.cap = "\\label{fig:figs}Pbox plots showing difference between missing and non-missing data", results = "asis", fig.height = 3, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 par(mfrow = c(1,4))
 for (i in c(2:4, 18)){ 
   pbox(cancer1,pos=i) 
@@ -104,35 +104,35 @@ binnedInc does not tell us much from this graph - we will instead look at binned
 
 ### Histograms
 
-Massive right skew for pctBlack. PctUnemployed and AvgHouseholdSize are also a little right skew.
-I Recommend a log transform for pctBlack and sqrt transforms for pct unemployed and avg household size.
 
-```{r Transformss, fig.cap = "\\label{fig:figs}Our transformed histograms", fig.width=5, fig.asp=0.68, fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
-par(mfrow = c(1,3))
-with(cancer2, hist(sqrt(AvgHouseholdSize), main = "Transformed AvgHouseholdSize"))
-with(cancer2, hist(sqrt(PctUnemployed16_Over), main = "Transformed PctUnemployed16_Over"))
-with(cancer2, hist(log(cancer2$PctBlack), main = "Transformed PctBlack"))
+```{r histograms included, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+
+par(mfrow = c(2,2))
+hist(cancer2$medIncome, breaks = 30, main = "Histogram of Median Income") # Keep
+hist(cancer2$incidenceRate, breaks = 30, main = "Histogram of Incidence Rate") # Keep
+hist(cancer2$AvgHouseholdSize, breaks = 30, main = "Histogram of Average Household Size") # Keep
+hist(cancer2$PctBlack, breaks = 30, main = "Histogram of Percentage of Population that is Black") # Keep
 ```
 
-```{r histograms james, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
-par(mfrow = c(3,3))
-with(cancer2, hist(medIncome))
+```{r histograms notinclude, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 with(cancer2, hist(MedianAgeFemale))
 with(cancer2, hist(MedianAgeMale))
-hist(cancer2$incidenceRate, breaks = 30, main = "Histogram of Incidence Rate")
 hist(cancer2$PercentMarried, breaks = 30, main = "Histogram of Percent Married")
 hist(cancer2$PctMarriedHouseholds, breaks = 30, main = "Histogram of PctMarriedHouseholds")
 hist(cancer2$Edu18_24, breaks = 30, main = "Histogram of Edu18_24")
-with(cancer2, hist(AvgHouseholdSize))
 with(cancer2, hist(PctEmployed16_Over))
 with(cancer2, hist(PctUnemployed16_Over))
-with(cancer2, hist(PctBlack))
-with(cancer2, hist(deathRate))
 hist(cancer2$povertyPercent, breaks = 30, main = "Histogram of povertyPercent")
 hist(cancer2$PctPrivateCoverage, breaks = 30, main = "Histogram of PctPrivateCoverage")
 hist(cancer2$PctEmpPrivCoverage, breaks = 30, main = "Histogram of PctEmpPrivCoverage")
 hist(cancer2$PctPublicCoverage, breaks = 30, main = "Histogram of PctPublicCoverage")
+with(cancer2, hist(deathRate))
 ```
+
+#### Analysis on PctBlack, MedIncome, AverageHousehold, Incidence Rate
+
+Massive right skew for pctBlack. PctUnemployed and AvgHouseholdSize are also a little right skew.
+I Recommend a log transform for pctBlack and sqrt transforms for pct unemployed and avg household size.
 Massive right skew for medIncome. Median age Male and Female seem to have a pretty symettrical skew.
 I recommend a log transform for medIncome.
 
@@ -141,13 +141,22 @@ is right skewed.
 Transformations are needed.
 Try cube root for povertyPercent.
 
-```{r Transforms, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r Transformsinclude, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 par(mfrow = c(1,3))
 hist(log(cancer2$medIncome), main = "Transformed medIncome")
+hist(sqrt(cancer2$AvgHouseholdSize), main = "Transformed AvgHouseholdSize"))
 hist(cancer2$povertyPercent^(1/3), breaks = 30, main = "Histogram of cube root of povertyPercent")
+hist(log(cancer2$PctBlack), main = "Transformed PctBlack"))
+
+
 hist(cancer2$PctPrivateCoverage^(2), breaks = 30, main = "Histogram of square of PctPrivateCoverage")
 ```
-
+```{r Transformsdontinclude, fig.cap = "\\label{fig:figs}Our transformed histograms", fig.width=5, fig.asp=0.68, fig.align="center", echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
+par(mfrow = c(1,3))
+hist(cancer2$PctPrivateCoverage^(2), breaks = 30, main = "Histogram of square of PctPrivateCoverage")
+with(cancer2, hist(sqrt(PctUnemployed16_Over), main = "Transformed PctUnemployed16_Over"))
+```
+#### Analysis of Transformed Histograms
 There still exists a slight right skew for medIncome but it is an improvement.
 
 The skewness in povertyPercent is removed in the cubeth rooting transfomation.
@@ -159,30 +168,34 @@ The skewness is in PctPrivateCoverage is removed by the square transformation.
 ### Plots Against Death Rate
 ```{r Plots against deathRate, fig.cap = "\\label{fig:figs}Plots showing deathRate against other variables", fig.width=5, fig.asp=1, fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 par(mfrow = c(3,3))
-with(cancer2, scatter.smooth(deathRate~AvgHouseholdSize, col = "red"))
-with(cancer2, scatter.smooth(deathRate~PctEmployed16_Over, col = "red"))
-with(cancer2, scatter.smooth(deathRate~PctUnemployed16_Over, col = "red"))
-with(cancer2, scatter.smooth(deathRate~PctBlack, col = "red"))
-scatter.smooth(cancer2$incidenceRate, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate",xlab="Incidence Rate")
-scatter.smooth(cancer2$PercentMarried, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
-ylab="deathRate", xlab="Percent Married")
-scatter.smooth(cancer2$PctMarriedHouseholds, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
-ylab="deathRate",xlab="PctMarriedHouseholds")
-scatter.smooth(cancer2$Edu18_24, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
-ylab="deathRate",xlab="Edu18_24")
-scatter.smooth(cancer2$medIncome, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Income")
-scatter.smooth(cancer2$MedianAgeFemale, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Age Female")
-scatter.smooth(cancer2$MedianAgeMale, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Age Female")
-scatter.smooth(cancer2$binnedInc, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Income (Binned)")
-scatter.smooth(cancer2$povertyPercent, cancer2$deathRate, lpars=list(col = "red", lwd = 2), ylab="deathRate",xlab="povertyPercent")
-scatter.smooth(cancer2$PctPrivateCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
-ylab="deathRate", xlab="PctPrivateCoverage")
-scatter.smooth(cancer2$PctPublicCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
-ylab="deathRate",xlab="PctPublicCoverage")
-scatter.smooth(cancer2$PctEmpPrivCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
-ylab="deathRate",xlab="PctEmpPrivCoverage")
+with(cancer2, scatter.smooth(deathRate~PctBlack, col = "red")) # keep
+scatter.smooth(cancer2$PctBlack, lpars=list(col = "blue", lwd = 2), ylab="deathRate",xlab="PctBlack")
+scatter.smooth(cancer2$incidenceRate, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate",xlab="Incidence Rate") # Keep
+scatter.smooth(cancer2$medIncome, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Income") # Keep
 ```
 
+```{r Plots against deathRate not included, fig.cap = "\\label{fig:figs}Plots showing deathRate against other variables", fig.width=5, fig.asp=1, fig.align="center", echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
+par(mfrow = c(1,3))
+with(cancer2, scatter.smooth(deathRate~AvgHouseholdSize, col = "red")) # No
+with(cancer2, scatter.smooth(deathRate~PctEmployed16_Over, col = "red")) # No
+with(cancer2, scatter.smooth(deathRate~PctUnemployed16_Over, col = "red")) # No
+scatter.smooth(cancer2$PercentMarried, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate", xlab="Percent Married") # No
+scatter.smooth(cancer2$PctMarriedHouseholds, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate",xlab="PctMarriedHouseholds") # No
+scatter.smooth(cancer2$Edu18_24, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate",xlab="Edu18_24") # No
+scatter.smooth(cancer2$MedianAgeFemale, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Age Female") # No
+scatter.smooth(cancer2$MedianAgeMale, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Age Male") #No
+scatter.smooth(cancer2$binnedInc, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Income (Binned)") #No
+scatter.smooth(cancer2$povertyPercent, cancer2$deathRate, lpars=list(col = "red", lwd = 2), ylab="deathRate",xlab="povertyPercent") #No
+scatter.smooth(cancer2$PctPrivateCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
+ylab="deathRate", xlab="PctPrivateCoverage") #No
+scatter.smooth(cancer2$PctPublicCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
+ylab="deathRate",xlab="PctPublicCoverage") #No
+scatter.smooth(cancer2$PctEmpPrivCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
+ylab="deathRate",xlab="PctEmpPrivCoverage") #No
+```
 From the bivariate plots there is definite heteroskedasticity in pctBlack and for AvgHouseholdSize we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic.
 
 There is definite heteroscedasticity in medIncome and for both MedianAgeFemale and MedianAgeMale we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic. We could also consider combining the two variables by taking an average as their relationship with Death Rate are very similar. BinnedInc does not show us much other than it is linear.
@@ -200,35 +213,40 @@ The fitted lines for PercentMarried, PctMarriedHouseholds and Edu18_24 show an i
 However,the fitted line for incidence rate indicates that the outliers might have a high influence on the model and therefore we can observe that there is heteroscedasticity.
 We need to perform further investigation and tests after fitting a model and we can use spreadLevelPlot() to fix heteroscedasticity.  
 
-We can see all four variables have fairlty straight fitted lines. This support
-them being linear.
-The data points of PctEmpPrivCoverage are getting closer to the fitted line
-which shows that the variance is decreasing.
-We might use spreadLevelPlot() to find appropriate power transformation to fix
-this problem.
+We can see all four variables have fairlty straight fitted lines. This support them being linear.
+The data points of PctEmpPrivCoverage are getting closer to the fitted line which shows that the variance is decreasing.
+We might use spreadLevelPlot() to find appropriate power transformation to fix this problem.
 
 ### Plots for Outliers
 ```{r BoxPlots, fig.cap = "\\label{fig:figs}BoxPlots of our variables", fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 par(mfrow = c(2,3))
+with(cancer2, boxplot(PctUnemployed16_Over, main = "PctUnemployed16_Over")) #Keep
+with(cancer2, boxplot(PctBlack, main = "PctBlack")) # Keep
+with(cancer2, boxplot(deathRate, main = "deathRate")) # Keep
+with(cancer2, boxplot(medIncome, main = "medIncome")) # Keep
+with(cancer2, boxplot(incidenceRate, main = "incidenceRate")) # Keep
+with(cancer2, boxplot(povertyPercent, main = "povertyPercent")) # Keep
+```
+
+```{r BoxPlotsnotincluded, fig.cap = "\\label{fig:figs}BoxPlots of our variables", fig.align="center", echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
+par(mfrow = c(2,3))
 with(cancer2, boxplot(AvgHouseholdSize, main = "AvgHouseholdSize"))
 with(cancer2, boxplot(PctEmployed16_Over, main = "PctEmployed16_Over"))
-with(cancer2, boxplot(PctUnemployed16_Over, main = "PctUnemployed16_Over"))
-with(cancer2, boxplot(PctBlack, main = "PctBlack"))
-with(cancer2, boxplot(deathRate, main = "deathRate"))
-with(cancer2, boxplot(medIncome, main = "medIncome"))
 with(cancer2, boxplot(MedianAgeFemale, main = "MedianAgeFemale"))
 with(cancer2, boxplot(MedianAgeMale, main = "MedianAgeMale"))
 with(cancer2, boxplot(binnedInc, main = "binnedInc"))
-ggplot(cancer2, aes(incidenceRate)) + geom_boxplot()
-ggplot(cancer2, aes(PercentMarried)) + geom_boxplot()
-ggplot(cancer2,aes(PctMarriedHouseholds)) + geom_boxplot()
-ggplot(cancer2, aes(Edu18_24)) + geom_boxplot()
+with(cancer2, boxplot(PercentMarried, main = "PercentMarried"))
+with(cancer2, boxplot(PctMarriedHouseholds, main = "PctMarriedHouseholds"))
+with(cancer2, boxplot(Edu18_24, main = "Edu18_24"))
+with(cancer2, boxplot(PctPrivateCoverage, main = "PctPrivateCoverage"))
+with(cancer2, boxplot(PctEmpPrivCoverage, main = "PctEmpPrivCoverage"))
+with(cancer2, boxplot(PctPublicCoverage, main = "PctPublicCoverage"))
 ```
 Our box plots show we have quite a number of what we would consider outliers accross all our variables apart from binnedInc, which would be impossible due to the bins intervals. This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
 
 We have a severe amount of outliers in medIncome. This is most likely due to natural causes such as a CEO of a large company or a doctor (Reference needed about high paid jobs). 
 
- This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
+This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
 
 We have a severe amount of outliers in PctBlack according to our box plot. This could be due to the very long tail as shown in the scatter plot above.
 
@@ -240,75 +258,49 @@ Possible options might include deleting the outliers or imputing them.
 
 This might depend on whether the outlier is due to some error (data entry, sampling, measurement) or whether the outlier is natural. 
 
-##Remus Boxplot
 
-```{r Remus Boxplot,echo=FALSE}
-par(mfrow=c(2,2))
-with(cancer2, boxplot(povertyPercent, main = "povertyPercent"))
-with(cancer2, boxplot(PctPrivateCoverage, main = "PctPrivateCoverage"))
-with(cancer2, boxplot(PctEmpPrivCoverage, main = "PctEmpPrivCoverage"))
-with(cancer2, boxplot(PctPublicCoverage, main = "PctPublicCoverage"))
-```
-
-All four variables have points lying outside the boxes.
-Note that PctPrivateCoverage have points lying below the box and
-povertyPercent have points lying above the box only.
+All four variables???? have points lying outside the boxes.
+Note that PctPrivateCoverage have points lying below the box and povertyPercent have points lying above the box only.
 This shows potential outliers in particular in PctPrivateCoverage and povertyPercent.
-Further discoveries and decisions on the outliers should be done when fitting a 
-model.
+Further discoveries and decisions on the outliers should be done when fitting a  model.
 
 ### Multicollinearity
 #### Multicollinearity for Married
-```{r multicollinearity, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
-matrix(cor(cancer2[,c("incidenceRate","PercentMarried","PctMarriedHouseholds","Edu18_24")]), nrow=4, ncol=4)
-```
-PercentMarried and PctMarriedHouseholds are clearly highly correlated with correlation value 0.87. 
 
-We can further check using Pearson Correlation Coefficient test.
-#Correlation Test
-```{r cor tests, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r multicollinearity, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+matrix(cor(cancer2[,c("PctUnemployed16_Over","PercentMarried","PctMarriedHouseholds","PctEmployed16_Over", "MedianAgeMale", "MedianAgeFemale")]), nrow=6, ncol=6)
+```
+From the plot we can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation ...), Poverty with PctEmployed_Over16 (-0.74) and PctPrivateCoverage (-0.82), 
+
+
+```{r cor, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+round(cor(cancer2[,c(5,10:14)])[1,], digits = 2)
+``` 
+
+```{r Income comparison, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.cap = "medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model", fig.width = 7, fig.height = 4}
+with(cancer2, plot(binnedInc, medIncome, main = "Comparison of medIncome and binnedInc", xlab = "binnedInc", ylab = "medIncome"))
+```
+
+We can observe that for the first 9 bins medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model.
+
+``` {r pearson test age, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
+cor.test(cancer2$MedianAgeMale, cancer2$MedianAgeFemale, method = c("pearson"))
+```
+#### Correlation Tests on the above Variables
+```{r cor tests, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 cor.test(cancer2$PercentMarried,cancer2$PctMarriedHouseholds)
 ```
 
-#### Multicollinearity for Employment
-
-There is strong correlation between PctUnemployed16_over and PctEmployed16_Over. We run a correlation test between these two variables to check to see if there is an yevidence of multi colinearity that should be investigated later.
-
-```{r Multi, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r Multi, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 with(cancer2, cor.test(PctUnemployed16_Over, PctEmployed16_Over))
 ```
-
-#### Multicollinearity for Poverty
-Poverty with PctUnemployed_Over16, PctEmployed_Over16, PctPrivateCoverage, PctEmpPrivCoverage, PctPublicCoverage
-```{r cor, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
-round(cor(cancer2[,c(5,10:14)])[1,], digits = 2)
-```
-Correlation is at least 0.65. 
-In particular -0.74 with PctEmployed16_Over, -0.82 with PctPrivateCoverage.
-
-Proceed using Pearson Correlation Coefficent test.
-We get p-values 2.2e-16 for all five tests.
-We can conclude povertyPercent is significant correlated to these five variables.
-
-```{r cor test, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r cor test, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 cor.test(cancer2$povertyPercent, cancer2$PctEmployed16_Over)
 cor.test(cancer2$povertyPercent, cancer2$PctUnemployed16_Over)
 cor.test(cancer2$povertyPercent, cancer2$PctPrivateCoverage)
 cor.test(cancer2$povertyPercent, cancer2$PctEmpPrivCoverage)
 cor.test(cancer2$povertyPercent, cancer2$PctPublicCoverage)
 ```
-
-#### Multicollinearity for Income
-
-```{r Income comparison, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.cap = "medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model", fig.width = 7, fig.height = 4}
-with(cancer2, plot(binnedInc, medIncome, main = "Comparison of medIncome and binnedInc", xlab = "binnedInc", ylab = "medIncome"))
-```
-We can observe that for the first 9 bins medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model.
-
-``` {r pearson test age, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
-cor.test(cancer2$MedianAgeMale, cancer2$MedianAgeFemale, method = c("pearson"))
-```
-As the p value is below 0.05 we can assume the correlation is significant and multicollinearity exists between the Median age Male and Median age Female.
 
 
 
