@@ -251,6 +251,19 @@ There still exists a slight right skew but it is an improvement.
 
 ### Multicolinearity
 
+We have evidence of multicolinearity between Unemployment and Employment.
+
+```{r multicollinearity, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+matrix(cor(cancer2[,c("incidenceRate","PercentMarried","PctMarriedHouseholds","Edu18_24")]), nrow=4, ncol=4)
+```
+PercentMarried and PctMarriedHouseholds are clearly highly correlated with correlation value 0.87. 
+
+We can further check using Pearson Correlation Coefficient test. 
+
+#Correlation Test
+```{r cor test, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+cor.test(cancer2$PercentMarried,cancer2$PctMarriedHouseholds)
+```
 
 ### OUTLIERS
 First we use box-plots to see if there are any suspicous value.
@@ -278,16 +291,18 @@ ggplot(cancer2, aes(incidenceRate)) + geom_boxplot()
 ggplot(cancer2, aes(PercentMarried)) + geom_boxplot()
 ggplot(cancer2,aes(PctMarriedHouseholds)) + geom_boxplot()
 ggplot(cancer2, aes(Edu18_24)) + geom_boxplot()
+```
 
-# We observe that the  outliers are present for all predictor variables. 
+We observe that the  outliers are present for all predictor variables. 
 
-# The boxplot for Incidence rate shows the existence of extreme high values. 
+In particular, the boxplot for Incidence rate shows the existence of extreme high values. 
 
-# Therefore, we might want to investigate into the outliers of incidence rate only and decide how we might want to treat them. 
+Therefore, we might want to investigate into the outliers of the predictor variables and decide how we might want to treat them before fitting the model. 
 
-# Possible options include deleting the outliers or imputing them. 
+Possible options might include deleting the outliers or imputing them. 
 
-# This might depend on whether the outlier is due to some error (data entry, sampling, measurement) or whether the outlier is natural. 
+This might depend on whether the outlier is due to some error (data entry, sampling, measurement) or whether the outlier is natural. 
+
 ```
 ```{r BoxPlots}
 par(mfrow = c(2,3))
@@ -335,21 +350,33 @@ ggplot(cancer2, aes(Avgfix)) + geom_density()
 
 ```{r transformation, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 # Try fixing incidence rate and percent married
-cancer2$incidenceRate <- log(cancer2$incidenceRate)
-hist(cancer2$incidenceRate, main = "Histogram of Transformed Incidence Rate")
-plot(density(cancer2$incidenceRate), main= "Density estimate of Transformed Incidence Rate")
+cancer2$IncidenceFix <- log(cancer2$incidenceRate)
+hist(IncidenceFix, main = "Histogram of Transformed Incidence Rate")
 
-cancer2$PercentMarried<- cancer2$PercentMarried^(2)
-hist(cancer2$PercentMarried, breaks = 30, main = "Histogram of transformed Percent Married")
-plot(density(cancer2$PercentMarried), main="Density estimate of transformed Percent Married")
-# The transformed predictor variables, ie, Incidence Rate and PercentMarried, now have a normal spread and therefore skewness is fixed.
+cancer2$PctMarriedFix<- cancer$PercentMarried^(2)
+hist(PctMarriedFix, breaks = 30, main = "Histogram of transformed Percent Married")
+
+# The transformed predictor variables now have a normal spread and therefore skewness is fixed.
 ```
-
-
-We have evidence of multicolinearity between Unemployment and Employment.
 
 ### FIXING HETEROSCEDASCITY
 
+```{r transformation, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+
+par(mfrow=c(2,2))
+scatter.smooth(cancer2$incidenceRate, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate",xlab="Incidence Rate")
+scatter.smooth(cancer2$PercentMarried, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate", xlab="Percent Married")
+scatter.smooth(cancer2$PctMarriedHouseholds, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate",xlab="PctMarriedHouseholds")
+scatter.smooth(cancer2$Edu18_24, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
+ylab="deathRate",xlab="Edu18_24")
+```
+
+From the scatterplots, the predictor variables show a fairly linear relationship with death Rate. 
+The fitted lines for PercentMarried, PctMarriedHouseholds and Edu18_24 show an inverse relationship with the response variable. 
+However,the fitted line for incidence rate indicates that the outliers might have a high influence on the model and therefore we can observe that there is heteroscedasticity.
+We need to perform further investigation and tests after fitting a model and we can use spreadLevelPlot() to fix heteroscedasticity.  
 
 
 
