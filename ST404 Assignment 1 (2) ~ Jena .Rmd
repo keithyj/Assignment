@@ -2,7 +2,7 @@
 title: "ST404 Assignment 1"
 author: "jena"
 output:
- html_document
+pdf_document
   
 ---
 
@@ -22,12 +22,10 @@ cancer2 <- na.omit(cancer1)
 cancer2_select<- select(cancer, incidenceRate, PercentMarried,PctMarriedHouseholds, Edu18_24)
 summary(cancer2_select)
 ```
-
 # Check for missing values
 ```{r missing values}
 sum(is.na(cancer2_select))
 ```
-
 No missing values found in the variables.
 
 # Univariate Analysis
@@ -40,13 +38,10 @@ hist(cancer2$PctMarriedHouseholds, breaks = 30, main = "Histogram of PctMarriedH
 
 hist(cancer2$Edu18_24, breaks = 30, main = "Histogram of Edu18_24")
 ```
-
-
 We note that incidence rate shows a severe right skewness. 
 We need to fix the skewness by considering a possible logarithmic transformation. 
 
 PercentMarried and PctMarriedHouseholds are also slightly left skewed. We can fix this using square transformation. 
-
 
 # Transformation
 ```{r transformation}
@@ -117,7 +112,6 @@ ylab="deathRate",xlab="PctMarriedHouseholds")
 scatter.smooth(cancer2$Edu18_24, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
 ylab="deathRate",xlab="Edu18_24")
 
-
 ```
 
 From the scatterplots, the predictor variables show a fairly linear relationship with death Rate. 
@@ -129,10 +123,10 @@ However,the fitted line for incidence rate indicates that the outliers might hav
 We need to perform further investigation and tests after fitting a model and we can use spreadLevelPlot() to fix heteroscedasticity.  
 
 #Check for Multicollinearity
+
 ```{r multicollinearity}
 matrix(cor(cancer2[,c("incidenceRate","PercentMarried","PctMarriedHouseholds","Edu18_24")]), nrow=4, ncol=4)
 ```
-
 PercentMarried and PctMarriedHouseholds are clearly highly correlated. Correlation is 0.87. 
 
 We can further check using Pearson Correlation Coefficient test. 
