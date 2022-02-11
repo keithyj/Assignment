@@ -142,11 +142,11 @@ Transformations are needed.
 Try cube root for povertyPercent.
 
 ```{r Transformsinclude, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
-par(mfrow = c(1,3))
+par(mfrow = c(2,2))
 hist(log(cancer2$medIncome), breaks = 30, main = "Transformed medIncome", ylab = "Frequency", xlab = "log(medIncome)")
-hist(sqrt(cancer2$AvgHouseholdSize), breaks = 30, main = "Transformed AvgHouseholdSize"), ylab = "Frequency", xlab = "sqrt(AvgHouseholdSize)")
+hist(sqrt(cancer2$AvgHouseholdSize), breaks = 30, main = "Transformed AvgHouseholdSize", ylab = "Frequency", xlab = "sqrt(AvgHouseholdSize)")
 hist(cancer2$povertyPercent^(1/3), breaks = 30, main = "Histogram of cube root of povertyPercent", ylab = "Frequency", xlab = "povertyPercent^(1/3)")
-hist(log(cancer2$PctBlack), breaks = 30, main = "Transformed PctBlack"), ylab = "Frequency", xlab = "log(PctBlack)" )
+hist(log(cancer2$PctBlack), breaks = 30, main = "Transformed PctBlack", ylab = "Frequency", xlab = "log(PctBlack)" )
 ```
 ```{r Transformsdontinclude, fig.cap = "\\label{fig:figs}Our transformed histograms", fig.width=5, fig.asp=0.68, fig.align="center", echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 par(mfrow = c(1,3))
