@@ -1,0 +1,131 @@
+---
+title: "variables no lm"
+author: "Remus"
+date: "2022/2/8"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We look at povertyPercent, PctPrivateCoverage, PctEmpPrivCoverage, PctPublickCoverage
+
+## Loading data and packages
+
+```{r Loading, message = FALSE}
+load("cancer.RData")
+load("cancer2.RData")
+library(dplyr)
+library(GGally) 
+library(ggplot2)
+library(tidyr)  
+library(car)
+```
+
+## Using Alex's cancer2 (removed missing or incorrect values)
+
+```{r cancer2}
+cancer1 <- cancer
+susPoint <- which(cancer1$AvgHouseholdSize < 0.5)
+cancer1$AvgHouseholdSize[susPoint] <- NA
+cancer2 <- na.omit(cancer1)
+```
+
+## Scatter Plots
+```{r Linearity, echo=FALSE}
+cancer2 %>% gather(-deathRate,-Geography,-binnedInc, key="predictor", value="value") %>%
+  ggplot(aes(x = value, y=deathRate)) + facet_wrap(~predictor, scales = "free") +
+  geom_point(size=0.4) +
+  ggtitle("Scatter plots of deathRate against predictor variables")
+```
+
+
+```{r Scatter smooth,echo=FALSE}
+par(mfrow=c(2,2))
+scatter.smooth(cancer2$povertyPercent, cancer2$deathRate, lpars=list(col = "red", lwd = 2), ylab="deathRate",xlab="povertyPercent")
+scatter.smooth(cancer2$PctPrivateCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
+ylab="deathRate", xlab="PctPrivateCoverage")
+scatter.smooth(cancer2$PctPublicCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
+ylab="deathRate",xlab="PctPublicCoverage")
+scatter.smooth(cancer2$PctEmpPrivCoverage, cancer2$deathRate, lpars=list(col = "red", lwd = 2),
+ylab="deathRate",xlab="PctEmpPrivCoverage")
+```
+
+We can see all four variables have fairlty straight fitted lines. This support
+them being linear.
+The data points of PctEmpPrivCoverage are getting closer to the fitted line
+which shows that the variance is decreasing.
+We might use spreadLevelPlot() to find appropriate power transformation to fix
+this problem.
+
+
+##Skewness 
+```{r Skew ,echo=FALSE}
+cancer3<- cancer2[,c(5,12:14)]
+cancer3 %>% gather() %>%
+  ggplot(aes(x = value)) + facet_wrap(~key, scales = "free") +
+  geom_histogram(col = c("blue"), fill = "blue", alpha=0.6)
+```
+From the histograms, PctPrivateCoverage is slightly left skewed and povertyPercent
+is right skewed.
+Transformations are needed.
+Try cubeth root for povertyPercent.
+
+```{r Transform1, echo=FALSE}
+ggplot(cancer2, aes(x=povertyPercent^(1/3)))+
+  geom_histogram(col = c("blue"), fill = "blue", alpha=0.6)+
+  ggtitle("Histogram of cubeth root of povertyPercent")+
+  ylab("Frequency")
+```
+The skewness in povertyPercent is removed in the cubeth rooting transfomation.
+Next try squaring for PctPrivateCoverage.
+
+```{r Trasnform2, echo=FALSE}
+ggplot(cancer2, aes(x=PctPrivateCoverage^(2)))+
+  geom_histogram(col = c("blue"), fill = "blue", alpha=0.6)+
+  ggtitle("Histogram of square of PctPrivateCoverage")+
+  ylab("Frequency")
+
+```
+The skewness is in PctPrivateCoverage is removed by the square transformation.
+
+
+##Outliers
+
+```{r boxplots, echo=FALSE}
+cancer3 %>% gather() %>%
+  ggplot(aes(x = value)) + facet_wrap(~key, scales = "free") +
+  geom_boxplot(shape=1, alpha=0.5, col="blue")+
+  coord_flip()
+```
+All four variables have points lying outside the boxes.
+Note that PctPrivateCoverage have points lying below the box and
+povertyPercent have points lying above the box only.
+This shows potential outliers in particular in PctPrivateCoverage and povertyPercent.
+Further discoveries and decisions on the outliers should be done when fitting a 
+model.
+
+## Multicollinearity
+
+Poverty with PctUnemployed_Over16, PctEmployed_Over16, PctPrivateCoverage, PctEmpPrivCoverage, PctPublicCoverage
+```{r cor, echo=FALSE}
+round(cor(cancer2[,c(5,10:14)])[1,], digits = 2)
+```
+Correlation is at least 0.65. 
+In particular -0.74 with PctEmployed16_Over, -0.82 with PctPrivateCoverage.
+
+Proceed using Pearson Correlation Coefficent test.
+We get p-values 2.2e-16 for all five tests.
+We can conclude povertyPercent is significant correlated to these five variables.
+
+```{r cor test,echo=FALSE}
+cor.test(cancer2$povertyPercent, cancer2$PctEmployed16_Over)
+cor.test(cancer2$povertyPercent, cancer2$PctUnemployed16_Over)
+cor.test(cancer2$povertyPercent, cancer2$PctPrivateCoverage)
+cor.test(cancer2$povertyPercent, cancer2$PctEmpPrivCoverage)
+cor.test(cancer2$povertyPercent, cancer2$PctPublicCoverage)
+```
+
+
+
