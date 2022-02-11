@@ -80,6 +80,14 @@ With our data we could replace all the data with an alternate source but as the 
 ```{r remove miss}
 cancer2 <- na.omit(cancer1)
 ```
+
+
+- GG pairs analysis 
+
+We can see initially that medIncome is right skewed, also median age Male and Female are highly correlated. We will use a pearsons coefficient to check if multicollinearity exist (http://www.sthda.com/english/wiki/correlation-test-between-two-variables-in-r). 
+binnedInc does not tell us much from this graph - we will instead look at binnedInc and medIncome together as they measure similar data to check for multicollinearity. 
+
+
 ## Multicollinearity for employment
 
 There is strong correlation between PctUnemployed16_over and PctEmployed16_Over. We run a correlation test between these two variables to check to see if there is an yevidence of multi colinearity that should be investigated later.
@@ -87,6 +95,7 @@ There is strong correlation between PctUnemployed16_over and PctEmployed16_Over.
 ```{r Multi, echo = FALSE}
 with(cancer2, cor.test(PctUnemployed16_Over, PctEmployed16_Over))
 ```
+
 ## Bivariate Plots
 
 ```{r Plots against deathRate, fig.cap = "\\label{fig:figs}Plots showing deathRate against other variables", fig.width=5, fig.asp=1, fig.align="center", echo = FALSE}
@@ -109,6 +118,19 @@ ylab="deathRate",xlab="PctMarriedHouseholds")
 scatter.smooth(cancer2$Edu18_24, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
 ylab="deathRate",xlab="Edu18_24")
 ```
+```{r jamesplots against deathRate}
+par(mfrow=c(2,2))
+scatter.smooth(cancer2$medIncome, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Income")
+scatter.smooth(cancer2$MedianAgeFemale, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Age Female")
+scatter.smooth(cancer2$MedianAgeMale, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Age Female")
+scatter.smooth(cancer2$binnedInc, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Income (Binned)")
+```
+
+There is definite heteroscedasticity in medIncome and for both MedianAgeFemale and MedianAgeMale we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic. We could also consider combining the two variables by taking an average as their relationship with Death Rate are very similar. BinnedInc does not show us much other than it is linear.
+
+From the scatter plots there are no clear outliers.
+
+
 
 ```{r historgrams for skew, echo = FALSE, fig.cap = "\\label{fig:figs}Histograms of our predictor variables", fig.width=5, fig.asp=0.68, fig.align="center"}
 par(mfrow = c(2,3))
@@ -124,6 +146,21 @@ hist(cancer2$PercentMarried, breaks = 30, main = "Histogram of Percent Married")
 hist(cancer2$PctMarriedHouseholds, breaks = 30, main = "Histogram of PctMarriedHouseholds")
 hist(cancer2$Edu18_24, breaks = 30, main = "Histogram of Edu18_24")
 ```
+```{r histograms james}
+par(mfrow = c(2,2))
+with(cancer2, hist(medIncome))
+with(cancer2, hist(MedianAgeFemale))
+with(cancer2, hist(MedianAgeMale))
+```
+Massive right skew for medIncome. Median age Male and Female seem to have a pretty symettrical skew.
+I recommend a log transform for medIncome.
+
+```{r Transforms}
+par(mfrow = c(1,1))
+hist(log(cancer2$medIncome), main = "Transformed medIncome")
+```
+
+There still exists a slight right skew but it is an improvement.
 
 ```{r BoxPlots, echo = FALSE, fig.cap = "\\label{fig:figs}BoxPlots of our variables", fig.align="center"}
 par(mfrow = c(2,3))
@@ -133,6 +170,19 @@ with(cancer2, boxplot(PctUnemployed16_Over, main = "PctUnemployed16_Over"))
 with(cancer2, boxplot(PctBlack, main = "PctBlack"))
 with(cancer2, boxplot(deathRate, main = "deathRate"))
 ```
+```{r box plots james}
+par(mfrow = c(2,3))
+with(cancer2, boxplot(medIncome, main = "medIncome"))
+with(cancer2, boxplot(MedianAgeFemale, main = "MedianAgeFemale"))
+with(cancer2, boxplot(MedianAgeMale, main = "MedianAgeMale"))
+with(cancer2, boxplot(binnedInc, main = "binnedInc"))
+
+```
+Our box plots show we have quite a number of what we would consider outliers accross all our variables apart from binnedInc, which would be impossible due to the bins intervals. This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
+
+We have a severe amount of outliers in medIncome. This is most likely due to natural causes such as a CEO of a large company or a doctor (Reference needed about high paid jobs). 
+
+
 ```{r outliers}
 ggplot(cancer2, aes(incidenceRate)) + geom_boxplot()
 ggplot(cancer2, aes(PercentMarried)) + geom_boxplot()
@@ -276,6 +326,22 @@ cor.test(cancer2$povertyPercent, cancer2$PctPrivateCoverage)
 cor.test(cancer2$povertyPercent, cancer2$PctEmpPrivCoverage)
 cor.test(cancer2$povertyPercent, cancer2$PctPublicCoverage)
 ```
+
+```{r Income comparison}
+ggpairs(cancer2, columns = c(3,4), mapping = aes(alpha = 0.6),
+        upper = list(continuous=mod_cor),
+        lower = list(continuous=wrap(mod_points, col = "red")),
+        diag = list(continuous="densityDiag"),
+        progress = FALSE) +
+        theme(text=element_text(size=6))
+```
+We can observe that for the first 9 bins medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model.
+
+``` {r pearson test age}
+cor.test(cancer2$MedianAgeMale, cancer2$MedianAgeFemale, method = c("pearson"))
+```
+As the p value is below 0.05 we can assume the correlation is significant and multicollinearity exists between the Median age Male and Median age Female.
+
 
 ### BIG MAP
 
