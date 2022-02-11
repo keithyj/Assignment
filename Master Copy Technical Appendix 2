@@ -61,7 +61,7 @@ We identify one of these points and investigate it:
 kable(subset(cancer, AvgHouseholdSize < 0.5)[1,c("Geography", "AvgHouseholdSize")])
 ```
 
-To check the validity of this data point we find an alternate source of the data (@HouseHoldDataBerkeleyCounty).
+To check the validity of this data point we find an alternate source of the data (@HouseHoldDataBerekelyCounty).
 
 We note that this data recording AvgHouseholdSize in the same year as our data lists the size at 2.61. This is completely different and this is similar for other small values in our dataset.
 
