@@ -16,6 +16,7 @@ library(usmap)
 library(car)
 library(stringr)
 library(knitr)
+library(tidyr)  
 ```
 
 # ST404 Assignment 1 Alex
