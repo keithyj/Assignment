@@ -283,7 +283,7 @@ with(cancer2, plot(binnedInc, medIncome, main = "Comparison of medIncome and bin
 
 We can observe that for the first 9 bins medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model.
 
-``` {r pearson test age, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
+``` {r pearson test age not, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
 cor.test(cancer2$MedianAgeMale, cancer2$MedianAgeFemale, method = c("pearson"))
 ```
 #### Correlation Tests on the above Variables
