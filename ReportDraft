@@ -35,14 +35,24 @@ What are we trying to answer? - How death rate (due to cancer) differ across US 
 ******** Missing values
 -- Can you suggest a mechanism for missing data (MCAR/MAR/MNAR)?
 
-We have a few missing values in PctEmployed16_Over. 152 missing values that should be investigated here. We note that as a proportion of the dataset 152 rows having missing data isn't a large proportion.
+Now that we have replaced the small values with NAs we can test the data to see what kind of missing values we have.
 
-To investigate the missing values we use the pbox funtion from the VIM package. This shows us how different are values look when the missing rows are removed.
-Accross all values our box plots look similar to each other which suggests our data is MCAR.
+```{r Miss, echo = FALSE, fig.cap = "\\label{fig:figs}Pbox plots showing difference between missing and non-missing data", results = "asis", fig.align = "center", fig.height = 3, fig.width = 7}
+par(mfrow = c(1,4))
+for (i in c(2:4, 18)){ 
+  pbox(cancer1,pos=i) 
+}
+```
 
-For MCAR data our easiest solution to deal with it is simply to delete the rows where missing data is present. This lowers our data representation a little bit and might increase variance in the data but overall due to the low amount of missing values it should be okay to just delete the rows experiencing missing data.
+We use the pbox() function from the VIM package to check what these missing values represent.
 
--- What should be done with missing values when you come to build your statistical model?
+From the above plots we note that the box plots with the missing data do not look significantly different from those without. The pbox plots for the other variables look similar to this so we conclude that the data that is missing is MCAR.
+
+With our data we could replace all the data with an alternate source but as the proportion of missing data points is so small and it is MCAR it is safe to just remove the rows with missing data from our data set.
+
+```{r remove miss}
+cancer2 <- na.omit(cancer1)
+```
 
 The rows should be deleted as our statisitcal model will not rely on geography and the proportion of rows with missing values is small.
 ******** Skewness
