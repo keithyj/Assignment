@@ -186,16 +186,6 @@ with(cancer2, hist(sqrt(PctUnemployed16_Over), main = "Transformed PctUnemployed
 with(cancer2, hist(log(cancer2$PctBlack), main = "Transformed PctBlack"))
 ```
 ```{r transformation, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
-# Try fixing incidence rate and percent married
-cancer2$IncidenceFix <- log(cancer2$incidenceRate)
-hist(IncidenceFix, main = "Histogram of Transformed Incidence Rate")
-
-cancer2$PctMarriedFix<- cancer2$PercentMarried^(2)
-hist(PctMarriedFix, breaks = 30, main = "Histogram of transformed Percent Married")
-```
-We note that incidence rate shows a severe right skewness. 
-We need to fix the skewness by considering a possible logarithmic transformation. 
-PercentMarried and PctMarriedHouseholds are also slightly left skewed. We can fix this using square transformation. 
 
 ##Remus histogram
 ```{r Skew ,echo=FALSE}
