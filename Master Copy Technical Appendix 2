@@ -99,8 +99,7 @@ with(cancer2, scatter.smooth(deathRate~PctBlack, col = "red"))
 
 From the bivariate plots there is definite heteroskedasticity in pctBlack and for AvgHouseholdSize we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic.
 
- ```{r Scatter smooth}
-
+```{r Scatter smooths}
 par(mfrow=c(2,2))
 scatter.smooth(cancer2$incidenceRate, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate",xlab="Incidence Rate")
 scatter.smooth(cancer2$PercentMarried, cancer2$deathRate, lpars=list(col = "blue", lwd = 2),
@@ -254,7 +253,7 @@ PercentMarried and PctMarriedHouseholds are clearly highly correlated with corre
 
 We can further check using Pearson Correlation Coefficient test.
 #Correlation Test
-```{r cor test, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+```{r cor tests, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 cor.test(cancer2$PercentMarried,cancer2$PctMarriedHouseholds)
 ```
 
