@@ -100,9 +100,9 @@ ggpairs(cancer2, columns = c(2:3, 5:18), mapping = aes(alpha = 0.6),
 
 ## Analysis of deathRate
 
-Our assignment brief tells us we should investigate deathRate as a repsonse variable when it comes to our investigation. So we first make sure that a normal linear model is appropriate by making sure that deathRate is normally distributed.
+Our assignment brief tells us we should investigate deathRate as a repsonse variable when it comes to our investigation. So we first make sure that a normal linear model is appropriate by making sure that deathRate is normally distributed. From deathRate's density and QQ Plots we can see that the variable deathRate is normally distributed so a normal linear model is appropriate to use. 
 
-```{r qqnorm and density, fig.asp = 0.5, echo = FALSE}
+```{r qqnorm and density, fig.asp = 0.4, echo = FALSE}
 par(mfrow = c(1,2))
 plot(density(cancer2$deathRate), main = "Density Plot of deathRate")
 qqnorm(cancer2$deathRate, main = "QQ Plot of deathRate")
@@ -227,7 +227,6 @@ round(cor(cancer2[,c(5,10:14)])[1,], digits = 2)
 We can observe that for the first 9 bins medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model.
 
 #### Correlation Tests on the above Variables
-
 
 
 
