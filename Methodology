@@ -173,8 +173,3 @@ We suggest that the incidence rate in Williamsburg city, Virginia can be conside
 We can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation -0.65), MedianAgeFemale and MedianAgeMale (Correlation 0.94) (See Appendix). We further used Pearson correlation test (see Appendix) to check for multicollinearity between percentPoverty and PctEmployed_Over16 (-0.74), PctPrivateCoverage (-0.82), PctEmpPrivCoverage (-0.68), and PctPublicCoverage(0.65).Therefore, we might consider discarding some of the predictor variables due to high multicollinearity to improve accuracy when fitting a model.
 
 We can observe that for the first 9 bins medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model.
-
-
-
-
-
