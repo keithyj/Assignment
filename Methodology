@@ -1,5 +1,7 @@
 ---
-output: pdf_document
+output: 
+  pdf_document:
+    number_sections: true
 urlcolor: blue
 fontsize: 11pt
 geometry: margin = 1in
@@ -66,7 +68,7 @@ cancer1 <- cancer
 cancer1$AvgHouseholdSize[which(cancer1$AvgHouseholdSize < 0.1)] <- NA
 ```
 
-## Missing values check
+## Missing Value Exploration
 
 ```{r Miss, fig.cap = "Box Plots showing difference between missing and non-missing data from VIM package", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.4}
 par(mfrow = c(1,4))
@@ -83,7 +85,7 @@ We could replace all the data with an alternate source but as the proportion of 
 cancer2 <- na.omit(cancer1)
 ```
 
-## Analysis of deathRate's normality
+## Univariate Plots
 
 ```{r qqnorm and density, fig.asp = 0.35, echo = FALSE, fig.cap = "Density and QQ-Plots of deathRate"}
 par(mfrow = c(1,2))
@@ -93,8 +95,6 @@ qqline(cancer2$deathRate, col = "red")
 ```
 
 The assignment brief tells us we should investigate deathRate as a repsonse variable when it comes to our investigation. So we first make sure that a normal linear model is appropriate by making sure that deathRate is normally distributed. From deathRate's density and QQ Plots (Fig. 2) we can see that the variable deathRate is normally distributed so a normal linear model is appropriate to use.
-
-## Univariate Plots
 
 ```{r histograms included, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.3, fig.cap = "Histograms of 4 skewed variables"}
 
@@ -119,7 +119,7 @@ From the above (Fig. 4) we note that some simple transformations can be applied 
 
 ## Bivariate Plots
 
-```{r Plots against deathRate, fig.cap = "Plots showing deathRate against other variables", fig.width=7, fig.asp=0.6, fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r Plots against deathRate, fig.cap = "Plots showing deathRate against other variables", fig.width=7, fig.asp=0.46, fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 par(mfrow = c(2,3))
 with(cancer2, scatter.smooth(deathRate~PctBlack, ylab = "deathRate", xlab = "pctBlack", lpars = list(col = "red", lwd = 2)))
 with(cancer2, scatter.smooth(deathRate~incidenceRate, ylab = "deathRate", xlab = "incidenceRate", lpars = list(col = "red", lwd = 2))) # keep
@@ -129,13 +129,11 @@ with(cancer2, scatter.smooth(deathRate~MedianAgeMale, ylab = "deathRate", xlab =
 with(cancer2, scatter.smooth(deathRate~MedianAgeFemale, ylab = "deathRate", xlab = "MedianAgeFemale", lpars = list(col = "red", lwd = 2)))
 ```
 
-Most predictor variables in US cancer dataset show signs of linearity and no heteroscedasticity. 
+Most predictor variables in US cancer dataset show signs of linearity and no heteroscedasticity. However, from the bivariate plots above, we can observe definite heteroscedasticity in pctBlack, Incidence Rate and medIncome. We might need to perform further investigation after fitting a model and we can use spreadLevelPlot() to find an appropriate power transformation to fix heteroscedasticity. We were also able to observe that the outliers of incidence rate might have a high influence underlying its heteroscedasticity and non-linearity. The transformations that have been used to fix the skew of the data may not be the same as those that would fix heteroskedasticity or non-linearity. In this case we should prioritise heteroskedasticity and linearity as those are more important to fitting a good model than normality.
 
-However, from the bivariate plots above, we can observe definite heteroscedasticity in pctBlack, Incidence Rate and medIncome. We might need to perform further investigation after fitting a model and we can use spreadLevelPlot() to find an appropriate power transformation to fix heteroscedasticity. We were also able to observe that the outliers of incidence rate might have a high influence underlying its heteroscedasticity and non-linearity. The transformations that have been used to fix the skew of the data may not be the same as those that would fix heteroskedasticity or non-linearity. In this case we should prioritise heteroskedasticity and linearity as those are more important to fitting a good model than normality.
+Moreover, we can see non-linearity in AvgHouseholdsize,MedianAgeFemale and MedianAgeMale. We notice a concave shape for incidence rate and AvgHouseholdsize so we advise having a more compex model, perhaps with a quadratic term might be improve linearity as the data is not monotonic.
 
-Moreover, we can see non-linearity in AvgHouseholdsize,MedianAgeFemale and MedianAgeMale (See Appendix). We notice a concave shape for incidence rate and AvgHouseholdsize so we advise having a more compex model, perhaps with a quadratic term might be improve linearity as the data is not monotonic. We could also consider combining MedianAgeFemale and MedianAgeMale by taking an average as their relationship with Death Rate are very similar.
-
-```{r BoxPlots, fig.cap = "BoxPlots of our variables", fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.4}
+```{r BoxPlots, fig.cap = "BoxPlots of our variables", fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.3}
 par(mfrow = c(1,3))
 with(cancer2, boxplot(PctBlack, main = "PctBlack")) # Keep
 with(cancer2, boxplot(medIncome, main = "medIncome")) # Keep
@@ -155,3 +153,14 @@ We suggest that the incidence rate in Williamsburg city, Virginia can be conside
 We can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation -0.65), MedianAgeFemale and MedianAgeMale (Correlation 0.94) (See Appendix). We further used Pearson correlation test (see Appendix) to check for multicollinearity between percentPoverty and PctEmployed_Over16 (-0.74), PctPrivateCoverage (-0.82), PctEmpPrivCoverage (-0.68), and PctPublicCoverage(0.65).Therefore, we might consider discarding some of the predictor variables due to high multicollinearity to improve accuracy when fitting a model.
 
 We can observe that for the first 9 bins medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model.
+
+## Correlation with deathRate
+
+We note that none of the variables highly correlate with deathRate but there are a number with medium correlation with deathRate that should be noted when it comes to building a model. These are incidenceRate, medIncome, povertyPercent, PctEmployed16_Over, PctUnemployed16_Over, PctPrivateCoverage, PctPublicCoverage. However, a lot of these also correlate highly with each other so the correlation with deathRate will be down to these variables measuring the same thing.
+
+\scriptsize
+
+```{r cordeathRate, echo = FALSE}
+kable(round(cor(cancer2$deathRate, cancer2[,c("incidenceRate","medIncome","povertyPercent","PctEmployed16_Over","PctPrivateCoverage","PctPublicCoverage")]), digits = 2), align = "l")
+```
+
