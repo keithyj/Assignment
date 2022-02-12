@@ -157,26 +157,11 @@ scatter.smooth(cancer2$incidenceRate, cancer2$deathRate, lpars=list(col = "blue"
 scatter.smooth(cancer2$medIncome, cancer2$deathRate, lpars=list(col = "blue", lwd = 2), ylab="deathRate", xlab="Median Income") # Keep
 ```
 
-From the bivariate plots there is definite heteroskedasticity in pctBlack and for AvgHouseholdSize we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic.
+Most predictor variables in US cancer dataset show signs of linearity and no heteroscedasticity. 
 
-There is definite heteroscedasticity in medIncome and for both MedianAgeFemale and MedianAgeMale we see some non linearity. We see a concave shape so advising a more compex model, perhaps with a quadratic term might be advisable as the data is not monotonic. We could also consider combining the two variables by taking an average as their relationship with Death Rate are very similar. BinnedInc does not show us much other than it is linear.
+However, from the bivariate plots above, we can observe definite heteroscedasticity in pctBlack, Incidence Rate and medIncome. We might need to perform further investigation after fitting a model and we can use spreadLevelPlot() to find an appropriate power transformation to fix heteroscedasticity. We were also able to observe that the outliers of incidence rate might have a high influence underlying its heteroscedasticity and non-linearity. 
 
-From the scatter plots there are no clear outliers.
-
-From the bivariate plots there is definite heteroskedasticity in pctBlack and for AvgHouseholdSize we see some non linearity. We see a concave shape so advising a more complex model, perhaps with a quadratic term might be advisable as the data is not monotonic.
-
-For heteroskedasticity we would need to perform further tests after fititng a model to check what kind of transformation we'd need to fix it.
-
-From the scatter plots there are no clear outliers, we'd need either some box plots or to look at cook's distance to identify that.
-
-From the scatterplots, the predictor variables show a fairly linear relationship with death Rate. 
-The fitted lines for PercentMarried, PctMarriedHouseholds and Edu18_24 show an inverse relationship with the response variable. 
-However,the fitted line for incidence rate indicates that the outliers might have a high influence on the model and therefore we can observe that there is heteroscedasticity.
-We need to perform further investigation and tests after fitting a model and we can use spreadLevelPlot() to fix heteroscedasticity.  
-
-We can see all four variables have fairlty straight fitted lines. This support them being linear.
-The data points of PctEmpPrivCoverage are getting closer to the fitted line which shows that the variance is decreasing.
-We might use spreadLevelPlot() to find appropriate power transformation to fix this problem.
+Moreover, we can see non-linearity in AvgHouseholdsize,MedianAgeFemale and MedianAgeMale (See Appendix). We notice a concave shape for incidence rate and AvgHouseholdsize so we advise having a more compex model, perhaps with a quadratic term might be improve linearity as the data is not monotonic. We could also consider combining MedianAgeFemale and MedianAgeMale by taking an average as their relationship with Death Rate are very similar. 
 
 ### Plots for Outliers
 ```{r BoxPlots, fig.cap = "\\label{fig:figs}BoxPlots of our variables", fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.45}
@@ -189,32 +174,17 @@ with(cancer2, boxplot(incidenceRate, main = "incidenceRate")) # Keep
 with(cancer2, boxplot(povertyPercent, main = "povertyPercent")) # Keep
 ```
 
-Our box plots show we have quite a number of what we would consider outliers accross all our variables apart from binnedInc, which would be impossible due to the bins intervals. This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
+Our box plots (Figure 6 and see Appendix) show that we have quite a number of what we would consider outliers across all our variables apart from binnedInc, which would be impossible due to the bins intervals. 
+We have a severe amount of outliers in medIncome. This is most likely due to natural causes such as a CEO of a large company or a doctor (see Reference about high paid jobs #James). 
+We also observe significant outliers in PctBlack and this is illustrated by the very long tail as shown in the histogram above (See Fig. ). This might be due to PctBlack being an unstable predictor variable. We observe significantly high percentages of over 50% in  south and southeast region of the US, in particular, in Mississippi, Georgia, Alabama and North and South Carolina. They indeed form part of the top 10 US state with the highest percentage of Black residents. (see Reference about Black population in US)
 
-We have a severe amount of outliers in medIncome. This is most likely due to natural causes such as a CEO of a large company or a doctor (Reference needed about high paid jobs). 
+The boxplot for Incidence rate shows the existence of extreme high values which is also illustrated in our bivariate plots in Fig . There are potential outliers in PctPrivateCoverage and povertyPercent.We might want to further investigate into these and decide how we might want to treat them before fitting the model. Possible options might include deleting the outliers or imputing them. 
 
-This does not necessarily mean that they should be removed as we do not know their influence yet due to not fitting a model.
-
-We have a severe amount of outliers in PctBlack according to our box plot. This could be due to the very long tail as shown in the scatter plot above.
-
-The boxplot for Incidence rate shows the existence of extreme high values. 
-
-Therefore, we might want to investigate into the outliers of the predictor variables and decide how we might want to treat them before fitting the model. 
-
-Possible options might include deleting the outliers or imputing them. 
-
-This might depend on whether the outlier is due to some error (data entry, sampling, measurement) or whether the outlier is natural. 
-
-
-All four variables???? have points lying outside the boxes.
-Note that PctPrivateCoverage have points lying below the box and povertyPercent have points lying above the box only.
-This shows potential outliers in particular in PctPrivateCoverage and povertyPercent.
-Further discoveries and decisions on the outliers should be done when fitting a  model.
+We suggest that the incidence rate in Williamsburg city, Virginia can be considered as a candidate for removal. (See reference graph for Williamsburg city, Virginia)
 
 ### Multicollinearity
-#### Multicollinearity for Married
-
-From the plot we can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation ...), Poverty with PctEmployed_Over16 (-0.74) and PctPrivateCoverage (-0.82), 
+We can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation -0.65), MedianAgeFemale and MedianAgeMale (Correlation 0.94). (See Appendix)
+We further used Pearson correlation test (see Appendix) to check for multicollinearity between percentPoverty and PctEmployed_Over16 (-0.74), PctPrivateCoverage (-0.82), PctEmpPrivCoverage (-0.68), and PctPublicCoverage(0.65).Therefore, we might consider discarding some of the predictor variables due to high multicollinearity to improve accuracy when fitting a model.
 
 \scriptsize
 
@@ -225,8 +195,6 @@ round(cor(cancer2[,c(5,10:14)])[1,], digits = 2)
 \normalsize
 
 We can observe that for the first 9 bins medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model.
-
-#### Correlation Tests on the above Variables
 
 
 
