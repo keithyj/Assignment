@@ -36,16 +36,17 @@ library(tidyr)
 
 ## Checking the summary and initial EDA
 
-Looking at the dataset we note that there is 1 character variable, 1 factor variable and 16 continuous variables. The character variable Geography is just an identifier of the observation and can hence be ignored for statistical analysis and should not be used in a linear model. It, however, can be utilisied for data visualisation and analysis of geographic trends in the United States.
+Looking at the dataset we note that there is 1 character variable, 1 factor variable and 16 continuous variables. The character variable Geography is just an identifier of the observation and can hence be ignored for statistical analysis and should not be used in a linear model. It, however, can be utilised for data visualisation and analysis of geographic trends in the United States.
 
-```{r Length Check, eval = FALSE, include = FALSE}
+```{r Length Check, eval = TRUE, include = TRUE, results = "hold"}
+#Checking number of observations and suspiciously low values
 length(cancer$Geography)
 length(cancer$AvgHouseholdSize[cancer$AvgHouseholdSize<0.1])
 ```
 
-There are 3047 pieces of data in our dataset. That is a large amount of data but it doesn't actually equal the total amount of US counties which number 3143 in total (https://en.wikipedia.org/wiki/County_(United_States)). This means our data is not fully representative of the entire United States but the proportion of counties recorded is high enough so that it shouldn't be a problem.
+There are 3047 pieces of data in our dataset. That is a large amount of data but it doesn't actually equal the total amount of US counties which number 3143 in total (https://en.wikipedia.org/wiki/County_(United_States)). This means our data is not fully representative of the entire United States but the proportion of counties recorded is high enough so that the data should still be a representative sample.
 
-There are some missing values in PctEmployed16_Over which need to be checked. There are 61 values in AvgHouseholdSize underneath 0.1 which should be considered suspicious and immediately investigated before further analysis.
+There are 152 missing values in PctEmployed16_Over which need to be checked. There are 61 values in AvgHouseholdSize underneath 0.1 which should be considered suspicious and immediately investigated before further analysis.
 
 We identify one of these points and investigate it:
 
@@ -57,9 +58,7 @@ To check the validity of this data point we find an alternate source of the data
 
 https://data.census.gov/cedsci/table?q=average%20household%20size&g=0500000US54003&y=2013&tid=ACSST1Y2013.S1101
 
-We note that this data recording AvgHouseholdSize in the same year as our data lists the size at 2.61. This is completely different and this is similar for other small values in our dataset.
-
-Hence, these are very likely incorrectly inputted data points and as there is only a small proportion of them we should treat them as missing data and then test to see whether they are MCAR.
+We note that this data recording AvgHouseholdSize in the same year as our data lists the size at 2.61. This is completely different and this is similar for other small values in our dataset. Hence, these are very likely incorrectly inputted data points and as there is only a small proportion of them we should treat them as missing data and then test to see whether they are MCAR.
 
 ```{r Replace small with NA, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
 #Makes a dataset where the abnormally low values in AvgHouseholdSize are NA
@@ -83,24 +82,6 @@ We could replace all the data with an alternate source but as the proportion of 
 ```{r remove miss, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
 cancer2 <- na.omit(cancer1)
 ```
-
-
-```{r, echo = FALSE, fig.cap = "A large plot containing densities, bivariate plots and correlations", eval = FALSE}
-mod_points=function(data,mapping,...) {
-  ggally_smooth_loess(data, mapping,pch=20, ...) +
-    theme(text = element_text(size=8))
-}
-mod_cor=function(data,mapping,...) {
-  ggally_cor(data, mapping,size=1.5,align_percent=0.9, digits = 2) + scale_colour_manual(values = c("red", "blue")) + theme(panel.grid.major = element_blank(),...)
-}
-ggpairs(cancer2, columns = c(2:3, 5:18), mapping = aes(alpha = 0.6),
-        upper = list(continuous=mod_cor),
-        lower = list(continuous=wrap(mod_points, col = "red")),
-        diag = list(continuous="densityDiag"),
-        progress = FALSE) +
-        theme(text=element_text(size=6))
-```
-
 
 ## Analysis of deathRate's normality
 
