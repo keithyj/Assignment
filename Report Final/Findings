@@ -73,10 +73,10 @@ However, there are some extreme values in incidenceRate. We need to further inve
 highlight greatest positive (MedianAgeMale and MedianAgeFemale, PercentMarried and PctMarriedHouseholds, PctPrivateCoverage and PctEmpPrivCoverage) and negative (percentPoverty and PctPrivateCoverage, PctEmpCoverage and PctPublicCoverage) correlated variables and some very weak (PctEmpPrivCoverage and AvgHouseholdsize) correlated variables; we later see that some of these variables can be omitted and we do not require too many predictor variables which increases complexity of the model
 
 ## Model Recommendations
-
-- removing suspicious and missing values
-- adjust skewness in predictor variables and correct heteroscedasticity and linearity ; check normality in response variable
-- No strong correlation of predictors with death rate but should keep in mind multicollinearity
+#Remus
+We suggest removing the missing or suspicious values before fitting a model. 
+Power transformations on some predictor variables should also be done to reduce non-linearity, heteroscedascity and skewness. In particular AvgHouseholdSize, PctBlack, incidenceRate and medIncome should be carefully handled before using them in a model.
+Moreover, 
 
 \newpage
 
