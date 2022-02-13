@@ -47,7 +47,7 @@ plot(deathRate ~ AvgHouseholdSize, data = cancer, main = "deathRate against AvgH
 
 We found most predictor variables linear and no signs of heteroscedascity. 
 However, we identified heteroscedascity in 3 variables: PctBlack, incidenceRate, medIncome. Potential outliers may undermine the heteroscedascity. We used power transformations to fix heteroscedascity.
-We also found non-linearity in AvgHouseholdsize,MedianAgeFemale and MedianAgeMale. We suggest using a more complex model to improve linearity.
+We also found non-linearity in AvgHouseholdsize, MedianAgeFemale and MedianAgeMale. We suggest using a more complex model to improve linearity.
 We found that some variables are skewed and we applied simple power transfomations to fix the skewness. However, due to a massive right skew in PctBlack, we could not completely remove the skewness and so this needs to be further explored when fitting a model.
 We noticed that the power transformations used in fixing heteroscedascity and skewness are different and we should prioritise heteroscedascity.
 
