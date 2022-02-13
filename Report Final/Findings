@@ -35,15 +35,15 @@ library(tidyr)
 
 # Findings
 
-##  Missing and suspicious values
+## Missing and suspicious values
 
-We identified 152 missing values in PctEmployed16_Over and 61 abnormal values in AvgHouseholdSize. These values were investigated and we decide to remove them before any further exploring of the data as we determined that they were missing completely at random.
+We identified 152 missing values in PctEmployed16_Over and 61 abnormal values in AvgHouseholdSize. These values were investigated and we decide to remove the observations associated with them before any further exploring of the data as we determined that they were missing completely at random.
 
-```{r treat plot, echo = FALSE, fig.asp = 0.5, fig.cap = "The abnormal values near zero were investigated and removed before further analysis"}
+```{r treat plot, echo = FALSE, fig.asp = 0.68, fig.cap = "The abnormal values near zero were investigated and removed before further analysis"}
 plot(deathRate ~ AvgHouseholdSize, data = cancer, main = "deathRate against AvgHouseholdSize")
 ```
 
-## Skewness
+## Skewness, Heteroskedasticity and Linearity
 
 We found most predictor variables linear and no signs of heteroscedascity. 
 However, we identified heteroscedascity in 3 variables: PctBlack, incidenceRate, medIncome. Potential outliers may undermine the heteroscedascity. We used power transformations to fix heteroscedascity.
@@ -67,8 +67,10 @@ There are also a lot of variables tha suffer from the problem of multicollineari
 
 ## Recommendations
 
-#Remus
-We suggest removing the missing or suspicious values before fitting a model. Power transformations on some predictor variables should also be done to reduce non-linearity, heteroscedascity and skewness. In particular AvgHouseholdSize, PctBlack, incidenceRate and medIncome should be carefully handled before using them in a model.
-Moreover,     
+* Remove observations with missing values and highly abnormal values
+* Apply appropriate transformations to fix cases of non-linearity, heteroskedasticty, skewness and non-normality to ensure we have a better fit
+* Further investigate outliers to make sure they do not have undue influence when we come to make a model
+* Perform further analysis on highly correlated predictor variables and verify that they are candidates for removal
+* Take into special consideration variables with significant correlation with deathRae
 
 \newpage
