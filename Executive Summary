@@ -1,6 +1,6 @@
 
 # Executive summary 
 - What are we trying to answer? – exploring US cancer data set and how cancer mortality rate/death rate is influenced by different factors across US counties. 
-- Key points from our EDA: not full number of US counties recorded in our dataset; missing and suspicious values filtered out; high correlation between predictor variables; no strong relationship between death rate and other explanatory variables
-- ?
-
+- Key points from our EDA: not full number of US counties recorded in our dataset; missing and suspicious values filtered out;we note high correlation between predictor variables; no strong relationship between death rate and other explanatory variables.Some predictors measure the similar things in different ways.
+- required variables in modelling cancer deathrates in US counties:
+Geography, incidence rate, medincome, povertyPercent, AvgHouseholdsize, PercentMarried, PctEmployed16_Over, PctUnemployed16_over, PctPublicCoverage, PctBlack, Edu18_24. -- To check
