@@ -39,10 +39,20 @@ library(tidyr)
 
 missing data in the form of NAs, observed suspiciously low values for Avghouseholdsize. We removed these data for further analysis. - include Alex plot of AvgHouseholdsize?
 
+#Remus
+We identified 152 missing values in PctEmployed16_Over and 61 abnormal values in AvgHouseholdSize. These values were investigated and we decide to remove them before any further exploring of the data.
+
 ## Skewness 
 
 heteroscedasticity and linearity – important to reduce skewness of predictor var to make distn close to a normal spread. Most required simple logarithmic, square root and square transformations to fix the skewness in the data. We note that log transformation to pctBlack does not fix its right/positive skewness . We further explored predictor variables violating assumption of constant variance and highlighted possible ways to stabilize the spread of these observations. We also investigated on some explanatory variables violating th assumption of linearity and how to solve these.
 Should we include some specific examples again??
+
+#Remus
+We found most predictor variables linear and no signs of heteroscedascity. 
+However, we identified heteroscedascity in 3 variables: PctBlack, incidenceRate, medIncome. Potential outliers may undermine the heteroscedascity. We used power transformations to fix heteroscedascity.
+We also found non-linearity in AvgHouseholdsize,MedianAgeFemale and MedianAgeMale. We suggest using a more complex model to improve linearity.
+We found that some variables are skewed and we applied simple power transfomations to fix the skewness. However, due to a massive right skew in PctBlack, we could not completely remove the skewness and so this needs to be further explored when fitting a model.
+We noticed that the power transformations used in fixing heteroscedascity and skewness are different and we should prioritise heteroscedascity.
 
 ## Outliers 
 
