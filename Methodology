@@ -115,7 +115,7 @@ hist(cancer2$PercentMarried^2, breaks = 30, main = "Transformed Pct Married", yl
 hist(log(cancer2$PctBlack + 1), breaks = 30, main = "Transformed PctBlack", ylab = "Frequency", xlab = "log(PctBlack)", cex.main = 0.8)
 ```
 
-From the above (Fig. 4) we note that some simple transformations can be applied to fix most of these variables (log transform for median income for large right skew, square root for AvgHouseholdSize for slight right skew, square transform for PercentMarried for slight left skew). For those 3 variables the skew and normality is mostly fixed. However, for PctBlack a log transform was not sufficient for its large right skew. I have made a shift in the pctBlack data before log transforming it as there were some zeroes in the pctBlack data which cannot be log transformed. This indicates that the data may not even be normally distributed and would need to be handled differently when it comes to our statistical model.
+From the above (Fig. 4) we note that some simple transformations can be applied to fix most of these variables (log transform for median income for large right skew, square root for AvgHouseholdSize for slight right skew, square transform for PercentMarried for slight left skew). For those 3 variables the skew and normality is mostly fixed. However, for PctBlack a log transform was not sufficient for its large right skew. We made a shift in pctBlack data before log transforming it as there were some zeroes in the pctBlack data which cannot be log transformed. This indicates that the data may not even be normally distributed and would need to be handled differently when it comes to our statistical model.
 
 ## Bivariate Plots
 
@@ -141,7 +141,7 @@ with(cancer2, boxplot(incidenceRate, main = "incidenceRate")) # Keep
 ```
 
 Our box plots (Fig. 6 and see Appendix) show that we have quite a number of what we would consider outliers across all our variables apart from binnedInc, which would be impossible due to the bins intervals. 
-We have a severe amount of outliers in medIncome. This is most likely due to natural causes such as a CEO of a large company or a doctor (see Reference about high paid jobs #James). 
+We have a severe amount of outliers in medIncome. This is most likely due to natural causes such as a CEO of a large company or a doctor (see Reference about high paid jobs). 
 We also observe significant outliers in PctBlack and this is illustrated by the very long tail as shown in the histogram above (See Fig. 3). This might be due to PctBlack being an unstable predictor variable. We observe significantly high percentages of over 50% in  south and southeast region of the US, in particular, in Mississippi, Georgia, Alabama and North and South Carolina. They indeed form part of the top 10 US state with the highest percentage of Black residents. (see Reference about Black population in US)
 
 The boxplot for Incidence rate shows the existence of extreme high values which is also illustrated in our bivariate plots in Fig. 5 There are potential outliers in PctPrivateCoverage and povertyPercent.We might want to further investigate into these and decide how we might want to treat them before fitting the model. Possible options might include deleting the outliers or imputing them. 
@@ -150,7 +150,7 @@ We suggest that the incidence rate in Williamsburg city, Virginia can be conside
 
 ## Multicollinearity
 
-We can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation -0.65), MedianAgeFemale and MedianAgeMale (Correlation 0.94) (See Appendix). We further used Pearson correlation test (see Appendix) to check for multicollinearity between percentPoverty and PctEmployed_Over16 (-0.74), PctPrivateCoverage (-0.82), PctEmpPrivCoverage (-0.68), and PctPublicCoverage(0.65).Therefore, we might consider discarding some of the predictor variables due to high multicollinearity to improve accuracy when fitting a model.
+We can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation -0.65), MedianAgeFemale and MedianAgeMale (correlation 0.94) (See Appendix). We further used Pearson correlation test (See Appendix) to check for multicollinearity between percentPoverty and PctEmployed_Over16 (correlation -0.74), PctPrivateCoverage (correlation -0.82), PctEmpPrivCoverage (correlation -0.68), and PctPublicCoverage(correlation 0.65).Therefore, we might consider discarding some of the predictor variables due to high multicollinearity to improve accuracy when fitting a model.
 
 We can observe that for the first 9 bins medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model.
 
