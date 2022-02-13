@@ -52,7 +52,7 @@ We identified 152 missing values in PctEmployed16_Over and 61 abnormal values in
 plot(deathRate ~ AvgHouseholdSize, data = cancer, main = "deathRate against AvgHouseholdSize")
 ```
 
-## Skewness, Heteroskedasticity and Linearity
+## Skewness, Heteroscedasticity and Linearity
 
 We found most predictor variables linear and no signs of heteroscedascity. 
 However, we identified heteroscedascity in 3 variables: PctBlack, incidenceRate, medIncome. Potential outliers may undermine the heteroscedascity. We used power transformations to fix heteroscedascity.
@@ -77,7 +77,7 @@ There are also a lot of variables tha suffer from the problem of multicollineari
 ## Recommendations
 
 * Remove observations with missing values and highly abnormal values
-* Apply appropriate transformations to fix cases of non-linearity, heteroskedasticty, skewness and non-normality to ensure we have a better fit
+* Apply appropriate transformations to fix cases of non-linearity, heteroscedasticty, skewness and non-normality to ensure we have a better fit
 * Further investigate outliers to make sure they do not have undue influence when we come to make a model
 * Perform further analysis on highly correlated predictor variables and verify that they are candidates for removal
 * Take into special consideration variables with significant correlation with deathRae
@@ -179,7 +179,7 @@ with(cancer2, scatter.smooth(deathRate~MedianAgeMale, ylab = "deathRate", xlab =
 with(cancer2, scatter.smooth(deathRate~MedianAgeFemale, ylab = "deathRate", xlab = "MedianAgeFemale", lpars = list(col = "red", lwd = 2)))
 ```
 
-Most predictor variables in US cancer dataset show signs of linearity and no heteroscedasticity. However, from the bivariate plots above, we can observe definite heteroscedasticity in PctBlack, incidenceRate and medIncome. We might need to perform further investigation after fitting a model and we can use spreadLevelPlot() to find an appropriate power transformation to fix heteroscedasticity. We were also able to observe that the outliers of incidence rate might have a high influence underlying its heteroscedasticity and non-linearity. The transformations that have been used to fix the skew of the data may not be the same as those that would fix heteroskedasticity or non-linearity. In this case we should prioritise heteroskedasticity and linearity as those are more important to fitting a good model than normality.
+Most predictor variables in US cancer dataset show signs of linearity and no heteroscedasticity. However, from the bivariate plots above, we can observe definite heteroscedasticity in PctBlack, incidenceRate and medIncome. We might need to perform further investigation after fitting a model and we can use spreadLevelPlot() to find an appropriate power transformation to fix heteroscedasticity. We were also able to observe that the outliers of incidence rate might have a high influence underlying its heteroscedasticity and non-linearity. The transformations that have been used to fix the skew of the data may not be the same as those that would fix heteroscedasticity or non-linearity. In this case we should prioritise heteroscedasticity and linearity as those are more important to fitting a good model than normality.
 
 Moreover, we can see non-linearity in AvgHouseholdsize,MedianAgeFemale and MedianAgeMale. We notice a concave shape for incidence rate and AvgHouseholdsize so we advise having a more complex model, perhaps with a quadratic term might be improve linearity as the data is not monotonic.
 
