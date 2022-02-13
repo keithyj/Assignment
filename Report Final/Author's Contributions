@@ -1,0 +1,16 @@
+---
+output: 
+  pdf_document:
+    number_sections: true
+urlcolor: blue
+fontsize: 11pt
+geometry: margin = 1in
+fig_caption: yes
+header-includes: 
+- \usepackage{graphicx}
+- \usepackage{float}
+---
+
+# Author's Contributions
+
+Alex Walters: Formatting report, analysis on missing values, methodology, findings, appendix, presentation and reference finding.  
