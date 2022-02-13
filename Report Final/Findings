@@ -63,6 +63,11 @@ We noticed that the power transformations used in fixing heteroscedascity and sk
 significant data points above upper percentile if data is positively skewed. We explored the outliers for Incidence rate, PctBlack and medIncome. To verify whether they are truly outlies – use outlierTest or cook’s distance. We also gathered some more data on the extreme values of the variables to further investigate on these high values. 
 Include – alex plot of outliers for incidence rate?
 
+#Remus
+We used box plots to discover outliers. We have a considerable amount of outliers in medIncome, PctBlack and incidenceRate.
+The outliers in medIncome and PctBlack are reasonable after some research of the US demographics.
+However, there are some extreme values in incidenceRate. We need to further investigate into this before we can make decisions on how we handle or remove them.
+
 ## Correlation 
 
 highlight greatest positive (MedianAgeMale and MedianAgeFemale, PercentMarried and PctMarriedHouseholds, PctPrivateCoverage and PctEmpPrivCoverage) and negative (percentPoverty and PctPrivateCoverage, PctEmpCoverage and PctPublicCoverage) correlated variables and some very weak (PctEmpPrivCoverage and AvgHouseholdsize) correlated variables; we later see that some of these variables can be omitted and we do not require too many predictor variables which increases complexity of the model
