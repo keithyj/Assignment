@@ -71,5 +71,7 @@ highlight greatest positive (MedianAgeMale and MedianAgeFemale, PercentMarried a
 
 - removing suspicious and missing values
 - adjust skewness in predictor variables and correct heteroscedasticity and linearity ; check normality in response variable
-- No strong correlation of predictors with death rate but should keep in mind multicollinearity 
+- No strong correlation of predictors with death rate but should keep in mind multicollinearity
+
+\newpage
 
