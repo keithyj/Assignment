@@ -85,7 +85,7 @@ for (i in c(2,3,8,18)){
 }
 ```
 
-We use the pbox() function from the VIM package to check what these missing values represent. From the plots (Fig. 1) we note that the box plots with the missing data do not look significantly different from those without. The Box Plots for the other variables look similar to this which suggests that the data that is missing is MCAR.
+We use the pbox() function from the VIM package to check what these missing values represent. From the plots (Fig. 2) we note that the box plots with the missing data do not look significantly different from those without. The Box Plots for the other variables look similar to this which suggests that the data that is missing is MCAR.
 
 We could replace all the data with an alternate source but as the proportion of missing data points is so small and likely MCAR, it should be safe to remove the rows with missing data from our data set. This won't make the data much less representative and shouldn't affect our statistical analysis that much when we come to build a linear model, other than slightly increasing the standard error.
 
@@ -102,7 +102,7 @@ qqnorm(cancer2$deathRate, main = "QQ Plot of deathRate")
 qqline(cancer2$deathRate, col = "red")
 ```
 
-The assignment brief tells us we should investigate deathRate as a repsonse variable when it comes to our investigation. So we first make sure that a normal linear model is appropriate by making sure that deathRate is normally distributed. From deathRate's density and QQ Plots (Fig. 2) we can see that the variable deathRate is normally distributed so a normal linear model is appropriate to use.
+The assignment brief tells us we should investigate deathRate as a repsonse variable when it comes to our investigation. So we first make sure that a normal linear model is appropriate by making sure that deathRate is normally distributed. From deathRate's density and QQ Plots (Fig. 3) we can see that the variable deathRate is normally distributed so a normal linear model is appropriate to use.
 
 ```{r histograms included, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.3, fig.cap = "Histograms of 4 skewed variables"}
 
@@ -113,7 +113,7 @@ hist(cancer2$PercentMarried, breaks = 30, main = "Percent Married", ylab = "Freq
 hist(cancer2$PctBlack, breaks = 30, main = "Percent Black", ylab = "Frequency", xlab = "PctBlack") # Keep
 ```
 
-The 4 plots above (Fig. 3) give a good representation of some of our worst offenders of skew and hence non-normality. Most of our predictor variables look normally distributed from their density plots and histograms (see appendix) but medIncome, PctUnemployed16_Over, PercentMarried, PctMarriedHouseholds, povertyPercent and PctBlack all have skew. The above plots represent the amount of skew present in these other variables as well and the same respective transformations work to fix similar types of skew.
+The 4 plots above (Fig. 4) give a good representation of some of our worst offenders of skew and hence non-normality. Most of our predictor variables look normally distributed from their density plots and histograms (see appendix) but medIncome, PctUnemployed16_Over, PercentMarried, PctMarriedHouseholds, povertyPercent and PctBlack all have skew. The above plots represent the amount of skew present in these other variables as well and the same respective transformations work to fix similar types of skew.
 
 ```{r Transformsinclude, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.3, fig.cap = "Histograms of 4 transformed pieces of skewed data"}
 par(mfrow = c(1,4))
@@ -123,7 +123,7 @@ hist(cancer2$PercentMarried^2, breaks = 30, main = "Transformed Pct Married", yl
 hist(log(cancer2$PctBlack + 1), breaks = 30, main = "Transformed PctBlack", ylab = "Frequency", xlab = "log(PctBlack)", cex.main = 0.8)
 ```
 
-From the above (Fig. 4) we note that some simple transformations can be applied to fix most of these variables (log transform for median income for large right skew, square root for AvgHouseholdSize for slight right skew, square transform for PercentMarried for slight left skew). For those 3 variables the skew and normality is mostly fixed. However, for PctBlack a log transform was not sufficient for its large right skew. We made a shift in pctBlack data before log transforming it as there were some zeroes in the pctBlack data which cannot be log transformed. This indicates that the data may not even be normally distributed and would need to be handled differently when it comes to our statistical model.
+From the above (Fig. 5) we note that some simple transformations can be applied to fix most of these variables (log transform for median income for large right skew, square root for AvgHouseholdSize for slight right skew, square transform for PercentMarried for slight left skew). For those 3 variables the skew and normality is mostly fixed. However, for PctBlack a log transform was not sufficient for its large right skew. We made a shift in pctBlack data before log transforming it as there were some zeroes in the pctBlack data which cannot be log transformed. This indicates that the data may not even be normally distributed and would need to be handled differently when it comes to our statistical model.
 
 ## Bivariate Plots
 
@@ -148,11 +148,11 @@ with(cancer2, boxplot(medIncome, main = "medIncome")) # Keep
 with(cancer2, boxplot(incidenceRate, main = "incidenceRate")) # Keep
 ```
 
-Our box plots (Fig. 6 and see Appendix) show that we have quite a number of what we would consider outliers across all our variables apart from binnedInc, which would be impossible due to the bins intervals. 
+Our box plots (Fig. 7 and see Appendix) show that we have quite a number of what we would consider outliers across all our variables apart from binnedInc, which would be impossible due to the bins intervals. 
 We have a severe amount of outliers in medIncome. This is most likely due to natural causes such as a CEO of a large company or a doctor (see Reference about high paid jobs). 
-We also observe significant outliers in PctBlack and this is illustrated by the very long tail as shown in the histogram above (See Fig. 3). This might be due to PctBlack being an unstable predictor variable. We observe significantly high percentages of over 50% in  south and southeast region of the US, in particular, in Mississippi, Georgia, Alabama and North and South Carolina. They indeed form part of the top 10 US state with the highest percentage of Black residents. (See Reference about Black population in US)
+We also observe significant outliers in PctBlack and this is illustrated by the very long tail as shown in the histogram above (See Fig. 4). This might be due to PctBlack being an unstable predictor variable. We observe significantly high percentages of over 50% in  south and southeast region of the US, in particular, in Mississippi, Georgia, Alabama and North and South Carolina. They indeed form part of the top 10 US state with the highest percentage of Black residents. (See Reference about Black population in US)
 
-The boxplot for Incidence rate shows the existence of extreme high values which is also illustrated in our bivariate plots in Fig. 5 There are potential outliers in PctPrivateCoverage and povertyPercent.We might want to further investigate into these and decide how we might want to treat them before fitting the model. Possible options might include deleting the outliers or imputing them. 
+The boxplot for Incidence rate shows the existence of extreme high values which is also illustrated in our bivariate plots in Fig. 6 There are potential outliers in PctPrivateCoverage and povertyPercent.We might want to further investigate into these and decide how we might want to treat them before fitting the model. Possible options might include deleting the outliers or imputing them. 
 
 We suggest that the incidence rate in Williamsburg city, Virginia can be considered as a candidate for removal. (See reference for Williamsburg city, Virginia)
 
@@ -171,4 +171,5 @@ We note that none of the variables highly correlate with deathRate but there are
 ```{r cordeathRate, echo = FALSE}
 kable(round(cor(cancer2$deathRate, cancer2[,c("incidenceRate","medIncome","povertyPercent","PctEmployed16_Over","PctPrivateCoverage","PctPublicCoverage")]), digits = 2), align = "l")
 ```
+
 \normalsize
