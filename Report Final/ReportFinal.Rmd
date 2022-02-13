@@ -54,9 +54,9 @@ library(tidyr)
 
 ## Initial EDA and missing values
 
-There are 16 continuous, 1 factor and 1 character variable. We quickly noted that Geography was an id variable and can be used for data visualisation but should not be included in any linear model. We identified 152 missing values in PctEmployed16_Over and 61 abnormal values in AvgHouseholdSize. These values were investigated and we decide to remove the observations associated with them before any further exploring of the data as we determined that they were missing completely at random.
+There are 16 continuous variables, 1 factor variable and 1 character variable. We quickly noted that Geography was an id variable and can be used for data visualisation but should not be included in any linear model. We identified 152 missing values in PctEmployed16_Over and 61 abnormal values in AvgHouseholdSize. These values were investigated and we decide to remove the observations associated with them before any further exploring of the data as we determined that they were missing completely at random.
 
-```{r treat plot, echo = FALSE, fig.asp = 0.5, fig.cap = "The abnormal values near zero were investigated and removed before further analysis"}
+```{r treat plot, echo = FALSE, fig.asp = 0.45, fig.cap = "The abnormal values near zero were investigated and removed before further analysis"}
 plot(deathRate ~ AvgHouseholdSize, data = cancer, main = "deathRate against AvgHouseholdSize")
 ```
 
