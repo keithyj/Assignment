@@ -1,5 +1,5 @@
-# Executive summary 
-
-* In this report, we are analysing the cancer dataset (2013) in US counties. We have observed that the dataset provided is incomplete and we have treated missing as well as abnormal observations from the data. 
+# Executive summary
+In this report, we are analysing the cancer dataset (2013) in US counties. 
+* We have observed that the dataset provided is incomplete and we have treated missing as well as abnormal observations from the data. 
 * We notice that there is an exhaustive amount of factors used to predict cancer death rate in US counties and therefore, we suggest that we can omit some predictor variables to reduce complexity of our analysis. 
 * We finally acknowledge that our dataset needs to be further curated, transformed and investigated before fitting our model. 
