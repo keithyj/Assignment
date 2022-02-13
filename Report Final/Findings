@@ -42,6 +42,10 @@ missing data in the form of NAs, observed suspiciously low values for Avghouseho
 #Remus
 We identified 152 missing values in PctEmployed16_Over and 61 abnormal values in AvgHouseholdSize. These values were investigated and we decide to remove them before any further exploring of the data.
 
+```{r treat plot, echo = FALSE, fig.asp = 0.5, fig.cap = "The abnormal values near zero were investigated and removed before further analysis"}
+plot(deathRate ~ AvgHouseholdSize, data = cancer, main = "deathRate against AvgHouseholdSize")
+```
+
 ## Skewness 
 
 heteroscedasticity and linearity – important to reduce skewness of predictor var to make distn close to a normal spread. Most required simple logarithmic, square root and square transformations to fix the skewness in the data. We note that log transformation to pctBlack does not fix its right/positive skewness . We further explored predictor variables violating assumption of constant variance and highlighted possible ways to stabilize the spread of these observations. We also investigated on some explanatory variables violating th assumption of linearity and how to solve these.
