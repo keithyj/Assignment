@@ -37,9 +37,6 @@ library(tidyr)
 
 ##  Missing and suspicious values 
 
-missing data in the form of NAs, observed suspiciously low values for Avghouseholdsize. We removed these data for further analysis. - include Alex plot of AvgHouseholdsize?
-
-#Remus
 We identified 152 missing values in PctEmployed16_Over and 61 abnormal values in AvgHouseholdSize. These values were investigated and we decide to remove them before any further exploring of the data.
 
 ```{r treat plot, echo = FALSE, fig.asp = 0.5, fig.cap = "The abnormal values near zero were investigated and removed before further analysis"}
@@ -48,7 +45,6 @@ plot(deathRate ~ AvgHouseholdSize, data = cancer, main = "deathRate against AvgH
 
 ## Skewness 
 
-#Remus
 We found most predictor variables linear and no signs of heteroscedascity. 
 However, we identified heteroscedascity in 3 variables: PctBlack, incidenceRate, medIncome. Potential outliers may undermine the heteroscedascity. We used power transformations to fix heteroscedascity.
 We also found non-linearity in AvgHouseholdsize,MedianAgeFemale and MedianAgeMale. We suggest using a more complex model to improve linearity.
@@ -57,13 +53,15 @@ We noticed that the power transformations used in fixing heteroscedascity and sk
 
 ## Outliers 
 
-#Remus
 We used box plots to discover outliers. We have a considerable amount of outliers in medIncome, PctBlack and incidenceRate.
 The outliers in medIncome and PctBlack are reasonable after some research of the US demographics.
 However, there are some extreme values in incidenceRate. We need to further investigate into this before we can make decisions on how we handle or remove them.
 
 ## Correlation 
 
+We found that incidenceRate, medIncome, povertyPercent, PctEmployed16_Over, PctUnemployed16_Over, PctPrivateCoverage and PctPublicCoverage have high absolute correlation with deathRate and should be taken into consideration as important predictors for when it comes to making a linear model. There are also some predictors that have almost no correlation at all such as AvgHouseholdSize and MedianAgeFemale which is slightly surprising as you might expect counties with older populations to incur more deaths. We'd need to investigate this further once we've made a linear model.
+
+There are also a lot of variables tha suffer from the problem of multicollinearity due to rerpesenting very similar things. For example PercentMarried and PctMarriedHouseholds correlate very highly and could be considered to represent the same force. This is also true for many other variables in the dataset and focus should be placed on studying variance inflation factors and other multicollinearity diagnosis methods once a model has been fitted. If our initial suspicions about multicoolinearity are proven true by further analysis then we can consider the offending variables as candidates for removal to make an eventual model less complex.
 
 ## Model Recommendations
 
