@@ -80,7 +80,7 @@ There are also a lot of variables tha suffer from the problem of multicollineari
 * Apply appropriate transformations to fix cases of non-linearity, heteroscedasticty, skewness and non-normality to ensure we have a better fit
 * Further investigate outliers to make sure they do not have undue influence when we come to make a model
 * Perform further analysis on highly correlated predictor variables and verify that they are candidates for removal
-* Take into special consideration variables with significant correlation with deathRae
+* Take into special consideration variables with significant correlation with deathRate
 
 \newpage
 
