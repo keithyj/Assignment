@@ -57,9 +57,11 @@ We used box plots to discover outliers. We have a considerable amount of outlier
 The outliers in medIncome and PctBlack are reasonable after some research of the US demographics.
 However, there are some extreme values in incidenceRate. We need to further investigate into this before we can make decisions on how we handle or remove them.
 
-## Correlation 
+## Multicollinearity 
 
 We found that incidenceRate, medIncome, povertyPercent, PctEmployed16_Over, PctUnemployed16_Over, PctPrivateCoverage and PctPublicCoverage have high absolute correlation with deathRate and should be taken into consideration as important predictors for when it comes to making a linear model. There are also some predictors that have almost no correlation at all such as AvgHouseholdSize and MedianAgeFemale which is slightly surprising as you might expect counties with older populations to incur more deaths. We'd need to investigate this further once we've made a linear model.
+
+## Correlation with deathRate
 
 There are also a lot of variables tha suffer from the problem of multicollinearity due to rerpesenting very similar things. For example PercentMarried and PctMarriedHouseholds correlate very highly and could be considered to represent the same force. This is also true for many other variables in the dataset and focus should be placed on studying variance inflation factors and other multicollinearity diagnosis methods once a model has been fitted. If our initial suspicions about multicoolinearity are proven true by further analysis then we can consider the offending variables as candidates for removal to make an eventual model less complex.
 
