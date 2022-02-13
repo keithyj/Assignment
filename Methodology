@@ -171,4 +171,4 @@ We note that none of the variables highly correlate with deathRate but there are
 ```{r cordeathRate, echo = FALSE}
 kable(round(cor(cancer2$deathRate, cancer2[,c("incidenceRate","medIncome","povertyPercent","PctEmployed16_Over","PctPrivateCoverage","PctPublicCoverage")]), digits = 2), align = "l")
 ```
-
+\normalsize
