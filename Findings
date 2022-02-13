@@ -1,1 +1,22 @@
+# Executive summary 
+- What are we trying to answer? – exploring US cancer data set and how cancer mortality rate/death rate is influenced by different factors across US counties. 
+- EDA – missing and suspicious values filtered out; high correlation between predictor variables; 
+-
+
+# Findings 
+
+1. Missing and suspicious values – missing data in the form of NAs, observed suspiciously low values for Avghouseholdsize. We removed these data for further analysis. - include Alex plot of AvgHouseholdsize? 
+
+2. Skewness, heteroscedasticity and linearity – important to reduce skewness of predictor var to make distn close to a normal spread. Most required simple logarithmic, square root and square transformations to fix the skewness in the data. We note that log transformation to pctBlack does not fix its right/positive skewness . We further explored predictor variables violating assumption of constant variance and highlighted possible ways to stabilize the spread of these observations. We also investigated on some explanatory variables violating th assumption of linearity and how to solve these.
+Should we include some specific examples again?? 
+
+3. Outliers – significant data points above upper percentile if data is positively skewed. We explored the outliers for Incidence rate, PctBlack and medIncome. To verify whether they are truly outlies – use outlierTest or cook’s distance. We also gathered some more data on the extreme values of the variables to further investigate on these high values. 
+Include – alex plot of outliers for incidence rate?
+
+4. Correlation – highlight greatest positive (MedianAgeMale and MedianAgeFemale, PercentMarried and PctMarriedHouseholds, PctPrivateCoverage and PctEmpPrivCoverage) and negative (percentPoverty and PctPrivateCoverage, PctEmpCoverage and PctPublicCoverage) correlated variables and some very weak (PctEmpPrivCoverage and AvgHouseholdsize) correlated variables; we later see that some of these variables can be omitted and we do not require too many predictor variables which increases complexity of the model
+
+5. Model Recommendations :
+- removing suspicious and missing values
+- adjust skewness in predictor variables and correct heteroscedasticity and linearity ; check normality in response variable
+- No strong correlation of predictors with death rate but should keep in mind multicollinearity 
 
