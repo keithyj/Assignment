@@ -1,12 +1,7 @@
 This is an executive summary
 # Executive summary 
-- What are we trying to answer? – exploring US cancer data set and how cancer mortality rate/death rate is influenced by different factors across US counties. 
-- Key points from our EDA: not full number of US counties recorded in our dataset; missing and suspicious values filtered out;we note high correlation between predictor variables; no strong relationship between death rate and other explanatory variables.Some predictors measure the similar things in different ways.
--
-Incomplete dataset and missing values
-Data needs to be further curated and prepared - transformations
-Exhaustive amount of factors provided to predict deathrate - consider omitting some.
 
-* In this report, we are analysing the cancer dataset (2013) in U.S counties. We have observed that the dataset provided is incomplete and we have treated missing as well as abnormal observations from the data. Transformations were also explored for several explanatory variables. 
+* In this report, we are analysing the cancer dataset (2013) in U.S counties. We have observed that the dataset provided is incomplete and we have treated missing as well as abnormal observations from the data. 
+Transformations were also explored for several explanatory variables. 
 * We notice that there is an exhaustive amount of factors used to predict cancer death rate in U.S counties and therefore, we suggest that we can omit some predictor variables to reduce complexity of our analysis. 
 * We finally acknowledge that our dataset needs to be further curated and investigated ...
