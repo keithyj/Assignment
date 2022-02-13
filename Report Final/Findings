@@ -63,7 +63,7 @@ We found that incidenceRate, medIncome, povertyPercent, PctEmployed16_Over, PctU
 
 ## Correlation with deathRate
 
-There are also a lot of variables tha suffer from the problem of multicollinearity due to rerpesenting very similar things. For example PercentMarried and PctMarriedHouseholds correlate very highly and could be considered to represent the same force. This is also true for many other variables in the dataset and focus should be placed on studying variance inflation factors and other multicollinearity diagnosis methods once a model has been fitted. If our initial suspicions about multicoolinearity are proven true by further analysis then we can consider the offending variables as candidates for removal to make an eventual model less complex.
+There are also a lot of variables tha suffer from the problem of multicollinearity due to rerpesenting very similar things. For example PercentMarried and PctMarriedHouseholds correlate very highly and could be considered to represent the same force. This is also true for many other variables in the dataset and focus should be placed on studying variance inflation factors and other multicollinearity diagnosis methods once a model has been fitted. If our initial suspicions about multicollinearity are proven true by further analysis then we can consider the offending variables as candidates for removal to make an eventual model less complex.
 
 ## Recommendations
 
