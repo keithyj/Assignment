@@ -1,4 +1,10 @@
 ---
+title: ST404 Assignment 1 Report
+author:
+  - Alex Walters, 1921659
+  - Jena Moteea, 1939940
+  - Remus Gong, 1918934
+  - James Keith, 1827052
 output: 
   pdf_document:
     number_sections: true
@@ -11,6 +17,8 @@ header-includes:
 - \usepackage{float}
 ---
 
+\tableofcontents
+\newpage
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
