@@ -1,0 +1,6 @@
+
+# Executive summary 
+- What are we trying to answer? – exploring US cancer data set and how cancer mortality rate/death rate is influenced by different factors across US counties. 
+- Key points from our EDA: not full number of US counties recorded in our dataset; missing and suspicious values filtered out; high correlation between predictor variables; no strong relationship between death rate and other explanatory variables
+- ?
+
