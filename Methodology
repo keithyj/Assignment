@@ -142,11 +142,11 @@ with(cancer2, boxplot(incidenceRate, main = "incidenceRate")) # Keep
 
 Our box plots (Fig. 6 and see Appendix) show that we have quite a number of what we would consider outliers across all our variables apart from binnedInc, which would be impossible due to the bins intervals. 
 We have a severe amount of outliers in medIncome. This is most likely due to natural causes such as a CEO of a large company or a doctor (see Reference about high paid jobs). 
-We also observe significant outliers in PctBlack and this is illustrated by the very long tail as shown in the histogram above (See Fig. 3). This might be due to PctBlack being an unstable predictor variable. We observe significantly high percentages of over 50% in  south and southeast region of the US, in particular, in Mississippi, Georgia, Alabama and North and South Carolina. They indeed form part of the top 10 US state with the highest percentage of Black residents. (see Reference about Black population in US)
+We also observe significant outliers in PctBlack and this is illustrated by the very long tail as shown in the histogram above (See Fig. 3). This might be due to PctBlack being an unstable predictor variable. We observe significantly high percentages of over 50% in  south and southeast region of the US, in particular, in Mississippi, Georgia, Alabama and North and South Carolina. They indeed form part of the top 10 US state with the highest percentage of Black residents. (See Reference about Black population in US)
 
 The boxplot for Incidence rate shows the existence of extreme high values which is also illustrated in our bivariate plots in Fig. 5 There are potential outliers in PctPrivateCoverage and povertyPercent.We might want to further investigate into these and decide how we might want to treat them before fitting the model. Possible options might include deleting the outliers or imputing them. 
 
-We suggest that the incidence rate in Williamsburg city, Virginia can be considered as a candidate for removal. (See reference graph for Williamsburg city, Virginia)
+We suggest that the incidence rate in Williamsburg city, Virginia can be considered as a candidate for removal. (See reference for Williamsburg city, Virginia)
 
 ## Multicollinearity
 
