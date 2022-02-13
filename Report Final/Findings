@@ -48,9 +48,6 @@ plot(deathRate ~ AvgHouseholdSize, data = cancer, main = "deathRate against AvgH
 
 ## Skewness 
 
-heteroscedasticity and linearity – important to reduce skewness of predictor var to make distn close to a normal spread. Most required simple logarithmic, square root and square transformations to fix the skewness in the data. We note that log transformation to pctBlack does not fix its right/positive skewness . We further explored predictor variables violating assumption of constant variance and highlighted possible ways to stabilize the spread of these observations. We also investigated on some explanatory variables violating th assumption of linearity and how to solve these.
-Should we include some specific examples again??
-
 #Remus
 We found most predictor variables linear and no signs of heteroscedascity. 
 However, we identified heteroscedascity in 3 variables: PctBlack, incidenceRate, medIncome. Potential outliers may undermine the heteroscedascity. We used power transformations to fix heteroscedascity.
@@ -60,9 +57,6 @@ We noticed that the power transformations used in fixing heteroscedascity and sk
 
 ## Outliers 
 
-significant data points above upper percentile if data is positively skewed. We explored the outliers for Incidence rate, PctBlack and medIncome. To verify whether they are truly outlies – use outlierTest or cook’s distance. We also gathered some more data on the extreme values of the variables to further investigate on these high values. 
-Include – alex plot of outliers for incidence rate?
-
 #Remus
 We used box plots to discover outliers. We have a considerable amount of outliers in medIncome, PctBlack and incidenceRate.
 The outliers in medIncome and PctBlack are reasonable after some research of the US demographics.
@@ -70,13 +64,11 @@ However, there are some extreme values in incidenceRate. We need to further inve
 
 ## Correlation 
 
-highlight greatest positive (MedianAgeMale and MedianAgeFemale, PercentMarried and PctMarriedHouseholds, PctPrivateCoverage and PctEmpPrivCoverage) and negative (percentPoverty and PctPrivateCoverage, PctEmpCoverage and PctPublicCoverage) correlated variables and some very weak (PctEmpPrivCoverage and AvgHouseholdsize) correlated variables; we later see that some of these variables can be omitted and we do not require too many predictor variables which increases complexity of the model
 
 ## Model Recommendations
+
 #Remus
-We suggest removing the missing or suspicious values before fitting a model. 
-Power transformations on some predictor variables should also be done to reduce non-linearity, heteroscedascity and skewness. In particular AvgHouseholdSize, PctBlack, incidenceRate and medIncome should be carefully handled before using them in a model.
-Moreover, 
+We suggest removing the missing or suspicious values before fitting a model. Power transformations on some predictor variables should also be done to reduce non-linearity, heteroscedascity and skewness. In particular AvgHouseholdSize, PctBlack, incidenceRate and medIncome should be carefully handled before using them in a model.
+Moreover,     
 
 \newpage
-
