@@ -227,7 +227,7 @@ We note that none of the variables highly correlate with deathRate, but there ar
 ```{r cordeathRate, echo = FALSE}
 kable(round(cor(cancer2$deathRate, cancer2[,c("incidenceRate","medIncome","povertyPercent","PctEmployed16_Over","PctPrivateCoverage","PctPublicCoverage","MedianAgeFemale", "AvgHouseholdSize")]), digits = 2), align = "l", caption = "Correlations of variables with deathRate")
 ```
-
+\pagebreak
 \normalsize
 
 # Author's Contributions
