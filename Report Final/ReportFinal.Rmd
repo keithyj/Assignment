@@ -46,11 +46,11 @@ library(knitr)
 # Executive summary 
 
 
-* **Missing values have been identified to likely be missing completely at random and therefore we suggest that it can be removed. Some data for the AvgHouseholdSize data is likely to be incorrect and a new data source should be used to gather correct figures or identify incorrect figures.**
+* **Missing values have been identified to likely be missing completely at random (MCAR) and therefore we suggest that it can be removed. Some data for the AvgHouseholdSize data is likely to be incorrect and also MCAR so should be removed. Overall, the proportion of missing values in all variables is small and so it is not a serious problem.**
 
-* **Some variables, namely PctBlack, incidenceRate and medIncome, should be further investigated and transformed using spread level plots and power transformations to further increase the strength of the model assumptions: linearity, heteroscedasticity, and normality, before building a statistical model.**
+* **Some variables, namely PctBlack, incidenceRate and medIncome, should be further investigated and altered to further increase the strength of our analysis before building a statistical model.**
 
-* **Some variables show very similar data and therefore some variables will not be significant in building a statistical model. We suggest omitting binnedInc due to co-linearity with medIncome and either PercentMarried or PctMarriedHouseholds due to multicollinearity. Further analysis should be provided to check any outliers nature and more rigorously check multicollinearity before building a statistical model. **
+* **Some variables show very similar data and therefore some variables will not be significant in building a statistical model. We suggest omitting binnedInc due to high correlation with medIncome and either PercentMarried or PctMarriedHouseholds due to high correlation between variables. Further analysis should be provided to check any outliers' nature and more rigorously check similarities between variables before building a statistical model. **
 
 \pagebreak
 
