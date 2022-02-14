@@ -15,6 +15,7 @@ fig_caption: yes
 header-includes: 
 - \usepackage{graphicx}
 - \usepackage{float}
+bibliography: referencess.bib
 ---
 
 \tableofcontents
@@ -224,25 +225,27 @@ kable(round(cor(cancer2$deathRate, cancer2[,c("incidenceRate","medIncome","pover
 
 \normalsize
 
+\pagebreak
+
 # Appendix 
 
 1. Summary of the Data and initial EDA
 
 1.1 Summary
-```{r Summary, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r Summaryofdata, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
 summary(cancer)
 # Checking the summary output, can spot missing values in PctEmployed16_Over
-The minimum value in AvgHouseholdSize is very small and should be investigated.
+# The minimum value in AvgHouseholdSize is very small and should be investigated.
 ```
 1.2 Investigating AvgHouseholdSize
-```{r Sus Plot, echo = FALSE, fig.cap = "\\label{fig:figs}deathRate vs AvgHouseholdSize", fig.asp = 0.5, eval = FALSE, message = FALSE, warning = FALSE}
+```{r Suspect Plot, echo = FALSE, fig.cap = "\\label{fig:figs}deathRate vs AvgHouseholdSize", fig.asp = 0.5, eval = FALSE, message = FALSE, warning = FALSE}
 plot(deathRate ~ AvgHouseholdSize, data = cancer, main = "deathRate against AvgHouseholdSize")
 # Notice extremely small AvgHouseholdSize.
 ```
 
 1.3 Missing values check
 
-```{r remove miss, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r remove missingv, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 cancer2 <- na.omit(cancer1)
 ```
 
@@ -276,8 +279,8 @@ with(cancer2, hist(sqrt(PctUnemployed16_Over), main = "Transformed PctUnemployed
 3. Bivariate Plots
 3.1 Plots Against Death Rate
 
-```{r Plots against deathRate not included, fig.cap = "\\label{fig:figs}Plots showing deathRate against other variables", fig.asp=0.46, fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
-par(mfrow = c(3,4))
+```{r Plots against deathRate not included, fig.cap = "\\label{fig:figs}Plots showing deathRate against other variables", fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
+par(mfrow = c(2,2))
 with(cancer2, scatter.smooth(deathRate~PctEmployed16_Over, ylab = "deathRate", xlab = "PctEmployed16_Over", lpars = list(col = "red", lwd = 2)))
 with(cancer2, scatter.smooth(deathRate~PctUnemployed16_Over, ylab = "deathRate", xlab = "PctUnemployed16_Over", lpars = list(col = "red", lwd = 2)))
 with(cancer2, scatter.smooth(deathRate~PercentMarried, ylab = "deathRate", xlab = "PercentMarried", lpars = list(col = "red", lwd = 2)))
@@ -293,7 +296,7 @@ with(cancer2, scatter.smooth(deathRate~PctEmpPrivCoverage, ylab = "deathRate", x
 3.2 Box Plots & Outliers
 
 ```{r BoxPlotsnotincluded, fig.cap = "\\label{fig:figs}BoxPlots of our variables", fig.align="center", eval = TRUE, message = FALSE, warning = FALSE}
-par(mfrow = c(4,4))
+par(mfrow = c(2,2))
 with(cancer2, boxplot(PctUnemployed16_Over, main = "PctUnemployed16_Over")) #Keep
 with(cancer2, boxplot(deathRate, main = "deathRate")) # Keep
 with(cancer2, boxplot(povertyPercent, main = "povertyPercent")) # Keep
@@ -331,5 +334,7 @@ ggpairs(cancer2, columns = c(2:3, 5:18), mapping = aes(alpha = 0.6),
 with(cancer2, plot(binnedInc, medIncome, main = "Comparison of medIncome and binnedInc", xlab = "binnedInc", ylab = "medIncome"))
 ```
 
+\pagebreak
+# \underline{References}
 
 
