@@ -45,17 +45,20 @@ library(tidyr)
 
 # Executive summary 
 
-* **In this report, we are analysing the cancer dataset (2013) in US counties which we note is incomplete and we have treated any missing as well as abnormal observations from the data**
+This report will be an investigation into the distributions of the variables and the relationships between them in the cancer dataset in US counties, where the data is adapted from Noah Rippner (@Dataset). We will conduct explanatory data analysis which will leave us with the opportunity to create a statistical model after our research.
 
-* **We notice that there is an exhaustive amount of factors used to predict cancer death rate in US counties and therefore, we suggest that we can omit some predictor variables to reduce complexity of our analysis**
+The research we conducted can be summarised as follows:
 
-* **We finally acknowledge that our dataset needs to be further curated, transformed and investigated before fitting our model**
+* **Missing values have been identified to likely be missing completely at random and can therefore we suggest that it can be removed. Some data for the AvgHouseholdSize data is likely to be incorrect and a new data source should be used to gather correct figures, or identify incorrect figures.**
+
+* **Some variables, namely PctBlack, incidenceRate and medIncome, should be further investigated and transformed using spread level plots and power transformations to further increase the strength of the model assumptions: linearity, heteroscedasticity, and normality, before building a statistical model.**
+
+* **Some variables show very similar data and therefore some variables will not be significant in building a statistical model. We suggest omitting binnedInc due to co-linearity with medIncome and either PercentMarried or PctMarriedHouseholds due to multicollinearity. Further analysis should be provided to check any outliers nature and more rigorously check multicollinearity before building a statistical model. **
 
 \pagebreak
 
 # Findings
 
-Using the data taken adapted from Noah Rippner, we have concluded the following findings in our EDA (@Dataset).
 
 ## Initial EDA and missing values
 
@@ -67,11 +70,11 @@ plot(deathRate ~ AvgHouseholdSize, data = cancer, main = "deathRate against AvgH
 
 ## Skewness, Heteroscedasticity and Linearity
 
-It appears most predictor variables linear and no signs of heteroscedascity. 
-However, we identified heteroscedascity in three variables: PctBlack, incidenceRate, medIncome. Potential outliers may undermine the heteroscedascity. We recommend using power transformations to fix heteroscedascity.
+It appears most predictor variables linear and no signs of heteroscedasticity. 
+However, we identified heteroscedasticity in three variables: PctBlack, incidenceRate, medIncome. Potential outliers may undermine the heteroscedascity. We recommend using power transformations to fix heteroscedasticity.
 There exists non-linearity in AvgHouseholdsize, MedianAgeFemale and MedianAgeMale. We suggest using a more complex model to improve linearity.
 Some variables, most notably PctBlack and medIncome, are skewed and we tested simple power transfomations to fix the skewness, which proved effective. However, due to a massive right skew in PctBlack, we could not completely remove the skewness and so this needs to be further explored when fitting a model.
-We noticed that the power transformations used in fixing heteroscedascity and skewness are different and when building a model heteroscedascity should be prioritised to normality.
+We noticed that the power transformations used in fixing heteroscedasticity and skewness are different and when building a model heteroscedasticity should be prioritised to normality.
 
 ## Outliers 
 
@@ -91,7 +94,7 @@ We found that incidenceRate, medIncome, povertyPercent, PctEmployed16_Over, PctU
 We suggest the following recommendations prior to fitting a linear model:  
 
 * Remove observations with MCAR values and highly abnormal values.
-* Apply appropriate transformations, using a spread level plot and power transformations, to fix cases of non-linearity, heteroscedasticty, skewness and non-normality to satisfy the model assumptions.
+* Apply appropriate transformations, using a spread level plot and power transformations, to fix cases of non-linearity, heteroscedasticity, skewness and non-normality to satisfy the model assumptions.
 * Further investigate outliers, using Cook's distance, to ensure they do not have undue influence when we build a model.
 * Perform further analysis, using Pearson's correlation coefficient, on highly correlated predictor variables to check for multicollinearity.
 * Prioritise the variables with significant correlation with deathRate in the model.
@@ -160,7 +163,7 @@ hist(cancer2$PercentMarried, breaks = 30, main = "Percent Married", ylab = "Freq
 hist(cancer2$PctBlack, breaks = 30, main = "Percent Black", ylab = "Frequency", xlab = "PctBlack") # Keep
 ```
 
-The 4 plots above (Fig. 4) represent the most skewwed variables and hence indicate non-normality. Most of our predictor variables look normally distributed from their density plots and histograms (see Appendix (B) 2.1) but medIncome, PctUnemployed16_Over, PercentMarried, PctMarriedHouseholds, povertyPercent and PctBlack all have significant skew. Transformations, such as log or square root, of skewed variables should be considered to fix skewness as seen in Fig. 4. 
+The 4 plots above (Fig. 4) represent the most skewed variables and hence indicate non-normality. Most of our predictor variables look normally distributed from their density plots and histograms (see Appendix (B) 2.1) but medIncome, PctUnemployed16_Over, PercentMarried, PctMarriedHouseholds, povertyPercent and PctBlack all have significant skew. Transformations, such as log or square root, of skewed variables should be considered to fix skewness as seen in Fig. 4. 
 
 ```{r Transformsinclude, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.3, fig.cap = "Histograms of four transformed variables previously skewed"}
 par(mfrow = c(1,4))
@@ -205,7 +208,7 @@ Moreover, we can see non-linearity in AvgHouseholdsize, MedianAgeFemale and Medi
 
 ## Multicollinearity
 
-We can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation -0.65), and MedianAgeFemale and MedianAgeMale (correlation 0.94) (See Appendix (B) 4.1). We further used Pearson correlation test (See Appendix (B) 4.3) to check for multicollinearity between percentPoverty and PctEmployed_Over16 (correlation -0.74), PctPrivateCoverage (correlation -0.82), PctEmpPrivCoverage (correlation -0.68), and PctPublicCoverage (correlation 0.65). Therefore, we might consider removing some of the predictor variables due to high multicollinearity, as one of the two co-linear variables will have little significance, to improve accuracy when fitting a model. Moreover, the first 9 bins medIncome and binnedInc show very similar results (See Appendix (B) 3.2) and with binnedInc being the only categorical variable we suggest removing binnedInc from the model.
+We can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation -0.65), and MedianAgeFemale and MedianAgeMale (correlation 0.94) (See Appendix (B) 4.1). We further used Pearson correlation test (See Appendix (B) 3.2) to check for multicollinearity between percentPoverty and PctEmployed_Over16 (correlation -0.74), PctPrivateCoverage (correlation -0.82), PctEmpPrivCoverage (correlation -0.68), and PctPublicCoverage (correlation 0.65). Therefore, we might consider removing some of the predictor variables due to high multicollinearity, as one of the two co-linear variables will have little significance, to improve accuracy when fitting a model. Moreover, the first 9 bins medIncome and binnedInc show very similar results (See Appendix (B) 3.2) and with binnedInc being the only categorical variable we suggest removing binnedInc from the model.
 
 ## Correlation with deathRate
 
@@ -476,7 +479,24 @@ with(cancer2, plot(binnedInc, medIncome,
 main = "Comparison of medIncome and binnedInc", xlab = "binnedInc",
 ylab = "medIncome"))
 ```
+``` {r pearson test age not, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
+cor.test(cancer2$MedianAgeMale, cancer2$MedianAgeFemale, method = c("pearson"))
+```
 
+```{r cor tests, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
+cor.test(cancer2$PercentMarried,cancer2$PctMarriedHouseholds)
+```
+
+```{r Multi, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
+with(cancer2, cor.test(PctUnemployed16_Over, PctEmployed16_Over))
+```
+```{r cor test, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
+cor.test(cancer2$povertyPercent, cancer2$PctEmployed16_Over)
+cor.test(cancer2$povertyPercent, cancer2$PctUnemployed16_Over)
+cor.test(cancer2$povertyPercent, cancer2$PctPrivateCoverage)
+cor.test(cancer2$povertyPercent, cancer2$PctEmpPrivCoverage)
+cor.test(cancer2$povertyPercent, cancer2$PctPublicCoverage)
+```
 4: Multivariate Plots
 
 4.1: Multicollinearity
