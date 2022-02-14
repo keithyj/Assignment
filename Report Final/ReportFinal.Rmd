@@ -88,7 +88,8 @@ There are many variables that suffer from multicollinearity due to representing 
 We found that incidenceRate, medIncome, povertyPercent, PctEmployed16_Over, PctUnemployed16_Over, PctPrivateCoverage and PctPublicCoverage are highly correlated with deathRate and should be taken into consideration as important predictors for when it comes to constructing a linear model. There are some predictors that have almost no correlation at all such as AvgHouseholdSize and MedianAgeFemale. Initially, it may be expected that counties with older populations will incur more deaths, this is not represented by our data and so we would need to investigate this further once we've made a linear model.
 
 ## Recommendations
-We suggest the following recommendations prior to fitting a linear model:
+We suggest the following recommendations prior to fitting a linear model:  
+
 * Remove observations with MCAR values and highly abnormal values.
 * Apply appropriate transformations to fix cases of non-linearity, heteroscedasticty, skewness and non-normality to satisfy the model assumptions.
 * Further investigate outliers to ensure they do not have undue influence when we build a model.
