@@ -1,0 +1,7 @@
+```{r Correlation matrix}
+ggcorr(cancer2[,-c(1,4)], geom = "blank", label = TRUE, hjust = 0.8, label_size = 6 ,size = 5) +
+  geom_point(size = 10, aes(color = coefficient > 0, alpha = abs(coefficient) > 0.6)) +
+  scale_alpha_manual(values = c("TRUE" = 0.25, "FALSE" = 0)) +
+  guides(color = "none", alpha = "none") +
+  ggtitle("Correlation matrix of predictor variables")
+```
