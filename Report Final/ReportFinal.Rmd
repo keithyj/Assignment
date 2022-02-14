@@ -380,6 +380,7 @@ for (i in 12:17){
 2.1: Histograms
 
 ```{r histograms not included, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.5, fig.show = "hold"}
+# Histograms of predictor variables
 par(mfrow = c(2,3))
 with(cancer2, hist(MedianAgeFemale, breaks = 30, 
 main = "Histogram of Median Age of Females"))
@@ -408,6 +409,7 @@ with(cancer2, hist(deathRate, breaks = 30, main = "Histogram of deathRate"))
 2.2: Transformed Histograms
 
 ```{r Transformsdontinclude, fig.cap = "Our transformed histograms", fig.width=5, fig.asp=0.45, fig.align="center", echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
+# Histograms of transformed predictor variables
 par(mfrow = c(1,2))
 hist(cancer2$PctPrivateCoverage^(2), breaks = 30, 
 main = "Histogram of square of PctPrivateCoverage")
@@ -418,6 +420,7 @@ main = "Transformed PctUnemployed16_Over"))
 2.3: Boxplots
 
 ```{r BoxPlotsnotincluded, fig.cap = "BoxPlots of our variables", fig.align="center", eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.5, fig.show = "hold"}
+# Boxplots of numnerical variables
 par(mfrow = c(2,4))
 with(cancer2, boxplot(PctUnemployed16_Over, main = "PctUnemployed16_Over"))
 with(cancer2, boxplot(deathRate, main = "deathRate"))
@@ -440,6 +443,7 @@ with(cancer2, boxplot(PctPublicCoverage, main = "PctPublicCoverage"))
 3.1: Plots Against Death Rate
 
 ```{r Plots against deathRate not included, fig.cap = "Plots showing deathRate against other variables", fig.align="center", echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE, fig.show = "hold"}
+# Scatter plots of deathRate against predictor variables
 par(mfrow = c(2,5))
 with(cancer2, scatter.smooth(deathRate~PctEmployed16_Over, ylab = "deathRate", 
                   xlab = "PctEmployed16_Over", lpars = list(col = "red", lwd = 2)))
@@ -476,6 +480,7 @@ ylab = "medIncome"))
 4.1: Multicollinearity
 
 ```{r Correlation matrix, echo=TRUE, message = FALSE, warning = FALSE, fig.asp = 0.7}
+# A correlation matrix plot highlighting strongly correlated variables(>0.6)
 ggcorr(cancer2[,-c(1,4)], geom = "blank", label = TRUE, hjust = 0.9, 
        label_size = 3 ,size = 2.5) +
   geom_point(size = 10, aes(color = coefficient > 0, 
