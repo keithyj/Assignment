@@ -366,6 +366,7 @@ length(cancer$AvgHouseholdSize[cancer$AvgHouseholdSize<0.1])
 1.3: Missing value parallel boxplots
 
 ```{r pboxes, fig.asp = 0.8, warning = FALSE, fig.show = "hold"}
+# Check if data is skewed without missing values
 par(mfrow = c(2,3))
 for (i in c(5:7, 9:11)){ 
   pbox(cancer1,pos=i) 
@@ -380,7 +381,7 @@ for (i in 12:17){
 2.1: Histograms
 
 ```{r histograms not included, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.5, fig.show = "hold"}
-# Histograms of predictor variables
+# Checking skewness using histograms of numerical variables
 par(mfrow = c(2,3))
 with(cancer2, hist(MedianAgeFemale, breaks = 30, 
 main = "Histogram of Median Age of Females"))
@@ -420,7 +421,7 @@ main = "Transformed PctUnemployed16_Over"))
 2.3: Boxplots
 
 ```{r BoxPlotsnotincluded, fig.cap = "BoxPlots of our variables", fig.align="center", eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.5, fig.show = "hold"}
-# Boxplots of numnerical variables
+# Checking outliers of numerical variables
 par(mfrow = c(2,4))
 with(cancer2, boxplot(PctUnemployed16_Over, main = "PctUnemployed16_Over"))
 with(cancer2, boxplot(deathRate, main = "deathRate"))
@@ -443,7 +444,7 @@ with(cancer2, boxplot(PctPublicCoverage, main = "PctPublicCoverage"))
 3.1: Plots Against Death Rate
 
 ```{r Plots against deathRate not included, fig.cap = "Plots showing deathRate against other variables", fig.align="center", echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE, fig.show = "hold"}
-# Scatter plots of deathRate against predictor variables
+# Checking linearity and heteroscedascity using scatter plots
 par(mfrow = c(2,5))
 with(cancer2, scatter.smooth(deathRate~PctEmployed16_Over, ylab = "deathRate", 
                   xlab = "PctEmployed16_Over", lpars = list(col = "red", lwd = 2)))
@@ -470,6 +471,7 @@ with(cancer2, scatter.smooth(deathRate~PctEmpPrivCoverage, ylab = "deathRate",
 3.2: Multicollinearity
 
 ```{r Income comparison, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE, fig.cap = "medIncome and binnedInc show very similar results", fig.width = 7, fig.height = 4, fig.asp = 0.68}
+# To compare medIncome and binnedInc 
 with(cancer2, plot(binnedInc, medIncome, 
 main = "Comparison of medIncome and binnedInc", xlab = "binnedInc",
 ylab = "medIncome"))
