@@ -59,7 +59,6 @@ The research we conducted can be summarised as follows:
 
 # Findings
 
-
 ## Initial EDA and missing values
 
 Geography can be used for data visualisation but should not be included in the linear model. We identified missing values in PctEmployed16_Over and abnormal values in AvgHouseholdSize. The best course of action is to remove the observations associated with them before further analysis of the data as they are likely missing completely at random.
@@ -136,14 +135,23 @@ for (i in c(2,3,8,18)){
 }
 ```
 
-We use the pbox() function from the VIM package to check what these missing values represent (@VIM). From the plots (Fig. 2 and Appendix (B) 1.3) we note that the box plots with the missing data do not look significantly different from those without missing data. The box plots for the other variables look similar to this which suggests that the data that is missing is likely MCAR.
+We use the pbox() function from the VIM package to check what these missing values represent (@VIM). From the plots (Fig. 2 and Appendix (B) 1.3) we note that the box plots with the missing data do not look significantly different from those without missing data. The box plots for the other variables look similar to this which suggests that the data that is missing is likely MCAR for both AvgHouseholdSize and PctEmployed16_Over.
 
-We suggest replacing the AvgHouseholdSize data with an alternate source. As the proportion of missing data points is relatively small and likely to be MCAR, it should be safe to remove the rows with missing data from our data set. This will not make the data any less representative and shouldn't affect our statistical analysis when we come to build a linear model, other than slightly increasing the standard error.
+As the proportion of missing data points is relatively small and the values are likely to be MCAR, the problem of missing values is not that serious. It should be safe to remove the rows with missing data from our data set. This will not make the data any less representative and shouldn't affect our statistical analysis when we come to build a linear model, other than slightly increasing the standard error. From now on we consider the dataset without observations which contain missing and incorrectly inputted values.
+
+```{r prop bars, echo = FALSE, fig.cap = "The proportion of missing values are low", fig.asp = 0.5}
+cancer1NA <- cancer1
+cancer1NA$AvgNA <- ifelse(is.na(cancer1$AvgHouseholdSize), "Miss", "Not Miss")
+cancer1NA$EmpNA <- ifelse(is.na(cancer1$PctEmployed16_Over), "Miss", "Not Miss")
+par(mfrow = c(1,2))
+barplot(prop.table(table(cancer1NA$AvgNA)),col=c("red","blue"),main="AvgHouseholdSize missing indicator",ylim=c(0,1), cex.main = 0.7)
+barplot(prop.table(table(cancer1NA$EmpNA)),col=c("red","blue"),main="PctEmployed16_Over missing indicator",ylim=c(0,1), cex.main = 0.7)
+```
+
 
 ```{r remove miss, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 cancer2 <- na.omit(cancer1)
 ```
-
 ## Univariate Plots
 
 ```{r qqnorm and density, fig.asp = 0.35, echo = FALSE, fig.cap = "Density and QQ-Plots of deathRate"}
@@ -267,6 +275,15 @@ par(mfrow = c(1,4))
 for (i in c(2,3,8,18)){ 
   pbox(cancer1,pos=i) 
 }
+```
+
+```{r prop bars, echo = FALSE, fig.cap = "The proportion of missing values are low", fig.asp = 0.5, eval = FALSE}
+cancer1NA <- cancer1
+cancer1NA$AvgNA <- ifelse(is.na(cancer1$AvgHouseholdSize), "Miss", "Not Miss")
+cancer1NA$EmpNA <- ifelse(is.na(cancer1$PctEmployed16_Over), "Miss", "Not Miss")
+par(mfrow = c(1,2))
+barplot(prop.table(table(cancer1NA$AvgNA)),col=c("red","blue"),main="AvgHouseholdSize missing indicator",ylim=c(0,1), cex.main = 0.7)
+barplot(prop.table(table(cancer1NA$EmpNA)),col=c("red","blue"),main="PctEmployed16_Over missing indicator",ylim=c(0,1), cex.main = 0.7)
 ```
 
 ```{r remove miss ap, echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
@@ -509,8 +526,6 @@ ggcorr(cancer2[,-c(1,4)], geom = "blank", label = TRUE, hjust = 0.9,
   guides(color = "none", alpha = "none") +
   ggtitle("Correlation matrix of predictor variables")
 ```
-
-\pagebreak
 
 
 
