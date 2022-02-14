@@ -49,7 +49,7 @@ This report will be an investigation into the distributions of the variables and
 
 The research we conducted can be summarised as follows:
 
-* **Missing values have been identified to likely be missing completely at random and can therefore we suggest that it can be removed. Some data for the AvgHouseholdSize data is likely to be incorrect and a new data source should be used to gather correct figures, or identify incorrect figures.**
+* **Missing values have been identified to likely be missing completely at random and therefore we suggest that it can be removed. Some data for the AvgHouseholdSize data is likely to be incorrect and a new data source should be used to gather correct figures, or identify incorrect figures.**
 
 * **Some variables, namely PctBlack, incidenceRate and medIncome, should be further investigated and transformed using spread level plots and power transformations to further increase the strength of the model assumptions: linearity, heteroscedasticity, and normality, before building a statistical model.**
 
