@@ -224,8 +224,6 @@ kable(round(cor(cancer2$deathRate, cancer2[,c("incidenceRate","medIncome","pover
 
 \normalsize
 
-\pagebreak
-# \underline{References}
 
 \pagebreak
 
@@ -337,5 +335,6 @@ with(cancer2, plot(binnedInc, medIncome, main = "Comparison of medIncome and bin
 ```
 
 \pagebreak
+# \underline{References}
 
 
