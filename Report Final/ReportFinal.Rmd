@@ -118,7 +118,7 @@ To check the validity of this data point we find an alternate source of the data
 
 We note that this data recording AvgHouseholdSize, in the same year as our data, lists the size at 2.61. This is completely different and this is similar for other small values in our dataset. Hence, these are very likely incorrectly inputted data points and as there is only a small proportion of them we should treat them as missing data and then test to see whether they are missing completely at random (MCAR).
 
-```{r Replace small with NA, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r Replace small with NA, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 #Makes a dataset where the abnormally low values in AvgHouseholdSize are NA
 cancer1 <- cancer
 cancer1$AvgHouseholdSize[which(cancer1$AvgHouseholdSize < 0.1)] <- NA
