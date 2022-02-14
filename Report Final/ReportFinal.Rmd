@@ -1,5 +1,6 @@
 ---
-title: ST404 Assignment 1 Report
+title: Exploratory Data Analysis on the US Cancer Dataset
+subtitle: Written by
 author:
   - Alex Walters, 1921659
   - Jena Moteea, 1939940
@@ -45,7 +46,7 @@ library(tidyr)
 
 # Executive summary 
 
-This report will be an investigation into the distributions of the variables and the relationships between them in the cancer dataset in US counties, where the data is adapted from Noah Rippner (@Dataset). We will conduct explanatory data analysis which will leave us with the opportunity to create a statistical model after our research.
+This report will be an investigation into the distributions of the variables and the relationships between them in the cancer dataset in US counties, where the data is adapted from Noah Rippner (@Dataset). We will conduct exploratory data analysis which will leave us with the opportunity to create a statistical model after our research.
 
 The research we conducted can be summarised as follows:
 
