@@ -45,9 +45,6 @@ library(knitr)
 
 # Executive summary 
 
-This report will be an investigation into the distributions of the variables and the relationships between them in the cancer dataset in US counties, where the data is adapted from Noah Rippner (@Dataset). We will conduct exploratory data analysis which will leave us with the opportunity to create a statistical model after our research.
-
-The research we conducted can be summarised as follows:
 
 * **Missing values have been identified to likely be missing completely at random and therefore we suggest that it can be removed. Some data for the AvgHouseholdSize data is likely to be incorrect and a new data source should be used to gather correct figures or identify incorrect figures.**
 
@@ -58,6 +55,9 @@ The research we conducted can be summarised as follows:
 \pagebreak
 
 # Findings
+
+This report will be an investigation into the distributions of the variables and the relationships between them in the cancer dataset in US counties, where the data is adapted from Noah Rippner (@Dataset). We will conduct exploratory data analysis which will leave us with the opportunity to create a statistical model after our research.
+
 
 ## Initial EDA and missing values
 
