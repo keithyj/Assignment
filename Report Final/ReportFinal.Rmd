@@ -51,6 +51,8 @@ library(tidyr)
 
 * **We finally acknowledge that our dataset needs to be further curated, transformed and investigated before fitting our model**
 
+\pagebreak
+
 # Findings
 
 Using the data taken adapted from Noah Rippner, we have concluded the following findings in our EDA (@Dataset).
@@ -114,7 +116,7 @@ There are 152 missing values in PctEmployed16_Over which need to be checked. The
 We identify one of these points and investigate it:
 
 ```{r Extracting suspicious point, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
-kable(subset(cancer, AvgHouseholdSize < 0.1)[1,c("Geography", "AvgHouseholdSize")], align = "l")
+kable(subset(cancer, AvgHouseholdSize < 0.1)[1,c("Geography", "AvgHouseholdSize")], align = "l", caption = "Berkeley County's AvgHouseholdSize")
 ```
 
 To check the validity of this data point we find an alternate source of the data (@HouseDataBerekely).
@@ -219,11 +221,22 @@ We note that none of the variables highly correlate with deathRate but there are
 \tiny
 
 ```{r cordeathRate, echo = FALSE}
-kable(round(cor(cancer2$deathRate, cancer2[,c("incidenceRate","medIncome","povertyPercent","PctEmployed16_Over","PctPrivateCoverage","PctPublicCoverage","MedianAgeFemale", "AvgHouseholdSize")]), digits = 2), align = "l")
+kable(round(cor(cancer2$deathRate, cancer2[,c("incidenceRate","medIncome","povertyPercent","PctEmployed16_Over","PctPrivateCoverage","PctPublicCoverage","MedianAgeFemale", "AvgHouseholdSize")]), digits = 2), align = "l", caption = "Correlations of variables with deathRate")
 ```
 
 \normalsize
 
+# Author's Contributions
+
+Throughout this project Alex Walters contributed towards formatting the report, analysis on missing values, the statistical methodology, key findings, appendix, presentation slides and references. 
+Jena Moteea contributed towards the analysis on multicollinearity, statistical methodology, key findings, references, appendix and the presentation slides. James Keith contributed towards structuring the report with the intial analysis, statistical methodology, key findings, appendix, the presentation slides and references.
+Remus Gong contributed towards the analysis on skewness, statistical methodology, key findings, executive summary, appendix and the presentation slides.
+
+\pagebreak
+
+# \underline{References}
+
+<div id="refs"></div>
 
 \pagebreak
 
@@ -327,6 +340,6 @@ with(cancer2, plot(binnedInc, medIncome, main = "Comparison of medIncome and bin
 ```
 
 \pagebreak
-# \underline{References}
+
 
 
