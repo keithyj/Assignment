@@ -480,24 +480,22 @@ with(cancer2, plot(binnedInc, medIncome,
 main = "Comparison of medIncome and binnedInc", xlab = "binnedInc",
 ylab = "medIncome"))
 ```
-``` {r pearson test age not, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
-cor.test(cancer2$MedianAgeMale, cancer2$MedianAgeFemale, method = c("pearson"))
-```
 
-```{r cor tests, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
-cor.test(cancer2$PercentMarried,cancer2$PctMarriedHouseholds)
-```
+\scriptsize
 
-```{r Multi, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
+``` {r pearson test age not, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE, results = "hold"}
+with(cancer2, cor.test(MedianAgeMale, MedianAgeFemale))
+with(cancer2, cor.test(PercentMarried,PctMarriedHouseholds))
 with(cancer2, cor.test(PctUnemployed16_Over, PctEmployed16_Over))
+with(cancer2, cor.test(povertyPercent, PctEmployed16_Over))
+with(cancer2, cor.test(povertyPercent, PctUnemployed16_Over))
+with(cancer2, cor.test(povertyPercent, PctPrivateCoverage))
+with(cancer2, cor.test(povertyPercent, PctEmpPrivCoverage))
+with(cancer2, cor.test(povertyPercent, PctPublicCoverage))
 ```
-```{r cor test, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
-cor.test(cancer2$povertyPercent, cancer2$PctEmployed16_Over)
-cor.test(cancer2$povertyPercent, cancer2$PctUnemployed16_Over)
-cor.test(cancer2$povertyPercent, cancer2$PctPrivateCoverage)
-cor.test(cancer2$povertyPercent, cancer2$PctEmpPrivCoverage)
-cor.test(cancer2$povertyPercent, cancer2$PctPublicCoverage)
-```
+
+\normalsize
+
 4: Multivariate Plots
 
 4.1: Multicollinearity
@@ -505,7 +503,7 @@ cor.test(cancer2$povertyPercent, cancer2$PctPublicCoverage)
 ```{r Correlation matrix, echo=TRUE, message = FALSE, warning = FALSE, fig.asp = 0.7}
 # A correlation matrix plot highlighting strongly correlated variables(>0.6)
 ggcorr(cancer2[,-c(1,4)], geom = "blank", label = TRUE, hjust = 0.9, 
-       label_size = 3 ,size = 2.5) +
+       label_size = 2.5, size = 2.5, label_round = 2) +
   geom_point(size = 10, aes(color = coefficient > 0, 
                             alpha = abs(coefficient) > 0.6)) +
   scale_alpha_manual(values = c("TRUE" = 0.25, "FALSE" = 0)) +
