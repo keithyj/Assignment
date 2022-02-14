@@ -91,9 +91,9 @@ We found that incidenceRate, medIncome, povertyPercent, PctEmployed16_Over, PctU
 We suggest the following recommendations prior to fitting a linear model:  
 
 * Remove observations with MCAR values and highly abnormal values.
-* Apply appropriate transformations to fix cases of non-linearity, heteroscedasticty, skewness and non-normality to satisfy the model assumptions.
-* Further investigate outliers to ensure they do not have undue influence when we build a model.
-* Perform further analysis on highly correlated predictor variables to check for multicollinearity.
+* Apply appropriate transformations, using a spread level plot and power transformations, to fix cases of non-linearity, heteroscedasticty, skewness and non-normality to satisfy the model assumptions.
+* Further investigate outliers, using Cook's distance, to ensure they do not have undue influence when we build a model.
+* Perform further analysis, using Pearson's correlation coefficient, on highly correlated predictor variables to check for multicollinearity.
 * Prioritise the variables with significant correlation with deathRate in the model.
 
 \newpage
