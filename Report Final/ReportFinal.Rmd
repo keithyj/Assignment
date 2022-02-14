@@ -45,7 +45,6 @@ library(knitr)
 
 # Executive summary 
 
-
 * **Missing values have been identified to likely be missing completely at random (MCAR) and therefore we suggest that it can be removed. Some data for the AvgHouseholdSize data is likely to be incorrect and also MCAR so should be removed. Overall, the proportion of missing values in all variables is small and so it is not a serious problem.**
 
 * **Some variables, namely PctBlack, incidenceRate and medIncome, should be further investigated and altered to further increase the strength of our analysis before building a statistical model.**
@@ -57,7 +56,6 @@ library(knitr)
 # Findings
 
 This report will be an investigation into the distributions of the variables and the relationships between them in the cancer dataset in US counties, where the data is adapted from Noah Rippner (@Dataset). We will conduct exploratory data analysis which will leave us with the opportunity to create a statistical model after our research.
-
 
 ## Initial EDA and missing values
 
@@ -75,6 +73,19 @@ However, we identified heteroscedasticity in three variables: PctBlack, incidenc
 There exists non-linearity in AvgHouseholdsize, MedianAgeFemale and MedianAgeMale. We suggest using a more complex model to improve linearity.
 Some variables, most notably PercentMarried and medIncome, are skewed and we tested simple power transformations to fix the skewness, which proved effective. However, due to a massive right skew in PctBlack and the data for this variable being non-normal, we could not completely remove the skewness and so this needs to be further explored when fitting a model. We suggest using a spread level plot and power transformations to fix heteroscedasticity.
 We noticed that the power transformations used in fixing heteroscedasticity and skewness are different and when building a model heteroscedasticity should be prioritised to issues in normality.
+
+```{r quick fix cancer, echo = FALSE}
+cancer1 <- cancer
+cancer1$AvgHouseholdSize[which(cancer1$AvgHouseholdSize < 0.1)] <- NA
+cancer2 <- na.omit(cancer1)
+```
+
+```{r findings plots, echo = FALSE, fig.cap = "Some key plots to express Skewness, Heteroscedasticity and Linearity respectively", fig.asp = 0.4}
+par(mfrow = c(1,3))
+hist(cancer2$PctBlack, breaks = 30, main = "Percent Black", ylab = "Frequency", xlab = "PctBlack")
+with(cancer2, scatter.smooth(deathRate~incidenceRate, ylab = "deathRate", xlab = "incidenceRate", lpars = list(col = "red", lwd = 2), main = "deathRate against incidenceRate", cex.main = 1))
+with(cancer2, scatter.smooth(deathRate~MedianAgeFemale, ylab = "deathRate", xlab = "MedianAgeFemale", lpars = list(col = "red", lwd = 2), main = "deathRate against MedianAgeFemale", cex.main = 1))
+```
 
 ## Outliers 
 
@@ -136,7 +147,7 @@ for (i in c(2,3,8,18)){
 }
 ```
 
-We use the pbox() function from the VIM package to check what these missing values represent (@VIM). From the plots (Fig. 2 and Appendix (B) 1.3) we note that the box plots with the missing data do not look significantly different from those without missing data. The box plots for the other variables look similar to this which suggests that the data that is missing is likely MCAR for both AvgHouseholdSize and PctEmployed16_Over.
+We use the pbox() function from the VIM package to check what these missing values represent (@VIM). From the plots (Fig. 3 and Appendix (B) 1.3) we note that the box plots with the missing data do not look significantly different from those without missing data. The box plots for the other variables look similar to this which suggests that the data that is missing is likely MCAR for both AvgHouseholdSize and PctEmployed16_Over.
 
 As the proportion of missing data points is relatively small and the values are likely to be MCAR, the problem of missing values is not that serious. It should be safe to remove the rows with missing data from our data set. This will not make the data any less representative and shouldn't affect our statistical analysis when we come to build a linear model, other than slightly increasing the standard error. From now on we consider the dataset without observations which contain missing and incorrectly inputted values.
 
@@ -153,6 +164,7 @@ barplot(prop.table(table(cancer1NA$EmpNA)),col=c("red","blue"),main="PctEmployed
 ```{r remove miss, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 cancer2 <- na.omit(cancer1)
 ```
+
 ## Univariate Plots
 
 ```{r qqnorm and density, fig.asp = 0.35, echo = FALSE, fig.cap = "Density and QQ-Plots of deathRate"}
@@ -162,27 +174,27 @@ qqnorm(cancer2$deathRate, main = "QQ Plot of deathRate")
 qqline(cancer2$deathRate, col = "red")
 ```
 
-We should investigate deathRate as a response variable. We first test if a normal linear model is appropriate by making sure that deathRate is normally distributed. From deathRate's density and QQ Plots (Fig. 4) we can see that the variable deathRate is normally distributed and so a normal linear model is appropriate to use.
+We should investigate deathRate as a response variable. We first test if a normal linear model is appropriate by making sure that deathRate is normally distributed. From deathRate's density and QQ Plots (Fig. 5) we can see that the variable deathRate is normally distributed and so a normal linear model is appropriate to use.
 
 ```{r histograms included, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.3, fig.cap = "Histograms of four skewed predictor variables"}
 par(mfrow = c(1,4))
-hist(cancer2$medIncome, breaks = 30, main = "Median Income", ylab = "Frequency", xlab = "medIncome") # Keep
-hist(cancer2$PctUnemployed16_Over, breaks = 30, main = "Pct Unemployed", ylab = "Frequency", xlab = "PctUnemployed16_Over") # Keep
-hist(cancer2$PercentMarried, breaks = 30, main = "Percent Married", ylab = "Frequency", xlab = "Percent Married") # Keep
-hist(cancer2$PctBlack, breaks = 30, main = "Percent Black", ylab = "Frequency", xlab = "PctBlack") # Keep
+hist(cancer2$medIncome, breaks = 30, main = "Median Income", ylab = "Frequency", xlab = "medIncome")
+hist(cancer2$PctUnemployed16_Over, breaks = 30, main = "Pct Unemployed", ylab = "Frequency", xlab = "PctUnemployed16_Over")
+hist(cancer2$PercentMarried, breaks = 30, main = "Percent Married", ylab = "Frequency", xlab = "Percent Married")
+hist(cancer2$PctBlack, breaks = 30, main = "Percent Black", ylab = "Frequency", xlab = "PctBlack")
 ```
 
-The 4 plots above (Fig. 5) represent the most skewed variables and hence indicate non-normality. Most of our predictor variables look normally distributed from their histograms (see Appendix (B) 2.1) but medIncome, PctUnemployed16_Over, PercentMarried, PctMarriedHouseholds, povertyPercent and PctBlack all have significant skew. Transformations, such as log or square root, of skewed variables should be considered to fix skewness as seen in Fig. 4. 
+The 4 plots above (Fig. 6) represent the most skewed variables and hence indicate non-normality. Most of our predictor variables look normally distributed from their histograms (see Appendix (B) 2.1) but medIncome, PctUnemployed16_Over, PercentMarried, PctMarriedHouseholds, povertyPercent and PctBlack all have significant skew. Transformations, such as log or square root, of skewed variables should be considered to fix skewness as seen in Fig. 7. 
 
 ```{r Transformsinclude, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.3, fig.cap = "Histograms of four transformed variables previously skewed"}
 par(mfrow = c(1,4))
-hist(log(cancer2$medIncome), breaks = 30, main = "Transformed medIncome", ylab = "Frequency", xlab = "log(medIncome)", cex.main = 0.8)
-hist(sqrt(cancer2$PctUnemployed16_Over), breaks = 30, main = "Transformed AvgHouseholdSize", ylab = "Frequency", xlab = "sqrt(AvgHouseholdSize)", cex.main = 0.8)
-hist(cancer2$PercentMarried^2, breaks = 30, main = "Transformed Pct Married", ylab = "Frequency", xlab = "PercentMarried^2", cex.main = 0.8)
-hist(log(cancer2$PctBlack + 1), breaks = 30, main = "Transformed PctBlack", ylab = "Frequency", xlab = "log(PctBlack)", cex.main = 0.8)
+hist(log(cancer2$medIncome), breaks = 30, main = "Transformed medIncome", ylab = "Frequency", xlab = "log(medIncome)", cex.main = 1)
+hist(sqrt(cancer2$PctUnemployed16_Over), breaks = 30, main = "Transformed AvgHouseholdSize", ylab = "Frequency", xlab = "sqrt(AvgHouseholdSize)", cex.main = 1)
+hist(cancer2$PercentMarried^2, breaks = 30, main = "Transformed Pct Married", ylab = "Frequency", xlab = "PercentMarried^2", cex.main = 1)
+hist(log(cancer2$PctBlack + 1), breaks = 30, main = "Transformed PctBlack", ylab = "Frequency", xlab = "log(PctBlack)", cex.main = 1)
 ```
 
-From the above (Fig. 6) we note that some simple transformations can be applied to fix most of these variables' skew (log transform for median income for large right skew, square root for AvgHouseholdSize for slight right skew, square transform for PercentMarried for slight left skew). For those three variables the skew and normality are mostly fixed. However, for PctBlack a log transform is not sufficient to fix the large right skew. A shift in pctBlack data before log transforming it is necessary as there exists some zero-value data in pctBlack, which cannot be log transformed. This indicates that the data may not be normally distributed and would need to be handled differently when it comes to our statistical model.
+From the above (Fig. 7) we note that some simple transformations can be applied to fix most of these variables' skew (log transform for median income for large right skew, square root for AvgHouseholdSize for slight right skew, square transform for PercentMarried for slight left skew). For those three variables the skew and normality are mostly fixed. However, for PctBlack a log transform is not sufficient to fix the large right skew. A shift in pctBlack data before log transforming it is necessary as there exists some zero-value data in pctBlack, which cannot be log transformed. This indicates that the data may not be normally distributed and would need to be handled differently when it comes to our statistical model.
 
 ```{r BoxPlots, fig.cap = "BoxPlots of PctBlack, medIncome, and incidenceRate", fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.3}
 par(mfrow = c(1,3))
@@ -191,11 +203,11 @@ with(cancer2, boxplot(medIncome, main = "medIncome")) # Keep
 with(cancer2, boxplot(incidenceRate, main = "incidenceRate")) # Keep
 ```
 
-Our box plots (Fig. 7 and see Appendix (B) 2.3) show that we have a large number of outliers across all our variables apart from binnedInc, which would be impossible due to the bins intervals. 
-We have a severe number of outliers in medIncome. This is most likely due to natural circumstances such as a CEO of a large company or a doctor earning a higher salary (@HighPayJob).
-We also observe significant outliers in PctBlack and this is illustrated by the very long tail as shown in the histogram above (See Fig. 4). This might be due to PctBlack being an unstable predictor variable. We observe significantly high percentages of over 50% in the south and southeast region of the US, in particular, in Mississippi, Georgia, Alabama, and North and South Carolina. They form part of the top 10 US states with the highest percentage of Black residents. (@BlackPop)
+Our box plots (Fig. 8 and see Appendix (B) 2.3) show that we have a large number of outliers across all our variables apart from binnedInc, which would be impossible due to the bins intervals. 
+We have a severe number of outliers in medIncome. This is most likely due to natural circumstances such as a CEO of a large company or a doctor earning a higher salary (@HighPayJob). The boxplot for incidenceRate shows the existence of an extreme high value.
+We also observe significant outliers in PctBlack and this is illustrated by the very long tail as shown in the histogram above (See Fig. 6). This might be due to PctBlack being an unstable predictor variable. We observe significantly high percentages of over 50% in the south and southeast region of the US, in particular, in Mississippi, Georgia, Alabama, and North and South Carolina. They form part of the top 10 US states with the highest percentage of Black residents. (@BlackPop)
 
-The boxplot for incidence rate shows the existence of extreme high values which is also illustrated in our bivariate plots (Fig. 6). There are potential outliers in PctPrivateCoverage and povertyPercent. We might want to further investigate into these, using Cook's distance, and decide how we might want to treat them before fitting the model. Possible options might include removing the outliers or imputing them. 
+There are potential outliers in PctPrivateCoverage and povertyPercent. We might want to further investigate into these, using Cook's distance, and decide how we might want to treat them before fitting the model. Possible options might include removing the outliers or imputing them. 
 
 We suggest that the incidence rate in Williamsburg city, Virginia can be considered as unusual and should be further analysed once a model is fitted (@Williamsburg).
 
@@ -203,17 +215,19 @@ We suggest that the incidence rate in Williamsburg city, Virginia can be conside
 
 ```{r Plots against deathRate, fig.cap = "Plots showing deathRate against predictor variables", fig.width=7, fig.asp=0.46, fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
 par(mfrow = c(2,3))
-with(cancer2, scatter.smooth(deathRate~PctBlack, ylab = "deathRate", xlab = "pctBlack", lpars = list(col = "red", lwd = 2)))
-with(cancer2, scatter.smooth(deathRate~incidenceRate, ylab = "deathRate", xlab = "incidenceRate", lpars = list(col = "red", lwd = 2))) # keep
-with(cancer2, scatter.smooth(deathRate~medIncome, ylab = "deathRate", xlab = "medIncome", lpars = list(col = "red", lwd = 2)))
-with(cancer2, scatter.smooth(deathRate~AvgHouseholdSize, ylab = "deathRate", xlab = "AvgHouseholdSize", lpars = list(col = "red", lwd = 2)))
-with(cancer2, scatter.smooth(deathRate~MedianAgeMale, ylab = "deathRate", xlab = "MedianAgeMale", lpars = list(col = "red", lwd = 2)))
-with(cancer2, scatter.smooth(deathRate~MedianAgeFemale, ylab = "deathRate", xlab = "MedianAgeFemale", lpars = list(col = "red", lwd = 2)))
+with(cancer2, scatter.smooth(deathRate~PctBlack, ylab = "deathRate", xlab = "pctBlack", lpars = list(col = "red", lwd = 2), main = "deathRate against PctBlack", cex.main = 1))
+with(cancer2, scatter.smooth(deathRate~incidenceRate, ylab = "deathRate", xlab = "incidenceRate", lpars = list(col = "red", lwd = 2), main = "deathRate against incidenceRate", cex.main = 1))
+with(cancer2, scatter.smooth(deathRate~medIncome, ylab = "deathRate", xlab = "medIncome", lpars = list(col = "red", lwd = 2), main = "deathRate against medIncome", cex.main = 1))
+with(cancer2, scatter.smooth(deathRate~AvgHouseholdSize, ylab = "deathRate", xlab = "AvgHouseholdSize", lpars = list(col = "red", lwd = 2), main = "deathRate against AvgHouseholdSize", cex.main = 1))
+with(cancer2, scatter.smooth(deathRate~MedianAgeMale, ylab = "deathRate", xlab = "MedianAgeMale", lpars = list(col = "red", lwd = 2), main = "deathRate against MedianAgeMale", cex.main = 1))
+with(cancer2, scatter.smooth(deathRate~MedianAgeFemale, ylab = "deathRate", xlab = "MedianAgeFemale", lpars = list(col = "red", lwd = 2), main = "deathRate against MedianAgeFemale", cex.main = 1))
 ```
 
 Most predictor variables in our dataset show signs of linearity and no heteroscedasticity (See Appendix (B) 3.1). However, from the bivariate plots above, we can observe heteroscedasticity in PctBlack, incidenceRate and medIncome. We might need to perform further investigation after fitting a model and we can use spreadLevelPlot() to find an appropriate power transformation to fix heteroscedasticity. We were also able to observe unusual outliers of incidence rate that might have a high influence explaining its heteroscedasticity and non-linearity. The transformations that we have tested to fix the skew of some variables may not be the same as those that would fix heteroscedasticity or non-linearity. In this case we should prioritise the homoscedasticity and linearity model assumptions as those are more important to fitting a good model than normality.
 
-Moreover, we can see non-linearity in AvgHouseholdsize, MedianAgeFemale and MedianAgeMale (Fig. 6). We notice a concave shape for incidence rate and non-monotonic data, as for AvgHouseholdsize, so we advise potentially testing a quadratic term to improve linearity following further analysis such as residual plots.
+We also see illustrated in Fig. 9 just how extreme an outlier Williamsburg City is which further emphasises the need to investigate it.
+
+Moreover, we can see non-linearity in AvgHouseholdsize, MedianAgeFemale and MedianAgeMale (Fig. 9). We notice a concave shape for incidence rate and non-monotonic data, as for AvgHouseholdsize, so we advise potentially testing a quadratic term to improve linearity following further analysis such as residual plots.
 
 ## Multicollinearity
 
@@ -254,6 +268,18 @@ Remus Gong contributed towards the analysis on skewness, statistical methodology
 ```{r treat plot ap, echo = TRUE, eval = FALSE, fig.asp = 0.45, fig.cap = "The abnormal values near zero were investigated and removed before further analysis"}
 plot(deathRate ~ AvgHouseholdSize, data = cancer, 
      main = "deathRate against AvgHouseholdSize")
+```
+
+2.2: Skewness, Heteroscedasticity and Linearity
+
+```{r findings plots ap, echo = TRUE, eval = FALSE, fig.cap = "Some key plots to express Skewness, Heteroscedasticity and Linearity respectively", fig.asp = 0.68}
+par(mfrow = c(1,3))
+hist(cancer2$PctBlack, breaks = 30, main = "Percent Black", ylab = "Frequency", 
+     xlab = "PctBlack")
+with(cancer2, scatter.smooth(deathRate~incidenceRate, ylab = "deathRate", 
+                             xlab = "incidenceRate", lpars = list(col = "red", lwd = 2)))
+with(cancer2, scatter.smooth(deathRate~MedianAgeFemale, ylab = "deathRate", 
+                             xlab = "MedianAgeFemale", lpars = list(col = "red", lwd = 2)))
 ```
 
 3.1: Checking the summary and initial EDA
@@ -328,20 +354,26 @@ hist(log(cancer2$PctBlack + 1), breaks = 30, main = "Transformed PctBlack",
 
 3.4: Bivariate Plots
 
-```{r Plots against deathRate ap, fig.cap = "Plots showing deathRate against other variables", fig.width=7, fig.asp=0.46, fig.align="center", echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+```{r Plots against deathRate ap, fig.cap = "Plots showing deathRate against predictor variables", fig.width=7, fig.asp=0.46, fig.align="center", echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
 par(mfrow = c(2,3))
 with(cancer2, scatter.smooth(deathRate~PctBlack, ylab = "deathRate", 
-                    xlab = "pctBlack", lpars = list(col = "red", lwd = 2)))
+xlab = "pctBlack", lpars = list(col = "red", lwd = 2), 
+main = "deathRate against PctBlack", cex.main = 1))
 with(cancer2, scatter.smooth(deathRate~incidenceRate, ylab = "deathRate", 
-                    xlab = "incidenceRate", lpars = list(col = "red", lwd = 2)))
+xlab = "incidenceRate", lpars = list(col = "red", lwd = 2), 
+main = "deathRate against incidenceRate", cex.main = 1))
 with(cancer2, scatter.smooth(deathRate~medIncome, ylab = "deathRate", 
-                    xlab = "medIncome", lpars = list(col = "red", lwd = 2)))
+xlab = "medIncome", lpars = list(col = "red", lwd = 2), 
+main = "deathRate against medIncome", cex.main = 1))
 with(cancer2, scatter.smooth(deathRate~AvgHouseholdSize, ylab = "deathRate", 
-                    xlab = "AvgHouseholdSize", lpars = list(col = "red", lwd = 2)))
+xlab = "AvgHouseholdSize", lpars = list(col = "red", lwd = 2), 
+main = "deathRate against AvgHouseholdSize", cex.main = 1))
 with(cancer2, scatter.smooth(deathRate~MedianAgeMale, ylab = "deathRate", 
-                    xlab = "MedianAgeMale", lpars = list(col = "red", lwd = 2)))
+xlab = "MedianAgeMale", lpars = list(col = "red", lwd = 2), 
+main = "deathRate against MedianAgeMale", cex.main = 1))
 with(cancer2, scatter.smooth(deathRate~MedianAgeFemale, ylab = "deathRate", 
-                    xlab = "MedianAgeFemale", lpars = list(col = "red", lwd = 2)))
+xlab = "MedianAgeFemale", lpars = list(col = "red", lwd = 2), 
+main = "deathRate against MedianAgeFemale", cex.main = 1))
 ```
 
 ```{r BoxPlots ap, fig.cap = "BoxPlots of our variables", fig.align="center", echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE, fig.asp = 0.3}
@@ -527,6 +559,5 @@ ggcorr(cancer2[,-c(1,4)], geom = "blank", label = TRUE, hjust = 0.9,
   guides(color = "none", alpha = "none") +
   ggtitle("Correlation matrix of predictor variables")
 ```
-
 
 
