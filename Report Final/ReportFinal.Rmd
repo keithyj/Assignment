@@ -314,20 +314,12 @@ with(cancer2, boxplot(PctPublicCoverage, main = "PctPublicCoverage"))
 ```
 3.3 Multicollinearity
 
-```{r, echo = FALSE, fig.cap = "A large plot containing densities, bivariate plots and correlations", eval = TRUE}
-mod_points=function(data,mapping,...) {
-  ggally_smooth_loess(data, mapping,pch=20, ...) +
-    theme(text = element_text(size=8))
-}  
-mod_cor=function(data,mapping,...) {
-  ggally_cor(data, mapping,size=1.5,align_percent=0.9, digits = 2) + scale_colour_manual(values = c("red", "blue")) + theme(panel.grid.major = element_blank(),...)
-}
-ggpairs(cancer2, columns = c(2:3, 5:18), mapping = aes(alpha = 0.6),
-        upper = list(continuous=mod_cor),
-        lower = list(continuous=wrap(mod_points, col = "red")),
-        diag = list(continuous="densityDiag"),
-        progress = FALSE) +
-        theme(text=element_text(size=6))
+```{r Correlation matrix, echo=FALSE, message = FALSE, warning = FALSE}
+ggcorr(cancer2[,-c(1,4)], geom = "blank", label = TRUE, hjust = 0.9, label_size = 3 ,size = 2.5) +
+  geom_point(size = 10, aes(color = coefficient > 0, alpha = abs(coefficient) > 0.6)) +
+  scale_alpha_manual(values = c("TRUE" = 0.25, "FALSE" = 0)) +
+  guides(color = "none", alpha = "none") +
+  ggtitle("Correlation matrix of predictor variables")
 ```
 
 ```{r Income comparison, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE, fig.cap = "medIncome and binnedInc show very similar results. We will therefore consider only using medIncome in our model", fig.width = 7, fig.height = 4}
