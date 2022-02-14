@@ -41,7 +41,6 @@ library(usmap)
 library(car)
 library(stringr)
 library(knitr)
-library(tidyr)
 ```
 
 # Executive summary 
