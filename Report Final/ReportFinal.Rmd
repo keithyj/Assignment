@@ -61,7 +61,8 @@ This report will be an investigation into the distributions of the variables and
 
 ## Initial EDA and missing values
 
-Geography can be used for data visualisation but should not be included in the linear model. We identified missing values in PctEmployed16_Over and abnormal values in AvgHouseholdSize. The best course of action is to remove the observations associated with them before further analysis of the data as they are likely missing completely at random.
+The character variable Geography is just an identifier of the observation and can be ignored for statistical analysis and should not be used in a linear model. However, it can be utilised for data visualisation and analysis of geographic trends in the United States. 
+We identified missing values in PctEmployed16_Over and abnormal values in AvgHouseholdSize. The best course of action is to remove the observations associated with them before further analysis of the data as they are likely missing completely at random.
 
 ```{r treat plot, echo = FALSE, fig.asp = 0.45, fig.cap = "The abnormal values near zero were investigated and removed before further analysis"}
 plot(deathRate ~ AvgHouseholdSize, data = cancer, main = "deathRate against AvgHouseholdSize")
@@ -69,11 +70,11 @@ plot(deathRate ~ AvgHouseholdSize, data = cancer, main = "deathRate against AvgH
 
 ## Skewness, Heteroscedasticity and Linearity
 
-It appears most predictor variables linear and no signs of heteroscedasticity. 
-However, we identified heteroscedasticity in three variables: PctBlack, incidenceRate, medIncome. Potential outliers may undermine the heteroscedascity. We recommend using power transformations to fix heteroscedasticity.
+It appears most predictor variables are linear and there are no signs of heteroscedasticity. 
+However, we identified heteroscedasticity in three variables: PctBlack, incidenceRate, medIncome. Potential outliers may influence the heteroscedascity. We recommend using power transformations to fix heteroscedasticity.
 There exists non-linearity in AvgHouseholdsize, MedianAgeFemale and MedianAgeMale. We suggest using a more complex model to improve linearity.
-Some variables, most notably PctBlack and medIncome, are skewed and we tested simple power transformations to fix the skewness, which proved effective. However, due to a massive right skew in PctBlack, we could not completely remove the skewness and so this needs to be further explored when fitting a model.
-We noticed that the power transformations used in fixing heteroscedasticity and skewness are different and when building a model heteroscedasticity should be prioritised to normality.
+Some variables, most notably PercentMarried and medIncome, are skewed and we tested simple power transformations to fix the skewness, which proved effective. However, due to a massive right skew in PctBlack and the data for this variable being non-normal, we could not completely remove the skewness and so this needs to be further explored when fitting a model. We suggest using a spread level plot and power transformations to fix heteroscedasticity.
+We noticed that the power transformations used in fixing heteroscedasticity and skewness are different and when building a model heteroscedasticity should be prioritised to issues in normality.
 
 ## Outliers 
 
@@ -83,7 +84,7 @@ However, there are some severe outliers in incidenceRate. We could further inves
 
 ## Multicollinearity
 
-There are many variables that suffer from multicollinearity due to representing very similar things. For example, PercentMarried and PctMarriedHouseholds highly correlated and could be considered to represent the same force. Most notably, binnedInc and medIncome represent very similar data and with binnedInc being the only categorical variable we suggest removing binnedInc from the model. Multicollinearity is also true for many other variables in the dataset, and we should investigate variance inflation factors and other multicollinearity diagnosis methods once a model has been fitted. If our initial suspicions about multicollinearity are proven true by further analysis, then we can consider removing one of the co-linear variables to reduce model complexity.
+There are many variables that suffer from multicollinearity due to representing very similar things. For example, PercentMarried and PctMarriedHouseholds highly correlated and could be considered to represent the same force. Most notably, binnedInc and medIncome represent very similar data, we suggest removing binnedInc from the model or including an interaction term between the two variables. Multicollinearity is also true for many other variables in the dataset, and we should investigate variance inflation factors (VIF) and other multicollinearity diagnosis methods once a model has been fitted. If our initial suspicions about multicollinearity are proven true by further analysis, then we can consider removing one of the co-linear variables to reduce model complexity.
 
 ## Correlation with deathRate
 
@@ -92,10 +93,10 @@ We found that incidenceRate, medIncome, povertyPercent, PctEmployed16_Over, PctU
 ## Recommendations
 We suggest the following recommendations prior to fitting a linear model:  
 
-* Remove observations with MCAR values and highly abnormal values.
+* Remove observations with likely MCAR values and incorrect values.
 * Apply appropriate transformations, using a spread level plot and power transformations, to fix cases of non-linearity, heteroscedasticity, skewness, and non-normality to satisfy the model assumptions.
 * Further investigate outliers, using Cook's distance, to ensure they do not have undue influence when we build a model.
-* Perform further analysis, using Pearson's correlation coefficient, on highly correlated predictor variables to check for multicollinearity.
+* Perform further analysis, using Pearson's correlation coefficient and VIF, on highly correlated predictor variables to check for multicollinearity.
 * Prioritise the variables with significant correlation with deathRate in the model.
 
 \newpage
@@ -104,11 +105,11 @@ We suggest the following recommendations prior to fitting a linear model:
 
 ## Checking the summary and initial EDA
 
-Looking at the dataset we note that there is one character variable, one factor variable and sixteen continuous variables. The character variable Geography is just an identifier of the observation and can be ignored for statistical analysis and should not be used in a linear model. However, it can be utilised for data visualisation and analysis of geographic trends in the United States.
+Looking at the dataset we note that there is one character variable, one factor variable and sixteen continuous variables (See Appendix (B) 1.1). 
 
 There are 3047 observations of data in our dataset. That is a large amount of data, but it doesn't actually equal the total amount of US counties which is 3142 in total (@County). The proportion of counties in our data is large enough so that the data can still serve as a good indicator.
 
-There are 152 missing values in PctEmployed16_Over which need to be checked. There are 61 values in AvgHouseholdSize underneath 0.1 which should be investigated before further analysis due to being severely small (See Appendix (B) 1.2).
+There are 152 missing values in PctEmployed16_Over which need to be checked. There are 61 values in AvgHouseholdSize below 0.1 which should be investigated before further analysis due to being severely small (See Appendix (B) 1.2).
 
 We identify one of these points and investigate it:
 
@@ -161,7 +162,7 @@ qqnorm(cancer2$deathRate, main = "QQ Plot of deathRate")
 qqline(cancer2$deathRate, col = "red")
 ```
 
-We should investigate deathRate as a response variable. We first test if a normal linear model is appropriate by making sure that deathRate is normally distributed. From deathRate's density and QQ Plots (Fig. 3) we can see that the variable deathRate is normally distributed and so a normal linear model is appropriate to use.
+We should investigate deathRate as a response variable. We first test if a normal linear model is appropriate by making sure that deathRate is normally distributed. From deathRate's density and QQ Plots (Fig. 4) we can see that the variable deathRate is normally distributed and so a normal linear model is appropriate to use.
 
 ```{r histograms included, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.3, fig.cap = "Histograms of four skewed predictor variables"}
 par(mfrow = c(1,4))
@@ -171,7 +172,7 @@ hist(cancer2$PercentMarried, breaks = 30, main = "Percent Married", ylab = "Freq
 hist(cancer2$PctBlack, breaks = 30, main = "Percent Black", ylab = "Frequency", xlab = "PctBlack") # Keep
 ```
 
-The 4 plots above (Fig. 4) represent the most skewed variables and hence indicate non-normality. Most of our predictor variables look normally distributed from their density plots and histograms (see Appendix (B) 2.1) but medIncome, PctUnemployed16_Over, PercentMarried, PctMarriedHouseholds, povertyPercent and PctBlack all have significant skew. Transformations, such as log or square root, of skewed variables should be considered to fix skewness as seen in Fig. 4. 
+The 4 plots above (Fig. 5) represent the most skewed variables and hence indicate non-normality. Most of our predictor variables look normally distributed from their histograms (see Appendix (B) 2.1) but medIncome, PctUnemployed16_Over, PercentMarried, PctMarriedHouseholds, povertyPercent and PctBlack all have significant skew. Transformations, such as log or square root, of skewed variables should be considered to fix skewness as seen in Fig. 4. 
 
 ```{r Transformsinclude, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.3, fig.cap = "Histograms of four transformed variables previously skewed"}
 par(mfrow = c(1,4))
@@ -181,7 +182,7 @@ hist(cancer2$PercentMarried^2, breaks = 30, main = "Transformed Pct Married", yl
 hist(log(cancer2$PctBlack + 1), breaks = 30, main = "Transformed PctBlack", ylab = "Frequency", xlab = "log(PctBlack)", cex.main = 0.8)
 ```
 
-From the above (Fig. 5) we note that some simple transformations can be applied to fix most of these variables' skew (log transform for median income for large right skew, square root for AvgHouseholdSize for slight right skew, square transform for PercentMarried for slight left skew). For those 3 variables the skew and normality are mostly fixed. However, for PctBlack a log transform is not sufficient to fix the large right skew. A shift in pctBlack data before log transforming it is necessary as there exists some zero-value data in pctBlack, which cannot be log transformed. This indicates that the data may not be normally distributed and would need to be handled differently when it comes to our statistical model.
+From the above (Fig. 6) we note that some simple transformations can be applied to fix most of these variables' skew (log transform for median income for large right skew, square root for AvgHouseholdSize for slight right skew, square transform for PercentMarried for slight left skew). For those three variables the skew and normality are mostly fixed. However, for PctBlack a log transform is not sufficient to fix the large right skew. A shift in pctBlack data before log transforming it is necessary as there exists some zero-value data in pctBlack, which cannot be log transformed. This indicates that the data may not be normally distributed and would need to be handled differently when it comes to our statistical model.
 
 ```{r BoxPlots, fig.cap = "BoxPlots of PctBlack, medIncome, and incidenceRate", fig.align="center", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.3}
 par(mfrow = c(1,3))
@@ -191,12 +192,12 @@ with(cancer2, boxplot(incidenceRate, main = "incidenceRate")) # Keep
 ```
 
 Our box plots (Fig. 7 and see Appendix (B) 2.3) show that we have a large number of outliers across all our variables apart from binnedInc, which would be impossible due to the bins intervals. 
-We have a severe number of outliers in medIncome. This is most likely due to natural circumstances such as a CEO of a large company or a doctor (@HighPayJob).
+We have a severe number of outliers in medIncome. This is most likely due to natural circumstances such as a CEO of a large company or a doctor earning a higher salary (@HighPayJob).
 We also observe significant outliers in PctBlack and this is illustrated by the very long tail as shown in the histogram above (See Fig. 4). This might be due to PctBlack being an unstable predictor variable. We observe significantly high percentages of over 50% in the south and southeast region of the US, in particular, in Mississippi, Georgia, Alabama, and North and South Carolina. They form part of the top 10 US states with the highest percentage of Black residents. (@BlackPop)
 
 The boxplot for incidence rate shows the existence of extreme high values which is also illustrated in our bivariate plots (Fig. 6). There are potential outliers in PctPrivateCoverage and povertyPercent. We might want to further investigate into these, using Cook's distance, and decide how we might want to treat them before fitting the model. Possible options might include removing the outliers or imputing them. 
 
-We suggest that the incidence rate in Williamsburg city, Virginia can be considered as a candidate for removal (@Williamsburg).
+We suggest that the incidence rate in Williamsburg city, Virginia can be considered as unusual and should be further analysed once a model is fitted (@Williamsburg).
 
 ## Bivariate Plots
 
@@ -210,17 +211,17 @@ with(cancer2, scatter.smooth(deathRate~MedianAgeMale, ylab = "deathRate", xlab =
 with(cancer2, scatter.smooth(deathRate~MedianAgeFemale, ylab = "deathRate", xlab = "MedianAgeFemale", lpars = list(col = "red", lwd = 2)))
 ```
 
-Most predictor variables in our dataset show signs of linearity and no heteroscedasticity (See Appendix (B) 3.1). However, from the bivariate plots above, we can observe definite heteroscedasticity in PctBlack, incidenceRate and medIncome. We might need to perform further investigation after fitting a model and we can use spreadLevelPlot() to find an appropriate power transformation to fix heteroscedasticity. We were also able to observe that the outliers of incidence rate might have a high influence explaining its heteroscedasticity and non-linearity. The transformations that we have tested to fix the skew of some variables may not be the same as those that would fix heteroscedasticity or non-linearity. In this case we should prioritise the heteroscedasticity and linearity model assumptions as those are more important to fitting a good model than normality.
+Most predictor variables in our dataset show signs of linearity and no heteroscedasticity (See Appendix (B) 3.1). However, from the bivariate plots above, we can observe heteroscedasticity in PctBlack, incidenceRate and medIncome. We might need to perform further investigation after fitting a model and we can use spreadLevelPlot() to find an appropriate power transformation to fix heteroscedasticity. We were also able to observe unusual outliers of incidence rate that might have a high influence explaining its heteroscedasticity and non-linearity. The transformations that we have tested to fix the skew of some variables may not be the same as those that would fix heteroscedasticity or non-linearity. In this case we should prioritise the homoscedasticity and linearity model assumptions as those are more important to fitting a good model than normality.
 
-Moreover, we can see non-linearity in AvgHouseholdsize, MedianAgeFemale and MedianAgeMale (Fig. 6). We notice a concave shape for incidence rate and AvgHouseholdsize so we advise having a more complex model, a quadratic term might improve linearity as the data is not monotonic.
+Moreover, we can see non-linearity in AvgHouseholdsize, MedianAgeFemale and MedianAgeMale (Fig. 6). We notice a concave shape for incidence rate and non-monotonic data, as for AvgHouseholdsize, so we advise potentially testing a quadratic term to improve linearity following further analysis such as residual plots.
 
 ## Multicollinearity
 
-We can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation -0.65), and MedianAgeFemale and MedianAgeMale (correlation 0.94) (See Appendix (B) 4.1). We further used Pearson correlation test (See Appendix (B) 3.2) to check for multicollinearity between percentPoverty and PctEmployed_Over16 (correlation -0.74), PctPrivateCoverage (correlation -0.82), PctEmpPrivCoverage (correlation -0.68), and PctPublicCoverage (correlation 0.65). Therefore, we might consider removing some of the predictor variables due to high multicollinearity, as one of the two co-linear variables will have little significance, to improve accuracy when fitting a model. Moreover, for the first 9 bins medIncome and binnedInc show very similar results (See Appendix (B) 3.2) and with binnedInc being the only categorical variable we suggest removing binnedInc from the model, or we could also consider using an interaction term.
+We can see that there is potential multicollinearity between: PercentMarried and PctMarried Households (correlation 0.87), PctUnemployed16_over and PctEmployed16_Over (correlation -0.65), and MedianAgeFemale and MedianAgeMale (correlation 0.94) (See Appendix (B) 4.1). We further used Pearson correlation test (See Appendix (B) 3.2) to check for multicollinearity between percentPoverty and PctEmployed_Over16 (correlation -0.74), PctPrivateCoverage (correlation -0.82), PctEmpPrivCoverage (correlation -0.68), and PctPublicCoverage (correlation 0.65). Therefore, we might consider removing some of the predictor variables due to co-llinearity, as one of the two co-linear variables will have little significance in the model. Moreover, for the first 9 bins medIncome and binnedInc show very similar results (See Appendix (B) 3.2) we suggest removing binnedInc from the model, or we could also consider using an interaction term between the two variables.
 
 ## Correlation with deathRate
 
-We note that none of the variables highly correlate with deathRate, but there are several variables that weakly correlate with deathRate that should be noted when it comes to building a model. These are incidenceRate, medIncome, povertyPercent, PctEmployed16_Over, PctUnemployed16_Over, PctPrivateCoverage and PctPublicCoverage. However, a lot of these variables also highly correlate with each other so the correlation with deathRate will result from these variables measuring very similar data. It should also be noted that MedianAgeMale, MedianAgeFemale and AvgHouseholdSize have extremely weak correlation with deathRate so it should be considered to remove these variables when building explanatory linear model.
+We note that none of the variables highly correlate with deathRate, but there are several variables that weakly correlate with deathRate that should be noted when it comes to building a model. These are incidenceRate, medIncome, povertyPercent, PctEmployed16_Over, PctUnemployed16_Over, PctPrivateCoverage and PctPublicCoverage. However, a lot of these variables also highly correlate with each other so the correlation with deathRate will result from these variables measuring very similar forces. It should also be noted that MedianAgeMale, MedianAgeFemale and AvgHouseholdSize have extremely weak correlation with deathRate, so they should have lower priority when constructing a linear model. 
 
 \tiny
 
