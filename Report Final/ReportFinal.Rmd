@@ -277,7 +277,7 @@ for (i in c(2,3,8,18)){
 }
 ```
 
-```{r prop bars, echo = FALSE, fig.cap = "The proportion of missing values are low", fig.asp = 0.5, eval = FALSE}
+```{r prop bars ap, echo = FALSE, fig.cap = "The proportion of missing values are low", fig.asp = 0.5, eval = FALSE}
 cancer1NA <- cancer1
 cancer1NA$AvgNA <- ifelse(is.na(cancer1$AvgHouseholdSize), "Miss", "Not Miss")
 cancer1NA$EmpNA <- ifelse(is.na(cancer1$PctEmployed16_Over), "Miss", "Not Miss")
