@@ -52,6 +52,8 @@ library(tidyr)
 
 # Findings
 
+Using the data taken adapted from Noah Rippner, we have concluded the following findings in our EDA (@Dataset).
+
 ## Initial EDA and missing values
 
 There are 16 continuous variables, 1 factor variable and 1 character variable. We quickly noted that Geography was an id variable and can be used for data visualisation but should not be included in any linear model. We identified 152 missing values in PctEmployed16_Over and 61 abnormal values in AvgHouseholdSize. These values were investigated and we decide to remove the observations associated with them before any further exploring of the data as we determined that they were missing completely at random.
@@ -71,7 +73,7 @@ We noticed that the power transformations used in fixing heteroscedascity and sk
 ## Outliers 
 
 We used box plots to discover outliers. We have a considerable amount of outliers in medIncome, PctBlack and incidenceRate.
-The outliers in medIncome and PctBlack are reasonable after some research of the US demographics.
+The outliers in medIncome and PctBlack are reasonable after some research of the US demographics (@BlackPop).
 However, there are some extreme values in incidenceRate. We need to further investigate into this before we can make decisions on how we handle or remove them.
 
 ## Multicollinearity
@@ -114,9 +116,7 @@ We identify one of these points and investigate it:
 kable(subset(cancer, AvgHouseholdSize < 0.1)[1,c("Geography", "AvgHouseholdSize")], align = "l")
 ```
 
-To check the validity of this data point we find an alternate source of the data at:
-
-https://data.census.gov/cedsci/table?q=average%20household%20size&g=0500000US54003&y=2013&tid=ACSST1Y2013.S1101
+To check the validity of this data point we find an alternate source of the data (@HouseDataBerekely).
 
 We note that this data recording AvgHouseholdSize in the same year as our data lists the size at 2.61. This is completely different and this is similar for other small values in our dataset. Hence, these are very likely incorrectly inputted data points and as there is only a small proportion of them we should treat them as missing data and then test to see whether they are MCAR.
 
@@ -199,12 +199,12 @@ with(cancer2, boxplot(incidenceRate, main = "incidenceRate")) # Keep
 ```
 
 Our box plots (Fig. 7 and see Appendix) show that we have quite a number of what we would consider outliers across all our variables apart from binnedInc, which would be impossible due to the bins intervals. 
-We have a severe amount of outliers in medIncome. This is most likely due to natural causes such as a CEO of a large company or a doctor (see Reference about high paid jobs). 
+We have a severe amount of outliers in medIncome. This is most likely due to natural causes such as a CEO of a large company or a doctor (@HighPayJob).
 We also observe significant outliers in PctBlack and this is illustrated by the very long tail as shown in the histogram above (See Fig. 4). This might be due to PctBlack being an unstable predictor variable. We observe significantly high percentages of over 50% in  south and southeast region of the US, in particular, in Mississippi, Georgia, Alabama and North and South Carolina. They indeed form part of the top 10 US state with the highest percentage of Black residents. (See Reference about Black population in US)
 
 The boxplot for Incidence rate shows the existence of extreme high values which is also illustrated in our bivariate plots in Fig. 6 There are potential outliers in PctPrivateCoverage and povertyPercent.We might want to further investigate into these and decide how we might want to treat them before fitting the model. Possible options might include deleting the outliers or imputing them. 
 
-We suggest that the incidence rate in Williamsburg city, Virginia can be considered as a candidate for removal. (See reference for Williamsburg city, Virginia)
+We suggest that the incidence rate in Williamsburg city, Virginia can be considered as a candidate for removal (@Williamsburg).
 
 ## Multicollinearity
 
