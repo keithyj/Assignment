@@ -80,7 +80,7 @@ cancer1$AvgHouseholdSize[which(cancer1$AvgHouseholdSize < 0.1)] <- NA
 cancer2 <- na.omit(cancer1)
 ```
 
-```{r findings plots, echo = FALSE, fig.cap = "Some key plots to show Skewness, Heteroscedasticity and Linearity respectively", fig.asp = 0.35}
+```{r findings plots, echo = FALSE, fig.cap = "Some key plots to show Skewness, Heteroscedasticity and Non-Linearity respectively", fig.asp = 0.35}
 par(mfrow = c(1,3))
 hist(cancer2$PctBlack, breaks = 30, main = "Percent Black", ylab = "Frequency", xlab = "PctBlack")
 with(cancer2, scatter.smooth(deathRate~incidenceRate, ylab = "deathRate", xlab = "incidenceRate", lpars = list(col = "red", lwd = 2), main = "deathRate against incidenceRate", cex.main = 1))
