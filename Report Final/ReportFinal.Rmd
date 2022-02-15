@@ -475,17 +475,6 @@ main = "Histogram of PctPublicCoverage"))
 with(cancer2, hist(deathRate, breaks = 30, main = "Histogram of deathRate"))
 ```
 
-2.2: Transformed Histograms
-
-```{r Transformsdontinclude, fig.cap = "Our transformed histograms", fig.width=5, fig.asp=0.45, fig.align="center", echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
-# Histograms of transformed predictor variables
-par(mfrow = c(1,2))
-hist(cancer2$PctPrivateCoverage^(2), breaks = 30, 
-main = "Histogram of square of PctPrivateCoverage")
-with(cancer2, hist(sqrt(PctUnemployed16_Over), 
-main = "Transformed PctUnemployed16_Over"))
-```
-
 2.3: Boxplots
 
 ```{r BoxPlotsnotincluded, fig.cap = "BoxPlots of our variables", fig.align="center", eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.5, fig.show = "hold"}
