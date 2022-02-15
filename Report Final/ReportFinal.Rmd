@@ -281,7 +281,7 @@ barplot(prop.table(table(cancer1NA$AvgNA)),col=c("red","blue"),main="AvgHousehol
 
 2.2: Skewness, Heteroscedasticity and Linearity
 
-```{r quick fix cancer, echo = FALSE, eval = FALSE}
+```{r quick fix cancer ap, echo = FALSE, eval = FALSE}
 cancer1 <- cancer
 cancer1$AvgHouseholdSize[which(cancer1$AvgHouseholdSize < 0.1)] <- NA
 cancer2 <- na.omit(cancer1)
