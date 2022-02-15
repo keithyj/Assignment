@@ -156,7 +156,7 @@ We use the pbox() function from the VIM package to check what these missing valu
 
 As the proportion of missing data points is relatively small and the values are likely to be MCAR, the problem of missing values is not that serious. It should be safe to remove the rows with missing data from our data set. This will not make the data any less representative and shouldn't affect our statistical analysis when we come to build a linear model, other than slightly increasing the standard error. From now on we consider the dataset without observations which contain missing and incorrectly inputted values.
 
-```{r prop bars, echo = FALSE, fig.cap = "The proportion of missing values are low", fig.asp = 0.5, eval = FALSE}
+```{r prop bars, echo = FALSE, fig.cap = "The proportion of missing values are low", fig.asp = 0.5, eval = TRUE}
 cancer1NA <- cancer1
 cancer1NA$AvgNA <- ifelse(is.na(cancer1$AvgHouseholdSize), "Missing", "Not Missing")
 cancer1NA$EmpNA <- ifelse(is.na(cancer1$PctEmployed16_Over), "Missing", "Not Missing")
@@ -269,7 +269,7 @@ Remus Gong contributed towards the analysis on skewness, statistical methodology
 
 2.1: Initial EDA and missing values
 
-```{r treat plot ap, echo = FALSE, fig.asp = 0.4, fig.cap = "The low proportion of incorrect values near zero were removed after investigation."}
+```{r treat plot ap, echo = FALSE, fig.asp = 0.4, eval = FALSE, fig.cap = "The low proportion of incorrect values near zero were removed after investigation."}
 par(mfrow = c(1,2))
 plot(deathRate ~ AvgHouseholdSize, data = cancer, main = "deathRate against AvgHouseholdSize", cex.main = 0.8)
 cancer1 <- cancer
@@ -280,6 +280,12 @@ barplot(prop.table(table(cancer1NA$AvgNA)),col=c("red","blue"),main="AvgHousehol
 ```
 
 2.2: Skewness, Heteroscedasticity and Linearity
+
+```{r quick fix cancer, echo = FALSE, eval = FALSE}
+cancer1 <- cancer
+cancer1$AvgHouseholdSize[which(cancer1$AvgHouseholdSize < 0.1)] <- NA
+cancer2 <- na.omit(cancer1)
+```
 
 ```{r findings plots ap, echo = TRUE, eval = FALSE, fig.cap = "Some key plots to express Skewness, Heteroscedasticity and Linearity respectively", fig.asp = 0.68}
 par(mfrow = c(1,3))
