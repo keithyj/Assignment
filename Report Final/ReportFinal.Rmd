@@ -71,6 +71,11 @@ cancer1$AvgHouseholdSize[which(cancer1$AvgHouseholdSize < 0.1)] <- NA
 cancer1NA$AvgNA <- ifelse(is.na(cancer1$AvgHouseholdSize), "Miss", "Not Miss")
 barplot(prop.table(table(cancer1NA$AvgNA)),col=c("red","blue"),main="AvgHouseholdSize missing indicator",ylim=c(0,1), cex.main = 0.7)
 ```
+## Outliers 
+
+All variables have outliers in our data, but from our box plots we identified a considerable number of outliers in medIncome, PctBlack and incidenceRate. 
+The outliers in medIncome and PctBlack are reasonable after some research (@BlackPop)(@HighPayJob).
+However, there are some severe outliers in incidenceRate. We could further investigate into this by using Cook's distance before we can make decisions on how we can treat the outliers.
 
 ## Skewness, Heteroscedasticity and Linearity
 
@@ -92,12 +97,6 @@ hist(cancer2$PctBlack, breaks = 30, main = "Percent Black", ylab = "Frequency", 
 with(cancer2, scatter.smooth(deathRate~incidenceRate, ylab = "deathRate", xlab = "incidenceRate", lpars = list(col = "red", lwd = 2), main = "deathRate against incidenceRate", cex.main = 1))
 with(cancer2, scatter.smooth(deathRate~MedianAgeFemale, ylab = "deathRate", xlab = "MedianAgeFemale", lpars = list(col = "red", lwd = 2), main = "deathRate against MedianAgeFemale", cex.main = 1))
 ```
-
-## Outliers 
-
-All variables have outliers in our data, but from our box plots we identified a considerable number of outliers in medIncome, PctBlack and incidenceRate. 
-The outliers in medIncome and PctBlack are reasonable after some research (@BlackPop)(@HighPayJob).
-However, there are some severe outliers in incidenceRate. We could further investigate into this by using Cook's distance before we can make decisions on how we can treat the outliers.
 
 ## Multicollinearity
 
