@@ -145,7 +145,7 @@ cancer1$AvgHouseholdSize[which(cancer1$AvgHouseholdSize < 0.1)] <- NA
 
 ## Missing Value Exploration
 
-```{r Miss, fig.cap = "Box Plots showing the difference between missing and non-missing data in four variables", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.4}
+```{r Miss, fig.cap = "Box Plots showing the difference between missing and non-missing data in four variables", echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.5}
 par(mfrow = c(1,4))
 for (i in c(2,3,8,18)){ 
   pbox(cancer1,pos=i) 
