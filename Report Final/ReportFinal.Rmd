@@ -80,7 +80,7 @@ However, there are some severe outliers in incidenceRate. We could further inves
 ## Skewness, Heteroscedasticity and Linearity
 
 Most predictor variables appear linear and show no signs of heteroscedasticity. 
-However, we identified heteroscedasticity in three variables: PctBlack, incidenceRate, medIncome. Potential outliers may influence the heteroscedascity. We suggest using a spread level plot and power transformations to fix heteroscedasticity.
+However, we identified heteroscedasticity in three variables: PctBlack, incidenceRate, medIncome. Potential outliers may influence the heteroscedasticity. We suggest using a spread level plot and power transformations to fix heteroscedasticity.
 There exists non-linearity in AvgHouseholdsize, MedianAgeFemale and MedianAgeMale. We suggest using a more complex model to improve linearity.
 Some variables, most notably PercentMarried and medIncome, are skewed and we tested simple power transformations to fix the skewness, which proved effective. However, due to a large skew in PctBlack and the data for this variable being non-normal, we could not completely remove the skewness and so this needs to be further explored.
 We noticed that the power transformations used in fixing heteroscedasticity and skewness are different and when building a model heteroscedasticity should be prioritised to issues in normality.
@@ -184,8 +184,8 @@ We should investigate deathRate as a response variable. We first test if a norma
 ```{r histograms included, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE, fig.asp = 0.3, fig.cap = "Histograms of four skewed predictor variables"}
 par(mfrow = c(1,4))
 hist(cancer2$medIncome, breaks = 30, main = "Median Income", ylab = "Frequency", xlab = "medIncome")
-hist(cancer2$PctUnemployed16_Over, breaks = 30, main = "Pct Unemployed", ylab = "Frequency", xlab = "PctUnemployed16_Over")
-hist(cancer2$PercentMarried, breaks = 30, main = "Percent Married", ylab = "Frequency", xlab = "Percent Married")
+hist(cancer2$PctUnemployed16_Over, breaks = 30, main = "Percent Unemployed", ylab = "Frequency", xlab = "PctUnemployed16_Over")
+hist(cancer2$PercentMarried, breaks = 30, main = "Percent Married", ylab = "Frequency", xlab = "PctMarried")
 hist(cancer2$PctBlack, breaks = 30, main = "Percent Black", ylab = "Frequency", xlab = "PctBlack")
 ```
 
@@ -227,7 +227,7 @@ with(cancer2, scatter.smooth(deathRate~MedianAgeMale, ylab = "deathRate", xlab =
 with(cancer2, scatter.smooth(deathRate~MedianAgeFemale, ylab = "deathRate", xlab = "MedianAgeFemale", lpars = list(col = "red", lwd = 2), main = "deathRate against MedianAgeFemale", cex.main = 1))
 ```
 
-Most predictor variables in our dataset show signs of linearity and no heteroscedasticity (See Appendix (B) 3.1). However, from the bivariate plots above, we can observe heteroscedasticity in PctBlack, incidenceRate and medIncome. We might need to perform further investigation after fitting a model and we can use spreadLevelPlot() to find an appropriate power transformation to fix heteroscedasticity. We were also able to observe unusual outliers of incidence rate that might have a high influence explaining its heteroscedasticity and non-linearity. The transformations that we have tested to fix the skew of some variables may not be the same as those that would fix heteroscedasticity or non-linearity. In this case we should prioritise the homoscedasticity and linearity model assumptions as those are more important to fitting a good model than normality.
+Most predictor variables in our dataset show signs of linearity and no heteroscedasticity (See Appendix (B) 3.1). However, from the bivariate plots above, we can observe heteroscedasticity in PctBlack, incidenceRate and medIncome. We might need to perform a further investigation after fitting a model and we can use spreadLevelPlot() to find an appropriate power transformation to fix heteroscedasticity. We were also able to observe unusual outliers of incidence rate that might have a high influence explaining its heteroscedasticity and non-linearity. The transformations that we have tested to fix the skew of some variables may not be the same as those that would fix heteroscedasticity or non-linearity. In this case we should prioritise the heteroscedasticity and linearity model assumptions as those are more important to fitting a good model than normality.
 
 We also see illustrated in Fig. 9 just how extreme an outlier Williamsburg City is which further emphasises the need to investigate it.
 
@@ -252,7 +252,7 @@ kable(round(cor(cancer2$deathRate, cancer2[,c("incidenceRate","medIncome","pover
 # Author's Contributions
 
 Throughout this project Alex Walters contributed towards formatting the report, analysis on missing values, the statistical methodology, key findings, appendix, presentation slides and references. 
-Jena Moteea contributed towards the analysis on multicollinearity, statistical methodology, key findings, references, appendix, and the presentation slides. James Keith contributed towards structuring the report with the initial analysis, statistical methodology, key findings, appendix, the presentation slides, and references.
+Jena Moteea contributed towards the analysis on multicollinearity, statistical methodology, key findings, references, appendix, and the presentation slides. James Keith contributed towards structuring the report, statistical methodology, key findings, executive summary, appendix, the presentation slides, and references.
 Remus Gong contributed towards the analysis on skewness, statistical methodology, key findings, executive summary, appendix, and the presentation slides.
 
 \pagebreak
