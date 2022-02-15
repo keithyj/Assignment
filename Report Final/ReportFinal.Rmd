@@ -229,7 +229,7 @@ with(cancer2, scatter.smooth(deathRate~MedianAgeFemale, ylab = "deathRate", xlab
 
 Most predictor variables in our dataset show signs of linearity and no heteroscedasticity (See Appendix (B) 3.1). However, from the bivariate plots above, we can observe heteroscedasticity in PctBlack, incidenceRate and medIncome. We might need to perform a further investigation after fitting a model and we can use spreadLevelPlot() to find an appropriate power transformation to fix heteroscedasticity. We were also able to observe unusual outliers of incidence rate that might have a high influence explaining its heteroscedasticity and non-linearity. The transformations that we have tested to fix the skew of some variables may not be the same as those that would fix heteroscedasticity or non-linearity. In this case we should prioritise the heteroscedasticity and linearity model assumptions as those are more important to fitting a good model than normality.
 
-We also see illustrated in Fig. 9 just how extreme an outlier Williamsburg City is which further emphasises the need to investigate it.
+We also see illustrated in Fig. 9 just how extreme an outlier Williamsburg City's incidence rate is, which further emphasises the need to investigate it.
 
 Moreover, we can see non-linearity in AvgHouseholdsize, MedianAgeFemale and MedianAgeMale (Fig. 9). We notice a concave shape for incidence rate and non-monotonic data, such as for AvgHouseholdsize. So we advise potentially testing a quadratic term to improve linearity following further analysis such as residual plots.
 
